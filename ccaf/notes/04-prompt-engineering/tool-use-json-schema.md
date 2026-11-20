@@ -7,7 +7,7 @@
 
 ## 仕組み
 
-抽出用のツールは、実際の処理を持たなくてよい。スキーマを渡す「器」として使い、`input` をそのまま結果にする。これがスキーマどおりの出力を得るいちばん確実な方法だ。ツール定義に `strict: true` を付ける strict tool use は、出力をスキーマに合うトークンだけに絞る（grammar-constrained sampling）。だから型の違い（`"2"` と `2`）や必須項目の抜けも無くなる。必ずツールを呼ばせるのは tool_choice の設定だ。文書の種類が分からず抽出ツールが複数あるなら any、特定の抽出を先に通すなら tool にする（詳細は [tool_choice のノート](../02-tool-design-mcp/tool-choice.md)）。
+抽出用のツールは、実際の処理を持たなくてよい。スキーマを渡す「器」として使い、`input` をそのまま結果にする。これがスキーマどおりの出力を得るいちばん確実な方法だ。ツール定義に `strict: true` を付ける strict tool use は、出力をスキーマに合うトークンだけに絞る（grammar-constrained sampling）。だから型の違い（`"2"` と `2`）や必須項目の抜けも無くなる。必ずツールを呼ばせるのは tool_choice の設定だ。文書の種類が分からず抽出ツールが複数あるなら any、特定の抽出を先に通すなら tool にする（ガイドの書き方。現行モデルの制限は下の折りたたみ。詳細は [tool_choice のノート](../02-tool-design-mcp/tool-choice.md)）。
 
 ```mermaid
 flowchart LR
@@ -16,14 +16,15 @@ flowchart LR
   C --> D["input を取り出す<br/>（ツールは実行しなくてよい）"]
   D --> E{"意味の検証<br/>合計・欄の対応"}
   E -- 合う --> F[結果を使う]
-  E -- 合わない --> G[誤りを添えて再試行]
+  E -- 合わない --> G["誤りを添えて再試行<br/>（上限つき）"]
   G --> B
+  E -- 直らない --> H[人の確認に回す]
   classDef run fill:#e3f2fd,stroke:#1e88e5,color:#0d47a1
   classDef judge fill:#fff8e1,stroke:#f9a825,color:#4e342e
   classDef done fill:#e8f5e9,stroke:#43a047,color:#1b5e20
   class A,B,C,D,G run
   class E judge
-  class F done
+  class F,H done
 ```
 
 スキーマが保証するのは形だけだ。その誤りが ==JSON の形の問題か、値の中身の問題か==で手段が分かれる。形ならスキーマで、中身ならアプリ側の検証とプロンプトで直す。
