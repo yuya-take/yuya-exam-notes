@@ -2,14 +2,12 @@
 
 > ドメイン: 2. ツール設計と MCP の組み込み（18%） ／ 更新: 2026-11-20
 
-## 3行まとめ
-- ツールの失敗は、結果の中に `isError: true` を立てて返す。エージェント（LLM）が失敗を読んで、次の手を決められる
-- エラーは「分類・再試行してよいか・人が読める説明」を付けた構造で返す。一律の「Operation failed」は回復の判断を奪う
-- 判断の決め手は再試行の可否。一時的な障害だけ再試行し、入力の誤りは直して呼び直し、業務ルール違反と権限エラーは再試行しない
+!!! abstract "ひとことで"
+    ツールの失敗は、結果の中に ==`isError: true`== を立て、分類・再試行してよいか・人が読める説明を付けて返す。決め手は==再試行の可否==で、一時的な障害だけを再試行する。
 
 ## 仕組み
 
-MCP（Model Context Protocol）のツールのエラーは2種類ある。
+MCP（Model Context Protocol）のツールのエラーは2種類ある。ツールの中で起きた失敗は、結果として返せばエージェント（LLM）が読んで次の手を決められる。一律の「Operation failed」では一時的か恒久的かが分からないので、無駄な再試行か早すぎる断念を招く。
 
 | 種類 | 返し方 | 例 | LLM に渡すか |
 |---|---|---|---|
@@ -19,55 +17,64 @@ MCP（Model Context Protocol）のツールのエラーは2種類ある。
 ```mermaid
 flowchart TD
   A[ツールが失敗] --> B{失敗の種類}
-  B -- transient --> C[待って再試行（上限つき）]
+  B -- transient --> C["待って再試行（上限つき）"]
   B -- validation --> D[引数を直して呼び直す]
-  B -- 業務ルール違反 --> E[retriable: false・理由を利用者に伝える]
+  B -- 業務ルール違反 --> E["retriable: false・理由を利用者に伝える"]
   B -- permission --> F[再試行しない・権限の取得や人への引き継ぎ]
+  classDef run fill:#e3f2fd,stroke:#1e88e5,color:#0d47a1
+  classDef judge fill:#fff8e1,stroke:#f9a825,color:#4e342e
+  classDef done fill:#e8f5e9,stroke:#43a047,color:#1b5e20
+  class A,C,D run
+  class B judge
+  class E,F done
 ```
 
-エラーの分類（ガイドの4分類）:
-
-| 分類 | 例 | isRetryable | エージェントの次の手 |
+| 分類（ガイドの4分類） | 例 | isRetryable | エージェントの次の手 |
 |---|---|---|---|
 | 一時的（transient） | タイムアウト、サービス停止中 | true | 間を置いて同じ呼び出しを再試行 |
 | 検証（validation） | 日付の形式違い、範囲外の値 | false（同じ入力では） | 入力を直して呼び直す |
 | 業務（business） | 返金の上限超え、規定違反 | false | 利用者向けの説明をそのまま伝える |
 | 権限（permission） | 閲覧権限が無い | false | 別の手段か、人に引き継ぐ |
 
-返し方の最小例（構造化したメタデータを `content` のテキストに JSON で入れる）:
+検証・業務・権限のエラーは、同じ入力で何度呼んでも失敗する。だから再試行するのは一時的な障害だけだ。構造化したメタデータは、`content` のテキストに JSON で入れて返す。
 
 ```json
 { "content": [{ "type": "text", "text": "{\"retriable\":false,\"message\":\"返金は購入から30日以内に限られます。この注文は45日前です。\"}" }],
   "isError": true }
 ```
 
-- `errorCategory`・`isRetryable` は MCP 仕様のフィールドではない。ガイドが示す設計上の慣習で、`errorCategory` の値は transient / validation / permission の3つ。業務エラーは `errorCategory` を使わず、`retriable: false` と顧客向けの説明を付ける（上の例）
-- Claude API で自前のツールを動かすときは、同じ役目を `tool_result` の `is_error: true` が担う
+??? info "フィールド名・仕様の版・SDK の細かい決まり"
+    - `errorCategory`・`isRetryable` は MCP 仕様のフィールドではない。ガイドが示す設計上の慣習で、`errorCategory` の値は transient / validation / permission の3つ。業務エラーは `errorCategory` を使わず、`retriable: false` と顧客向けの説明を付ける（上の例）
+    - 名前の揺れ: ガイドは `isRetryable` と `retriable: false` の両方の綴りを使う。どちらも仕様で決まった名前ではない
+    - Claude API で自前のツールを動かすときは、同じ役目を `tool_result` の `is_error: true` が担う
+    - 入力の検証エラーは、2025-11-25 版以降（現行の 2026-07-28 版も）の仕様ではツール実行エラー（`isError`）側に入る。JSON-RPC のプロトコルエラーで返すのは誤り。2025-06-18 版はプロトコルエラーに「Invalid arguments」、ツール実行エラーに「Invalid input data」と両方に書いていた。「LLM に渡す SHOULD / MAY」の文も 2025-11-25 版で入った
+    - Agent SDK では、例外を投げっぱなしにすると生の例外メッセージが Claude に渡るだけになる。自分で捕まえて、次に何をすべきかを書いた `isError` の結果を作る
+    - Claude は `is_error` を見て同じツールを呼び直すことがある。ループ側で再試行の上限を決めておく
+    - サブエージェントで一時的な失敗が起きたら、まずその場で再試行する。直らないものだけを、途中の結果と試したことを添えてコーディネーターに返す（詳しくは 5.3 の multiagent-error-propagation のノート）
 
-## 試験で問われそうなポイント
-- 失敗をエージェントに知らせたい → 例外で落とさず、`isError: true` の結果として返す
-- 再試行が無駄に繰り返される → `isRetryable` と分類を返し、再試行してよいものを見分けさせる
-- 業務ルール違反を利用者に伝えさせたい → `retriable: false` と、利用者に見せられる説明を付ける
-- 検索が0件だった → 失敗ではない。`isError` を立てず「0件」として返す（アクセスの失敗とは分ける）
-- サブエージェントで一時的な失敗が起きた → まずその場で再試行し、直らないものだけを、途中の結果と試したことを添えてコーディネーターに返す（詳しくは 5.3 の multiagent-error-propagation のノート）
+## 試験での見分け方
 
-## 間違えやすいところ
-- 一律の「Operation failed」を返す → アンチパターン。一時的か恒久的か分からず、無駄な再試行か早すぎる断念を招く
-- すべてのエラーを再試行する → 検証・業務・権限のエラーは、同じ入力で何度呼んでも失敗する
-- 0件の結果を `isError: true` で返す → 「アクセスできなかった」と区別できなくなる
-- 失敗を空の成功結果に見せかける → エージェントが「データが無い」と誤って結論づける
-- 入力の検証エラーを JSON-RPC のプロトコルエラーで返す → 2025-11-25 版以降（現行の 2026-07-28 版も）の仕様では、ツール実行エラー（`isError`）側に入る。2025-06-18 版はプロトコルエラーに「Invalid arguments」、ツール実行エラーに「Invalid input data」と両方に書いていた。「LLM に渡す SHOULD / MAY」の文も 2025-11-25 版で入った
-- 例外を投げっぱなしにする → Agent SDK では生の例外メッセージが Claude に渡るだけ。自分で捕まえて、次に何をすべきかを書いた `isError` の結果を作る
-- 名前の揺れ → ガイドは `isRetryable` と `retriable: false` の両方の綴りを使う。どちらも仕様で決まった名前ではない
-- 再試行の回数 → Claude は `is_error` を見て同じツールを呼び直すことがある。ループ側で上限を決めておく
+<div class="vs" markdown>
+
+| 問われること | ○ 正しい | × ひっかけ |
+|---|---|---|
+| 失敗をエージェントに知らせる | 例外で落とさず、`isError: true` の結果として返す | 失敗を空の成功結果に見せかける（「データが無い」と誤って結論づける） |
+| 再試行が無駄に繰り返される | 分類と `isRetryable` を返し、再試行してよいものを見分けさせる | 一律の「Operation failed」を返す、すべてのエラーを再試行する |
+| 業務ルール違反を利用者に伝える | `retriable: false` と、利用者に見せられる説明を付ける | 再試行させる |
+| 検索が0件だった | 失敗ではないので、`isError` を立てず「0件」として返す | `isError: true` で返す（アクセスできなかった場合と区別できない） |
+
+</div>
 
 ## 確認問題
-1. 在庫照会の MCP ツールが、倉庫 API のタイムアウトでも、SKU の形式違いでも、同じ「Error」だけを返している。エージェントはどちらでも3回再試行してから諦める。どう直すか
-   <details><summary>答え</summary>`isError: true` に加えて、タイムアウトは errorCategory: transient・isRetryable: true、形式違いは validation・isRetryable: false と、何が悪いかの説明を返す。前者だけ再試行し、後者は SKU を直して呼び直せる。</details>
-2. 経費精算のツールで、承認者の上限額を超える申請が来た。エージェントが利用者に正しく伝えられるようにするには、どう返すか
-   <details><summary>答え</summary>業務エラーとして `isError: true`、retriable: false（errorCategory は付けない）、利用者に見せられる説明（上限額と、どうすればよいか）を返す。再試行しても結果は変わらないので、再試行させない。</details>
-3. 顧客検索のツールが、条件に合う顧客がいないときに `isError: true` と「見つかりません」を返している。何が問題か
-   <details><summary>答え</summary>0件は正常に検索できた結果なので、エラーにしない。エラーにすると、検索先に届かなかった場合と区別できず、無駄な再試行や誤った報告につながる。</details>
+
+??? question "Q1. 在庫照会の MCP ツールが、倉庫 API のタイムアウトでも SKU の形式違いでも、同じ「Error」だけを返す。エージェントはどちらでも3回再試行してから諦める。どう直す？"
+    `isError: true` に加えて、タイムアウトは errorCategory: transient・isRetryable: true、形式違いは validation・isRetryable: false と、何が悪いかの説明を返す。前者だけ再試行し、後者は SKU を直して呼び直せる。
+
+??? question "Q2. 経費精算のツールに、承認者の上限額を超える申請が来た。エージェントが利用者に正しく伝えられるようにするには、どう返す？"
+    業務エラーとして `isError: true`、retriable: false（errorCategory は付けない）、利用者に見せられる説明（上限額と、どうすればよいか）を返す。再試行しても結果は変わらないので、再試行させない。
+
+??? question "Q3. 顧客検索のツールが、条件に合う顧客がいないときに `isError: true` と「見つかりません」を返す。何が問題か？"
+    0件は正常に検索できた結果なので、エラーにしない。エラーにすると、検索先に届かなかった場合と区別できず、無駄な再試行や誤った報告につながる。
 
 ## 出典
 - Claude Certified Architect – Foundations Exam Guide v1.1, Task Statement 2.2（公式、PDF）: https://cc.sj-cdn.net/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1794946250/Claude_Certified_Architect_-_Foundations_Exam_Guide.pdf
