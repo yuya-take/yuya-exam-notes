@@ -57,7 +57,9 @@ disable-model-invocation: true
 **対象:**
 - `.claude/skills/*/SKILL.md` と、スキルに同梱しているファイル（`exam-add/template.md` など）
 - `CLAUDE.md`
-- `.claude/settings.json`
+- `.claude/agents/*.md`（frontmatter の `tools`・`model` などが今の仕様で有効か、指示が今のモデルに合っているか）
+- `.claude/settings.json`（フックの書式を含む）
+- `.claude/hooks/`・`.claude/scripts/`・`.github/workflows/`（フックの入出力の仕様が変わっていないか）
 - `README.md` のスキル一覧
 
 **基準:** `prompt-audit.md` のパターン（圧力表現、API の機能で置き換わった足場、手順の過剰指定、旧モデル向けの名残、設定ファイルの陳腐化）と、ステップ 2 のモデルプロファイル。

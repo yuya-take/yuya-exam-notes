@@ -12,6 +12,16 @@
 | `<exam>/notes/<NN>-<domain-slug>/<topic-slug>.md` | `/study` が書くトピック別のノート。`NN` はドメインの番号（01, 02, …） |
 | `<exam>/quiz-log.md` | `/quiz` で解いた全問題の記録（1問1行） |
 | `<exam>/mistakes.md` | 間違えた問題の詳細と、復習スケジュール |
+| `<exam>/compare/<a>-vs-<b>.md` | `/compare` が書く比較ノート |
+| `<exam>/labs/<NN>-<slug>/` | `/hands-on` の演習の課題・結果・成果物の写し |
+| `<exam>/mock-exams/` | `/mock-exam` の問題と結果 |
+| `<exam>/cheatsheet.md` | `/cheatsheet` が書く直前まとめ |
+| `<exam>/flashcards.csv` | `/flashcards` が書く Anki 用の暗記カード |
+| `<exam>/study-log.md` | `/daily` が書く日々の学習の記録 |
+| `<exam>/retro.md` | `/exam-retro` が書く受験の振り返り |
+| `glossary.md` | `/glossary` が書く、資格をまたいだ用語集 |
+
+`quiz-log.md` などは、使うスキルが初めて実行されたときに作る。
 
 ## チェックリストの書き方
 
@@ -32,17 +42,44 @@
 
 ## スキル
 
-| スキル | 用途 |
-|---|---|
-| `/exam-add` | 新しい資格を追加する（公式ガイドから README を作る） |
-| `/exam-update` | 資格の公式情報の変更を調べて、README・チェックリスト・ノートに反映する |
-| `/study` | トピックを調べてノートを書く |
-| `/quiz` | 練習問題と、間違えた問題の復習 |
-| `/progress` | 進み具合の集計と、次にやること |
-| `/orchestrate` | このセッションを管理者にし、作業を作業セッションに割り振る |
-| `/secret-check` | コミット・PR の前に、機微情報が含まれていないかを調べる |
-| `/pr` | `/secret-check` を通してから push し、PR を作る |
-| `/model-tune` | 新しいモデルや Claude Code の仕様変更に合わせて、スキルを点検・調整する |
+| 分類 | スキル | 用途 |
+|---|---|---|
+| 資格の管理 | `/exam-add` | 新しい資格を追加する（公式ガイドから README を作る） |
+| | `/exam-update` | 資格の公式情報の変更を調べて、README・チェックリスト・ノートに反映する |
+| | `/exam-retro` | 受験後の振り返り。合格なら更新期限、不合格なら学習プランの組み直し |
+| 学ぶ | `/study` | トピックを調べてノートを書く |
+| | `/compare` | 混同しやすい概念の比較ノートを作る |
+| | `/hands-on` | 手を動かす演習を作り、結果を確かめる |
+| | `/glossary` | 資格をまたいだ用語集を作る・引く |
+| 確かめる | `/quiz` | 練習問題と、間違えた問題の復習 |
+| | `/explain-back` | 自分の言葉で説明して、採点してもらう |
+| | `/mock-exam` | 本番形式の模擬試験 |
+| 続ける・仕上げる | `/daily` | 今日の学習メニューを組んで進める |
+| | `/progress` | 進み具合の集計と、次にやること |
+| | `/cheatsheet` | 直前に読み返すまとめを作る |
+| | `/flashcards` | Anki 用の暗記カードを作る |
+| 運用 | `/orchestrate` | このセッションを管理者にし、作業を作業セッションに割り振る |
+| | `/secret-check` | コミット・PR の前に、機微情報が含まれていないかを調べる |
+| | `/pr` | `/secret-check` を通してから push し、PR を作る |
+| | `/model-tune` | 新しいモデルや Claude Code の仕様変更に合わせて、スキルを点検・調整する |
+
+## エージェント（`.claude/agents/`）
+
+どれもファイルを書き換えず、結果を返すだけ。書いた本人とは別の目で確かめるために使う。
+
+| エージェント | 用途 | 使うスキル |
+|---|---|---|
+| `fact-checker` | ノートの主張を公式ドキュメントと突き合わせる | `/orchestrate`、`/compare`、`/exam-update` |
+| `question-reviewer` | 作った問題の品質を、出題前に点検する | `/mock-exam` |
+| `exam-researcher` | 資格の公式情報を出典付きで調べる | `/exam-add`、`/exam-update`、`/exam-retro` |
+| `secret-reviewer` | 差分から、パターンでは拾えない機微情報を探す | `/secret-check` |
+
+## 自動のチェック
+
+| 仕組み | いつ動くか | 中身 |
+|---|---|---|
+| PreToolUse フック（`.claude/hooks/secret_scan.py`） | Claude が `git commit` / `git push` を実行するとき | 機微情報のパターン検出。見つかれば止める |
+| GitHub Actions（`.github/workflows/checks.yml`） | PR と、`main` への push | 機微情報のパターン検出と、ノートのチェック（`.claude/scripts/note_lint.py`）。Claude 以外のコミットも対象 |
 
 ## オーケストレータから任されたとき
 

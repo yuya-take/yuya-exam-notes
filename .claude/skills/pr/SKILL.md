@@ -20,6 +20,8 @@ argument-hint: "[PR のタイトル（省略時は変更から作る）]"
 - **要対応:** `/secret-check` の「見つかったとき」に従う。解消するまで、push も PR の作成もしない
 - **問題なし:** 次へ進む
 
+続けて `python3 .claude/scripts/note_lint.py` を実行する。エラーがあれば直す（GitHub Actions でも同じチェックが動く）。
+
 `git push` のときは、PreToolUse フックでも同じ機械的な検出が動く。フックに止められたら、その出力に従って直す。フックを外したり、すり抜けたりしない。
 
 ## Step 3: 確認を取る
