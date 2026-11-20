@@ -61,7 +61,9 @@ argument-hint: "<目標（例: ccaf のドメイン1をノート化）> [--max <
 
 ## 状態ファイル
 
-進み具合は、会話の記憶ではなく `.orchestrate/state.md` を正とする。クラウドのコンテナは消えることがあるので、状態が変わるたびにコミットして push する。
+進み具合は、会話の記憶ではなく `.orchestrate/state.md` を正とする。クラウドのコンテナは消えることがあるので、状態が変わるたびに統合ブランチにコミットして push する。
+
+`.orchestrate/` は `.gitignore` に入っているので、`git add -f .orchestrate` で加える。状態ファイルにはセッション ID や環境 ID が入る。公開リポジトリの `main` に残さないよう、終了時に消し、PR は squash でマージする（ステップ 5）。
 
 ```markdown
 # orchestrate
@@ -222,4 +224,6 @@ argument-hint: "<目標（例: ccaf のドメイン1をノート化）> [--max <
 - 保留にしたタスクと、その理由
 - 次にやること（例: `/quiz 1` で理解を確かめる、`/progress`）
 
-最後に、状態ファイルを `.orchestrate/state-<YYYYMMDD-HHMM>.md` に名前を変えて、コミットして push する。`main` へのマージや PR の作成は、ユーザーに頼まれたときだけ行う。
+最後に、`.orchestrate/` をリポジトリから消して（`git rm -r --cached .orchestrate`）コミットし、push する。手元の写しは、スクラッチパッドなどリポジトリの外に残してよい。
+
+`main` へのマージや PR の作成は、ユーザーに頼まれたときだけ行う。マージするときは squash にする。途中のコミットに残った状態ファイルや、差し戻し前の版を `main` の履歴に入れないため。
