@@ -7,6 +7,7 @@
 | 項目 | 内容 |
 |---|---|
 | 名称 | Claude Certified Architect – Foundations |
+| **受験予定日** | 未定（決まったら YYYY-MM-DD で書く） |
 | 試験コード | CCAR-F（旧称 CCA-F） |
 | 問題数 | 60問 |
 | 試験時間 | 120分 |
@@ -81,18 +82,17 @@
 | 1週目 | 公式 Exam Guide を読む → Anthropic Academy のコースを受講 → ドメイン1（エージェント設計）を学ぶ |
 | 2週目 | ドメイン2（Claude Code の設定）を実際に手を動かして学ぶ（CLAUDE.md、hooks、サブエージェント、MCP を自分で設定してみる） |
 | 3週目 | ドメイン3〜5。Claude API でツール呼び出しとプロンプトキャッシュを実際に動かしてみる |
-| 4週目 | 模擬試験 → 間違えた問題をドメインごとに分けてこのノートに記録 → 苦手なところを復習 |
+| 4週目 | `/quiz` で模擬試験 → `/quiz review` で間違えた問題を復習 → `/progress` で苦手なところを確認 |
 
 ## 教材
 - Anthropic 公式: Exam Guide、Anthropic Academy（コース）、docs.claude.com、Claude Code のドキュメント
 - Anthropic の記事 "Building effective agents"（ドメイン1の土台になる内容）
 - 第三者の学習ガイド（下記の参考リンク）
 
-## 間違えた問題メモ
-
-| 日付 | ドメイン | 問題の要点 | 正解と理由 |
-|---|---|---|---|
-|  |  |  |  |
+## 学習の記録
+- 練習問題の記録: [quiz-log.md](quiz-log.md)（`/quiz` が書く）
+- 間違えた問題と復習: [mistakes.md](mistakes.md)（`/quiz` が書く）
+- 進み具合: `/progress` で確認
 
 ## 参考リンク（第三者）
 - https://tutorialsdojo.com/ccar-f-claude-certified-architect-foundations-study-guide/

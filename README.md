@@ -1,3 +1,16 @@
 # yuya-exam-notes
 
-- [Claude Certified Architect – Foundations](ccaf/README.md)
+資格試験の学習ノート。
+
+| 資格 | ノート |
+|---|---|
+| Claude Certified Architect – Foundations | [ccaf/](ccaf/README.md) |
+
+## スキル
+
+| コマンド | すること |
+|---|---|
+| `/study <トピック or ドメイン番号>` | 公式ドキュメントで調べてノートにまとめ、チェックリストに紐付ける |
+| `/quiz [ドメイン番号 or トピック] [問題数]` | 本番形式の4択問題を1問ずつ出して採点・記録する |
+| `/quiz review` | 間違えた問題を、復習日が来たものから出し直す（1→3→7→14日） |
+| `/progress` | 進み具合・推定得点率・復習待ちを集計して、次にやることを示す |
