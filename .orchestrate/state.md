@@ -33,7 +33,7 @@
 | 24 | study | ccaf 3. プランモードと直接実行の使い分け、Explore サブエージェント | session_017JP5BoE31BiMXJBsCaSGDJ | work/ccaf/plan-mode-vs-direct | 差し戻し中 | 範囲・形 OK。事実: 誤りなし。例題 Q5 の選択肢をなぞった記述 | ccaf/notes/03-claude-code/plan-mode-vs-direct.md |
 | 25 | study | ccaf 3. Claude Code での反復的な改善 | session_017JP5BpQbHDRnjSWCnY8aHj | work/ccaf/iterative-refinement | 差し戻し中 | 範囲・形 OK。事実: 誤りなし。推論の明示と手薄な項目 | ccaf/notes/03-claude-code/iterative-refinement.md |
 | 26 | study | ccaf 3. CI での Claude Code の非対話実行と構造化出力 | session_017JP5BpvU85qkVAKamTXvTe | work/ccaf/ci-non-interactive | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/03-claude-code/ci-non-interactive.md |
-| 27 | study | ccaf 3. CI での自動レビューとテスト生成の質を上げる工夫 | session_017JP5BqWE91Wtg51mNYYYKm | work/ccaf/ci-review-test-quality | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/03-claude-code/ci-review-test-quality.md |
+| 27 | study | ccaf 3. CI での自動レビューとテスト生成の質を上げる工夫 | session_017JP5BqWE91Wtg51mNYYYKm | work/ccaf/ci-review-test-quality | 差し戻し中 | 範囲・形 OK。事実: 言い過ぎ1件 | ccaf/notes/03-claude-code/ci-review-test-quality.md |
 | 28 | study | ccaf 4. 明確な基準で誤検知を減らすプロンプト | session_017JP5BmppTkoYdcQ1T9LAaf | work/ccaf/explicit-criteria-false-positives | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/04-prompt-engineering/explicit-criteria-false-positives.md |
 | 29 | study | ccaf 4. few-shot プロンプティング | session_017JP5BnfzgQs95p4w549BJk | work/ccaf/few-shot-prompting | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/04-prompt-engineering/few-shot-prompting.md |
 | 30 | study | ccaf 4. tool_use と JSON スキーマによる構造化出力 | session_017JP5BpJ2dYTqowegSVWMRe | work/ccaf/tool-use-json-schema | 作業中 | — | ccaf/notes/04-prompt-engineering/tool-use-json-schema.md |
