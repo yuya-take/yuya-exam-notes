@@ -17,7 +17,7 @@ flowchart TD
   C -- 直った --> D[通常の結果を返す]
   C -- 直らない --> E[構造化エラーを返す]
   B -- いいえ --> E
-  E --> F[コーディネーターが判断: 再試行・別の情報源・抜けを注記して続行]
+  E --> F[コーディネーターが次の手を選ぶ（例: 情報源を替えて再委任／抜けを残したまま統合）]
   F --> G[統合結果に網羅の注記（coverage annotation）]
 ```
 
@@ -39,7 +39,7 @@ flowchart TD
 
 - MCP ツール側のエラーの返し方（`isError`、分類、retriable）は [MCP ツールの構造化エラー応答](../02-tool-design-mcp/mcp-structured-errors.md) が主
 - Claude API の自前ツールでは `tool_result` に `is_error: true` を立て、「failed」ではなく何が起きて次に何を試すかを書く（Handle tool calls）
-- Agent SDK のサブエージェントは、途中のツール呼び出しを親に見せず、最後のメッセージだけを返す。失敗の文脈は最終報告に書かないと親に届かない
+- Agent SDK のサブエージェントは、途中のツール呼び出しを親に見せず、最後のメッセージだけを返す。中のツール呼び出しの失敗の文脈は、最終報告に書かないと親に届かない
 
 ## 試験で問われそうなポイント
 - コーディネーターが回復の判断を誤る → サブエージェントに、種類・試したこと・途中の結果・代わりの手を返させる
@@ -70,5 +70,5 @@ flowchart TD
 - [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system)（公式、エンジニアリングブログ。エラーは積み重なる、失敗した場所から再開する、ツールの失敗をエージェントに知らせて適応させる、再試行とチェックポイントを組み合わせる）
 - [Handle tool calls（Handling errors with is_error）](https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls)（公式。汎用の「failed」でなく、何が起きて次に何を試すかを書く）
 - [Subagents in the SDK](https://code.claude.com/docs/en/agent-sdk/subagents)（公式。最後のメッセージだけが親に返る）
-- [Create custom subagents（API errors in subagents）](https://code.claude.com/docs/en/sub-agents)（公式。API エラーで途中終了したとき、途中の出力と打ち切りの注記が親に返る）
-- 「アクセス失敗と0件の区別」「網羅の注記」を直接扱う公式ドキュメントのページ: 未確認（ガイドのみで確認）
+- [Create custom subagents（API errors in subagents）](https://code.claude.com/docs/en/sub-agents)（公式。API エラーで途中終了したとき: フォアグラウンドでテキストを出していれば途中の出力と打ち切りの注記、出力なし／ツール呼び出しだけなら `Agent terminated early due to an API error` とエラーの詳細で失敗、バックグラウンドなら failed になり終了時のメッセージにエラー名と最後の出力。SDK のページでは、API エラーで早く終わったときそれが結果として渡されることはない）
+- 「アクセス失敗と0件の区別」「網羅の注記」を直接扱う公式ドキュメントのページ: 未確認（ガイドの Task Statement 5.3 と 2.2 の Skills でのみ確認）
