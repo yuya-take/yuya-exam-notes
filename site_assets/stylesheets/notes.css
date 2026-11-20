@@ -123,3 +123,57 @@
   --md-mermaid-label-fg-color: #1c1c1c;
   --md-mermaid-label-bg-color: var(--md-default-bg-color); /* 矢印のラベルは地の色のまま */
 }
+
+/* 確認問題の選択肢（<div class="quiz" data-answer="B" markdown> の中の箇条書き） */
+.md-typeset .quiz ul {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0;
+}
+.md-typeset .quiz li {
+  margin: 0.4rem 0;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.4rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.md-typeset .quiz li:hover,
+.md-typeset .quiz li:focus {
+  border-color: var(--md-primary-fg-color);
+  outline: none;
+}
+.md-typeset .quiz li.picked {
+  border-color: var(--md-primary-fg-color);
+  background: var(--md-primary-fg-color--transparent, rgba(63, 81, 181, 0.1));
+}
+.md-typeset .quiz li.correct {
+  border-color: var(--ok-line);
+  background: var(--ok-bg);
+  color: var(--ok-fg);
+}
+.md-typeset .quiz li.wrong {
+  border-color: var(--ng-line);
+  background: var(--ng-bg);
+  color: var(--ng-fg);
+}
+.md-typeset .quiz li.missed {
+  border: 2px dashed var(--ok-line);
+}
+.md-typeset .quiz-status {
+  font-size: 0.75rem;
+  color: var(--md-default-fg-color--light);
+}
+.md-typeset .quiz-status.ok { color: var(--ok-line); font-weight: 700; }
+.md-typeset .quiz-status.ng { color: var(--ng-line); font-weight: 700; }
+.md-typeset .quiz-again {
+  margin-left: 0.8rem;
+  padding: 0.1rem 0.6rem;
+  border: 1px solid currentColor;
+  border-radius: 0.3rem;
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+.md-typeset .quiz-q {
+  margin-top: 1.6rem;
+}

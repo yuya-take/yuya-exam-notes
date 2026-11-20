@@ -59,14 +59,63 @@ flowchart TD
 
 ## 確認問題
 
-??? question "Q1. 応答に「以上です」が含まれたらループを抜ける実装で、ときどき検索の途中で終わってしまう。どう直す？"
-    終了の判定を `stop_reason` に変える。`end_turn` で終え、`tool_use` ならツールを実行して `tool_result` を返し、続ける。文面の合図は揺れるので、終了条件には使わない。
+**Q1.** 開発者向けに、社内のリポジトリとドキュメントを検索して質問に答えるエージェントを Claude API で作っている。ループは「応答のテキストに『以上です』が含まれたら終える」という実装で、ときどき検索の途中で終わってしまう。最も適切な直し方はどれか。（1つ選べ）
+{ .quiz-q }
 
-??? question "Q2. 暴走が心配なので「10回で必ず打ち切る」を唯一の停止条件にしたい。妥当か？"
-    妥当ではない。上限だけだと、作業の途中で切れる。正常な終了は `end_turn` で判定し、回数や予算の上限は安全装置として添える。
+<div class="quiz" data-answer="C" markdown>
 
-??? question "Q3. Claude が1つの応答で `tool_use` を3つ返した。結果をどう返す？"
-    assistant の応答をそのまま履歴に足す。次の user メッセージの先頭に、`tool_result` を3つ（それぞれの `tool_use_id` に対応させて）まとめて置く。失敗したものも `is_error: true` で返す。
+- A. システムプロンプトに「調べ終わるまで『以上です』と書かないこと」と書き足す
+- B. 応答にテキストが含まれていなければ続け、含まれていれば終える判定に変える
+- C. `stop_reason` が `tool_use` ならツールを実行して続け、`end_turn` なら終える判定に変える
+- D. ループを固定で10回まわし、10回目の応答を最終回答として使う
+
+</div>
+
+??? success "答えと解説"
+    **正解: C。** 続けるか止めるかは `stop_reason` で決める。
+
+    - A: 文面の合図に頼る点が変わらない。言い回しは揺れるので、終了条件には使えない
+    - B: `tool_use` の応答にもテキストは付く。テキストの有無では判定できない
+    - D: 回数は安全装置にすぎない。作業の途中で切れるか、終わっても無駄に回る
+
+**Q2.** 同じエージェントで、ツール呼び出しが止まらなくなる事態に備えたい。ループの設計として適切なものはどれか。（2つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="A,D" markdown>
+
+- A. 正常な終了は、`stop_reason` が `end_turn` かどうかで判定する
+- B. 「最大10回」を唯一の停止条件にし、`stop_reason` は見ない
+- C. 回数や予算の上限は設けず、`end_turn` が返るまで待ち続ける
+- D. 回数や予算の上限（Agent SDK なら `max_turns`、`max_budget_usd`）を、安全装置として添える
+- E. 応答に「完了」の語が含まれたら終了とし、上限は設けない
+
+</div>
+
+??? success "答えと解説"
+    **正解: A と D。** 終わりの判定は `end_turn`、暴走への備えは上限、と役割を分ける。
+
+    - B: 上限だけだと、作業の途中で切れる
+    - C: 上限が無いと、暴走したときに止まらない。Agent SDK の `max_turns` と `max_budget_usd` は既定で無制限なので、自分で設定する
+    - E: 文面の合図は揺れるうえ、暴走への備えも無い
+
+**Q3.** Claude が1つの応答で `tool_use` ブロックを3つ返した。そのうち1つのツールは、タイムアウトで失敗した。次のリクエストの組み立てとして最も適切なものはどれか。（1つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="B" markdown>
+
+- A. 成功した2つの `tool_result` だけを user メッセージで返し、失敗したものは省く
+- B. assistant の応答をそのまま履歴に足し、次の user メッセージの先頭に、3つの `tool_result` をまとめて置く。失敗したものには `is_error: true` を付ける
+- C. `tool_result` を1つずつ別の user メッセージにして、3回に分けて返す
+- D. 3つの結果を要約してシステムプロンプトに書き足し、user メッセージで続きを頼む
+
+</div>
+
+??? success "答えと解説"
+    **正解: B。** `tool_use` 1つにつき `tool_result` 1つを、`tool_use_id` で対応させて、1つの user メッセージにまとめて返す。
+
+    - A: 失敗も `is_error: true` を付けて返す。省くと、Claude はその呼び出しの結果を知らないまま進む
+    - C: 並列の呼び出しの結果は、1つの user メッセージにまとめる
+    - D: 結果は `tool_result` として会話履歴で返す。system に書いても、呼び出しへの応答にならない
 
 ## 出典
 - Claude Certified Architect – Foundations Exam Guide v1.1, Task Statement 1.1（公式、PDF）: https://cc.sj-cdn.net/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1794946250/Claude_Certified_Architect_-_Foundations_Exam_Guide.pdf

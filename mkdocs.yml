@@ -34,6 +34,8 @@ theme:
 
 extra_css:
   - stylesheets/notes.css # site_assets/ から build_site.py が写す
+extra_javascript:
+  - javascripts/quiz.js # 確認問題を選んで答え合わせする
 
 plugins:
   - search:
