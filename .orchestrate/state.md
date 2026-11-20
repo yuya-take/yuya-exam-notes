@@ -40,7 +40,7 @@
 | 31 | study | ccaf 4. 抽出用スキーマの設計 | session_017JP5BqUNGBXx1M3njri7TU | work/ccaf/extraction-schema-design | 統合済み | OK | ccaf/notes/04-prompt-engineering/extraction-schema-design.md |
 | 32 | study | ccaf 4. 検証・再試行・フィードバックのループ | session_017JP5Bqa3LM44QDd3ovpLvL | work/ccaf/validation-retry-loop | 差し戻し中 | 範囲・形 OK。事実: 約25件中7件（「だけ」の誤り、SDK の説明など） | ccaf/notes/04-prompt-engineering/validation-retry-loop.md |
 | 33 | study | ccaf 4. Message Batches API を使うバッチ処理の設計 | session_017JP5Br7Lzte4GUHaxWBQ1k | work/ccaf/message-batches-api | 統合済み | OK | ccaf/notes/04-prompt-engineering/message-batches-api.md |
-| 34 | study | ccaf 4. 独立したインスタンスによるレビューと、複数パスのレビュー | session_017JP5BoUkn8eoBbfw68dR7Q | work/ccaf/independent-multipass-review | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/04-prompt-engineering/independent-multipass-review.md |
+| 34 | study | ccaf 4. 独立したインスタンスによるレビューと、複数パスのレビュー | session_017JP5BoUkn8eoBbfw68dR7Q | work/ccaf/independent-multipass-review | 差し戻し中 | 範囲・形 OK。事実: 2件、条件の抜け、例題 Q12 と近い表現 | ccaf/notes/04-prompt-engineering/independent-multipass-review.md |
 | 35 | study | ccaf 5. 長い対話で重要な事実を保つ | session_017JP5Bnu9CuZiJaT1bhq54Q | work/ccaf/preserving-key-facts | 差し戻し中 | 範囲・形 OK。事実: 19件中2件（因果の書き足し、ガイドに無い項目） | ccaf/notes/05-context-reliability/preserving-key-facts.md |
 | 36 | study | ccaf 5. 位置の影響 | session_017JP5BnBip5FhpjyK2R4RCz | work/ccaf/lost-in-the-middle-structured-passing | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/05-context-reliability/lost-in-the-middle-structured-passing.md |
 | 37 | study | ccaf 5. エスカレーションの基準と、曖昧な依頼の確かめ方 | session_017JP5Boy9aQeN8B779G4JBY | work/ccaf/escalation-ambiguity | 作業中 | — | ccaf/notes/05-context-reliability/escalation-ambiguity.md |
@@ -72,4 +72,4 @@
 - MCP 仕様の版: 現行は 2026-07-28。ガイドの書き方を主にし、版の違いは試験の判断に関わるときだけ「間違えやすいところ」に書く（判断: オーケストレータ）
 - 例の数: ガイドは 3.5 の入出力例が2〜3個、4.2 の few-shot が2〜4個（訂正。判断: オーケストレータ。#29 の指摘で、共通の注意の「few-shot は2〜3個」を直した）
 - tool_choice の any / tool を 400 で拒否するのは define-tools の表にある6モデル（Fable 5.2、Mythos 5.2、Opus 5.5、Sonnet 5.5、Fable 5.1、Mythos 5.1）だけで、Opus 5 と Haiku 5.5 は受け付ける（訂正。判断: オーケストレータ。共通の注意の「新しいモデル」という言い方が不正確だった）
-- strict で使えない制約（minimum など）は送ると 400。公式は「多くの SDK ヘルパーは description に移す。応答を検証するのは検証するヘルパーだけ（output_config.format 用）」（訂正。判断: オーケストレータ。共通の注意の「SDK が移して検証する」が不正確だった。統合済みの tool-use-json-schema も直す）
+- strict で使えない制約（minimum など）は送ると 400。公式は「多くの SDK ヘルパーは description に移す。応答を検証するのは検証するヘルパーだけ（output_config.format 用）」（訂正。判断: オーケストレータ。共通の注意の「SDK が移して検証する」が不正確だった。統合済みの tool-use-json-schema は #30 の差し戻しで既に正確な書き方になっていたので、作り直しは不要）
