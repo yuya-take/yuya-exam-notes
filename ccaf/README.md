@@ -89,7 +89,7 @@
 - [ ] MCP ツールの構造化エラー応答（isError、エラーの分類、再試行の可否、2.2）
 - [ ] エージェントへのツールの割り振り（ツールの数と役割ごとの制限、2.3） → [ノート](notes/02-tool-design-mcp/tool-distribution.md)
 - [ ] tool_choice の設定（auto / any / 特定ツールの強制、2.3・4.3） → [ノート](notes/02-tool-design-mcp/tool-choice.md)
-- [ ] Claude Code と Agent SDK への MCP サーバーの組み込み（.mcp.json と ~/.claude.json、環境変数の展開、2.4）
+- [ ] Claude Code と Agent SDK への MCP サーバーの組み込み（.mcp.json と ~/.claude.json、環境変数の展開、2.4） → [ノート](notes/02-tool-design-mcp/mcp-server-integration.md)
 - [ ] MCP のツールとリソースの使い分けと、既存の MCP サーバーの活用（MCP resources、2.4）
 - [ ] 組み込みツール（Read / Write / Edit / Bash / Grep / Glob）の選び方と、コードを段階的に読む進め方（2.5）
 
