@@ -47,7 +47,8 @@ markdown_extensions:
   - toc:
       permalink: true
   - pymdownx.details
-  - pymdownx.mark
+  - pymdownx.mark:
+      smart_mark: false # 日本語の直後に == が来ても、マーカーとして読む
   - pymdownx.highlight:
       anchor_linenums: false
   - pymdownx.inlinehilite
