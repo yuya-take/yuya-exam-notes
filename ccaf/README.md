@@ -8,6 +8,7 @@
 |---|---|
 | 名称 | Claude Certified Architect – Foundations |
 | **受験予定日** | 未定（決まったら YYYY-MM-DD で書く） |
+| 最終確認日 | 2026-11-20（`/exam-update` が更新する） |
 | 試験コード | CCAR-F（旧称 CCA-F） |
 | 問題数 | 60問 |
 | 試験時間 | 120分 |
@@ -93,6 +94,9 @@
 - 練習問題の記録: [quiz-log.md](quiz-log.md)（`/quiz` が書く）
 - 間違えた問題と復習: [mistakes.md](mistakes.md)（`/quiz` が書く）
 - 進み具合: `/progress` で確認
+
+## 変更履歴
+- 2026-11-20: 作成（第三者の解説記事をもとに作成。公式の Exam Guide との突き合わせは未実施）
 
 ## 参考リンク（第三者）
 - https://tutorialsdojo.com/ccar-f-claude-certified-architect-foundations-study-guide/
