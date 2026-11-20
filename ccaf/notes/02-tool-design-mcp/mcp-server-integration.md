@@ -5,7 +5,7 @@
 ## 3行まとめ
 - チームで共有するサーバーは **プロジェクトスコープの `.mcp.json`**（リポジトリにコミット）、個人・試験的なサーバーはユーザースコープの `~/.claude.json` に書く
 - 認証トークンは `.mcp.json` に直接書かず、`${GITHUB_TOKEN}` のような環境変数の展開（environment variable expansion）で各自の環境から渡す
-- 設定したすべてのサーバーのツールは接続時に見つかり、同時に使える。名前は `mcp__<サーバー名>__<ツール名>`
+- 設定したすべてのサーバーのツールは接続時に見つかり、同時に使える（ガイドの前提。現行の Claude Code は tool search で定義を遅延読み込み）。名前は `mcp__<サーバー名>__<ツール名>`
 
 ## 仕組み
 
@@ -47,7 +47,10 @@ flowchart LR
 - チーム全員に同じサーバーを配りたい → project スコープの `.mcp.json` をコミット
 - 自分だけで新しいサーバーを試したい → `~/.claude.json`（user か local）。共有ファイルを汚さない
 - トークンが要るサーバーを共有したい → `.mcp.json` には `${VAR}` だけ書き、値は各自の環境変数に置く
-- 複数のサーバーをつないだ → 全サーバーのツールが同時に候補になる。組み込みの Grep などより MCP ツールを選ばせたいなら、ツールの説明文で能力と出力を詳しく書く（→ 別ノート: ツールの説明文と境界の設計）
+- 複数のサーバーをつないだ → 全サーバーのツールが組み込みツールと並んで同時に候補になる
+- 高機能な MCP ツールがあるのに、エージェントが組み込みの Grep で探し回る → MCP ツールの説明文を直す
+  - 理由: Claude は説明文を読んで選ぶ。「検索する」程度の短い説明だと、なじみのある Grep と区別できない
+  - 直し方: 何ができるか（Grep にできない範囲）、何を返すか（出力の形）、いつ使うかを説明文に詳しく書く
 - 課題管理など定番の連携 → 既存のコミュニティのサーバーを使い、独自サーバーはチーム固有の処理に限る（→ 別ノート: MCP のツールとリソースの使い分け）
 - 中身の一覧（スキーマ、文書の目次など）を見せて探索の呼び出しを減らす → MCP resources（→ 別ノート: MCP のツールとリソースの使い分け）
 
@@ -58,7 +61,7 @@ flowchart LR
 - `.mcp.json` のサーバーは、対話セッションでは使う前に承認を求められる。`claude -p` や Agent SDK では確認なしで読み込む
 - `${VAR}` を空文字に設定すると「設定済み」扱いで、`:-default` は効かない
 - リモートサーバーの `url`・`headers` では、`ANTHROPIC_API_KEY` など Claude Code 自身の認証情報の変数は空として扱われる（漏えい防止）
-- ガイドは「接続時に全ツールが見つかる」と書くが、現行の Claude Code は既定でツール検索（tool search）が有効で、起動時に読むのはツール名だけ。定義は必要になったときに読む
+- ガイドは「接続時に全ツールが見つかる」と書くが、現行の Claude Code は既定でツール検索（tool search）が有効で、起動時に読むのはツール名とサーバーの instructions だけ。定義は必要になったときに読む。古いモデル、Azure 上の Microsoft Foundry、`ENABLE_TOOL_SEARCH=false` では最初から全部読む
 
 ## 確認問題
 1. 社内の在庫 DB を引く MCP サーバーを、開発チーム全員の Claude Code で使えるようにしたい。接続には各自の個人トークンが要る。どう設定するか。
@@ -73,4 +76,5 @@ flowchart LR
 - [Connect to external tools with MCP（Agent SDK）](https://code.claude.com/docs/en/agent-sdk/mcp)（公式。`mcpServers`、`settingSources`、ツール名、`allowedTools`）
 - [MCP Specification: Tools](https://modelcontextprotocol.io/specification/latest/server/tools)（公式。`tools/list`、`listChanged`）
 - Claude Certified Architect – Foundations Exam Guide v1.1、Task Statement 2.4（公式）
-- 未確認: Agent SDK の `mcpServers` に `.mcp.json` と同じ `${VAR}` 展開が効くかは、SDK のページに記述が無い（コード側は `process.env` で渡す例のみ。MCP 仕様の範囲外のため、仕様でも確かめられない）
+- 確認済み: Agent SDK が読む `.mcp.json` でも `${VAR}` は実行時に展開される（Agent SDK のページの Authentication 節）
+- 未確認: コードで渡す `mcpServers` の文字列に `${VAR}` 展開が効くかは記述が無い（例は `process.env` で値を渡す形のみ）
