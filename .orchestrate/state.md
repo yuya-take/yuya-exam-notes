@@ -10,7 +10,7 @@
 | 1 | exam-add | ccaf を公式の Exam Guide v1.1 で作り直す | session_017JP5BoRvce63isKveaZoxQ | work/ccaf/exam-guide-v2 | 統合済み | OK（差し戻し1回で修正） | 第1波。チェックリストをここで確定。旧セッション session_017JP5BovYpHcB8b2VjdFjYz（Default 環境で PDF を読めず）は停止を指示 |
 | 2 | study | ccaf 1. エージェントループと stop_reason による制御 | session_017JP5BrCxbjR3XYoMdXg1sn | work/ccaf/agentic-loop-stop-reason | 作業中 | — | ccaf/notes/01-agentic-architecture/agentic-loop-stop-reason.md |
 | 3 | study | ccaf 1. コーディネーターとサブエージェントのハブ＆スポーク構成 | session_017JP5Bqye9jJJiXSm2pVeeH | work/ccaf/coordinator-subagent-pattern | 作業中 | — | ccaf/notes/01-agentic-architecture/coordinator-subagent-pattern.md |
-| 4 | study | ccaf 1. 調査範囲の分割と、統合結果の抜けを埋める反復ループ | session_017JP5BnTohaTSGJHnUZFwCm | work/ccaf/scope-partitioning-iterative-refinement | 作業中 | — | ccaf/notes/01-agentic-architecture/scope-partitioning-iterative-refinement.md |
+| 4 | study | ccaf 1. 調査範囲の分割と、統合結果の抜けを埋める反復ループ | session_017JP5BnTohaTSGJHnUZFwCm | work/ccaf/scope-partitioning-iterative-refinement | 検証中 | 範囲 OK・形 OK・事実を確認中 | ccaf/notes/01-agentic-architecture/scope-partitioning-iterative-refinement.md |
 | 5 | study | ccaf 1. Task ツールによるサブエージェントの起動と AgentDefinition | session_017JP5BnDaCCUYnov5bjc1pu | work/ccaf/task-tool-agent-definition | 作業中 | — | ccaf/notes/01-agentic-architecture/task-tool-agent-definition.md |
 | 6 | study | ccaf 1. サブエージェントへのコンテキストの渡し方 | session_017JP5BqftoWoDrku6Acexa7 | work/ccaf/subagent-context-passing | 作業中 | — | ccaf/notes/01-agentic-architecture/subagent-context-passing.md |
 | 7 | study | ccaf 1. ワークフローの順序をプログラムで強制する | — | work/ccaf/programmatic-workflow-enforcement | 待ち | — | ccaf/notes/01-agentic-architecture/programmatic-workflow-enforcement.md |
