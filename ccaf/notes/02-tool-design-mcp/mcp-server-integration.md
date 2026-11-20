@@ -38,6 +38,8 @@ flowchart LR
   C -->|起動時に接続| S1[サーバー A] & S2[サーバー B]
   S1 & S2 -->|ツール一覧| T[mcp__A__* と mcp__B__* を同時に使える]
 ```
+- MCP 仕様では、クライアントが `tools/list` で一覧を取り、一覧が変わるとサーバーが `notifications/tools/list_changed` で知らせる
+- `.mcp.json`・スコープ・`${VAR}` の展開は Claude Code 側の設定。MCP 仕様（tools・lifecycle・transports）には記述が無い
 - Agent SDK: `mcpServers` オプションでコードから渡すか、`settingSources` に `"project"` を含めて `.mcp.json` を読ませる（既定の `query()` では読む）
 - Agent SDK で MCP ツールを自動で許可するには `allowedTools: ["mcp__github__*"]` のように書く
 
@@ -69,5 +71,6 @@ flowchart LR
 ## 出典
 - [Connect Claude Code to tools via MCP](https://code.claude.com/docs/en/mcp)（公式。スコープ、優先順位、環境変数の展開、承認、tool search）
 - [Connect to external tools with MCP（Agent SDK）](https://code.claude.com/docs/en/agent-sdk/mcp)（公式。`mcpServers`、`settingSources`、ツール名、`allowedTools`）
+- [MCP Specification: Tools](https://modelcontextprotocol.io/specification/latest/server/tools)（公式。`tools/list`、`listChanged`）
 - Claude Certified Architect – Foundations Exam Guide v1.1、Task Statement 2.4（公式）
-- 未確認: Agent SDK の `mcpServers` に `.mcp.json` と同じ `${VAR}` 展開が効くかは、SDK のページに記述が無い（コード側は `process.env` で渡す例のみ）
+- 未確認: Agent SDK の `mcpServers` に `.mcp.json` と同じ `${VAR}` 展開が効くかは、SDK のページに記述が無い（コード側は `process.env` で渡す例のみ。MCP 仕様の範囲外のため、仕様でも確かめられない）
