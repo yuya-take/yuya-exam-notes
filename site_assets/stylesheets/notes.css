@@ -1,0 +1,125 @@
+/* ノートのサイト用の見た目。build_site.py が site_src/stylesheets/ に写す */
+
+:root {
+  --ok-bg: #e8f5e9;
+  --ok-fg: #1b5e20;
+  --ok-line: #43a047;
+  --ng-bg: #fdecea;
+  --ng-fg: #8e1c13;
+  --ng-line: #e53935;
+  --mark-bg: #fff3b0;
+  --d1: #3949ab; /* エージェントの構成 */
+  --d2: #00897b; /* ツールと MCP */
+  --d3: #8e24aa; /* Claude Code */
+  --d4: #ef6c00; /* プロンプトと構造化出力 */
+  --d5: #c2185b; /* コンテキストと信頼性 */
+}
+
+[data-md-color-scheme="slate"] {
+  --ok-bg: #1d3b23;
+  --ok-fg: #b9f6ca;
+  --ok-line: #66bb6a;
+  --ng-bg: #4a1f1c;
+  --ng-fg: #ffcdd2;
+  --ng-line: #ef5350;
+  --mark-bg: #5c4f00;
+  --d1: #7986cb;
+  --d2: #4db6ac;
+  --d3: #ba68c8;
+  --d4: #ffa726;
+  --d5: #f06292;
+}
+
+/* 見出し: 左に色の帯を付けて、節の切れ目を見つけやすくする */
+.md-typeset h2 {
+  border-left: 0.3rem solid var(--md-primary-fg-color);
+  padding-left: 0.6rem;
+  margin-top: 2em;
+}
+
+/* ドメインのバッジと更新日 */
+.note-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin: -0.6rem 0 1.2rem;
+  font-size: 0.72rem;
+}
+.domain-badge {
+  color: #fff;
+  border-radius: 1rem;
+  padding: 0.15rem 0.7rem;
+  font-weight: 600;
+}
+.domain-badge.d1 { background: var(--d1); }
+.domain-badge.d2 { background: var(--d2); }
+.domain-badge.d3 { background: var(--d3); }
+.domain-badge.d4 { background: var(--d4); }
+.domain-badge.d5 { background: var(--d5); }
+.note-meta .updated { color: var(--md-default-fg-color--light); }
+
+/* 覚える語のマーカー（==語== で書く） */
+.md-typeset mark {
+  background: linear-gradient(transparent 55%, var(--mark-bg) 55%);
+  color: inherit;
+  padding: 0 0.1em;
+}
+
+/* 「ひとことで」の箱は少し大きく */
+.md-typeset .admonition.abstract {
+  font-size: 0.82rem;
+}
+
+/* ○× の対比表（<div class="vs" markdown> で囲む） */
+.md-typeset .vs table:not([class]) {
+  display: table;
+  width: 100%;
+}
+.md-typeset .vs table:not([class]) th:nth-child(2) {
+  background: var(--ok-line);
+  color: #fff;
+}
+.md-typeset .vs table:not([class]) th:nth-child(3) {
+  background: var(--ng-line);
+  color: #fff;
+}
+.md-typeset .vs table:not([class]) td:nth-child(2) {
+  background: var(--ok-bg);
+  color: var(--ok-fg);
+}
+.md-typeset .vs table:not([class]) td:nth-child(3) {
+  background: var(--ng-bg);
+  color: var(--ng-fg);
+}
+.md-typeset .vs table:not([class]) td:first-child {
+  font-weight: 600;
+  white-space: nowrap;
+}
+@media (max-width: 600px) {
+  .md-typeset .vs table:not([class]) td:first-child { white-space: normal; }
+}
+
+/* 先頭ページのドメイン一覧の左端に、ドメインの色を付ける */
+.md-typeset .domain-dot {
+  display: inline-block;
+  width: 0.7em;
+  height: 0.7em;
+  border-radius: 50%;
+  margin-right: 0.4em;
+  vertical-align: middle;
+}
+.domain-dot.d1 { background: var(--d1); }
+.domain-dot.d2 { background: var(--d2); }
+.domain-dot.d3 { background: var(--d3); }
+.domain-dot.d4 { background: var(--d4); }
+.domain-dot.d5 { background: var(--d5); }
+
+/* 図（Mermaid）: ダークモードでもノードは明るい地に濃い文字にする。
+   ノートの classDef で付けた淡い色の上でも文字が読めるように */
+[data-md-color-scheme="slate"] {
+  --md-mermaid-node-bg-color: #e8eaf6;
+  --md-mermaid-node-fg-color: #7986cb;
+  --md-mermaid-label-fg-color: #1c1c1c;
+  --md-mermaid-label-bg-color: var(--md-default-bg-color); /* 矢印のラベルは地の色のまま */
+}

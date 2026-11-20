@@ -7,6 +7,8 @@ MkDocs は、設定ファイルと同じディレクトリを docs_dir にでき
 
 作るもの:
 - site_src/index.md: サイトの先頭ページ（資格の一覧とドメイン別のノート数）
+- ノートの「> ドメイン: … ／ 更新: …」の行を、ドメインの色のバッジに置き換える
+- site_assets/ の中身（CSS など）を site_src/ に写す
 - mkdocs.gen.yml: mkdocs.yml を引き継ぎ、nav を足した設定。ノートの並びは
   各資格の README のチェックリストの順にする。ページ下の「前へ」「次へ」もこの順になる
 
@@ -25,6 +27,8 @@ INCLUDE_TOP_FILES = {"glossary.md"}
 EXCLUDE_PARTS = {"answer"}  # /hands-on の成果物の写しは公開しない
 SUFFIXES = {".md", ".png", ".jpg", ".jpeg", ".svg", ".csv"}
 NOTE_LINK_RE = re.compile(r"\]\((notes/[^)\s#]+\.md)")
+META_RE = re.compile(r"^> ドメイン:\s*(.+?)\s*／\s*更新:\s*(\S+)\s*$", flags=re.M)
+ASSETS = ROOT / "site_assets"
 
 
 def h1(path):
@@ -72,6 +76,25 @@ def copy_files():
             dst = OUT / rel
             dst.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(src, dst)
+            if src.suffix == ".md" and "notes" in rel.parts:
+                add_domain_badge(dst, rel)
+    if ASSETS.exists():
+        shutil.copytree(ASSETS, OUT, dirs_exist_ok=True)
+
+
+def domain_class(rel):
+    """notes/<NN>-<slug>/ の NN から、バッジの色のクラス（d1〜d5）を決める。"""
+    m = re.match(r"(\d+)-", rel.parts[rel.parts.index("notes") + 1])
+    return f"d{int(m.group(1))}" if m else "d1"
+
+
+def add_domain_badge(path, rel):
+    text = path.read_text(encoding="utf-8")
+    badge = (
+        f'<div class="note-meta"><span class="domain-badge {domain_class(rel)}">\\1</span>'
+        '<span class="updated">更新 \\2</span></div>'
+    )
+    path.write_text(META_RE.sub(badge, text, count=1), encoding="utf-8")
 
 
 def build_nav_and_index():
@@ -92,7 +115,9 @@ def build_nav_and_index():
                 continue
             listed.update(paths)
             children.append({title: paths})
-            index.append(f"| {title} | {len(paths)}本 | [{h1(ROOT / paths[0])}]({paths[0]}) |")
+            num = re.match(r"(\d+)", title)
+            dot = f'<span class="domain-dot d{num.group(1)}"></span>' if num else ""
+            index.append(f"| {dot}{title} | {len(paths)}本 | [{h1(ROOT / paths[0])}]({paths[0]}) |")
         others = sorted(
             p.relative_to(OUT).as_posix() for p in (OUT / d.name).rglob("*.md")
         )

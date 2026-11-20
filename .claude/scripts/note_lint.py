@@ -3,7 +3,7 @@
 
 - Markdown の相対リンクの切れ
 - 資格の README のチェックリストから張ったノートへのリンクの切れ
-- notes/ 以下のノートに、必須の見出しが揃っているか
+- notes/ 以下のノートに、必須の見出しと冒頭の「ひとことで」の箱が揃っているか
 - ノートの「出典」に URL が1つ以上あるか
 - notes/ 以下に、どのチェックリスト項目からも張られていないノートが無いか（警告）
 - 「⚠️ 要更新」の印が付いたノートの数（情報）
@@ -15,7 +15,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-REQUIRED_HEADINGS = ["3行まとめ", "仕組み", "試験で問われそうなポイント", "間違えやすいところ", "確認問題", "出典"]
+REQUIRED_HEADINGS = ["仕組み", "試験での見分け方", "確認問題", "出典"]
+SUMMARY_RE = re.compile(r'^!!! abstract "ひとことで"\s*$', flags=re.M)  # 冒頭の結論の箱
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
 SKIP_DIRS = {".git", "node_modules", ".claude", "site", "site_src"}  # .claude はスキルのテンプレート（プレースホルダのリンクを含む）
 # 使うスキルが初めて実行されたときに作られるファイル。まだ無くてもリンク切れにしない
@@ -63,6 +64,8 @@ def check_note(note):
     missing = [h for h in REQUIRED_HEADINGS if h not in headings]
     if missing:
         errors.append(f"{rel(note)}: 見出しが足りない → {', '.join(missing)}")
+    if not SUMMARY_RE.search(text):
+        errors.append(f"{rel(note)}: 冒頭の「!!! abstract \"ひとことで\"」の箱が無い")
     m = re.search(r"^##\s+出典\s*$(.*?)(?=^##\s|\Z)", text, flags=re.M | re.S)
     if m and not re.search(r"https?://", m.group(1)):
         errors.append(f"{rel(note)}: 出典に URL が無い")

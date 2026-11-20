@@ -19,14 +19,21 @@ theme:
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
+      primary: indigo
+      accent: amber
       toggle:
         icon: material/brightness-7
         name: ダークモードに切り替え
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
+      primary: indigo
+      accent: amber
       toggle:
         icon: material/brightness-4
         name: ライトモードに切り替え
+
+extra_css:
+  - stylesheets/notes.css # site_assets/ から build_site.py が写す
 
 plugins:
   - search:
@@ -40,6 +47,10 @@ markdown_extensions:
   - toc:
       permalink: true
   - pymdownx.details
+  - pymdownx.mark
+  - pymdownx.highlight:
+      anchor_linenums: false
+  - pymdownx.inlinehilite
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.superfences:
