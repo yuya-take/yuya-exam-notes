@@ -85,7 +85,7 @@
 - [ ] セッションの再開とフォーク（--resume、fork_session、要約から始め直す判断、1.7） → [ノート](notes/01-agentic-architecture/session-resume-fork.md)
 
 ### 2. ツール設計と MCP の組み込み（18%）
-- [ ] ツールの説明文と境界の設計（似たツールの区別、改名と分割、2.1）
+- [ ] ツールの説明文と境界の設計（似たツールの区別、改名と分割、2.1） → [ノート](notes/02-tool-design-mcp/tool-descriptions-boundaries.md)
 - [ ] MCP ツールの構造化エラー応答（isError、エラーの分類、再試行の可否、2.2）
 - [ ] エージェントへのツールの割り振り（ツールの数と役割ごとの制限、2.3） → [ノート](notes/02-tool-design-mcp/tool-distribution.md)
 - [ ] tool_choice の設定（auto / any / 特定ツールの強制、2.3・4.3） → [ノート](notes/02-tool-design-mcp/tool-choice.md)
