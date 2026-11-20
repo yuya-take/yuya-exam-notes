@@ -71,14 +71,62 @@ flowchart LR
 
 ## 確認問題
 
-??? question "Q1. 社内の2つの MCP サーバーが、片方は在庫の更新日時を Unix 時刻、もう片方は ISO 8601 で返す。エージェントが「どちらが新しいか」をよく取り違える。最も確実な対策は？"
-    PostToolUse フックで両方の結果を ISO 8601 にそろえ、`updatedToolOutput` で渡す。プロンプトで「変換して比べよ」と頼むのは確率的で、取り違えが残る。
+**Q1.** 通販サイトのサポートエージェントを Agent SDK で作っている。注文の MCP サーバーは更新日時を Unix 時刻で、配送の MCP サーバーは ISO 8601 で返す。エージェントは「どちらの更新が新しいか」をよく取り違える。最も確実な対策はどれか。（1つ選べ）
+{ .quiz-q }
 
-??? question "Q2. 経費精算のエージェントで「1件10万円を超える支払いは経理の承認が要る」。PostToolUse で金額を確かめて警告を出す案は良いか？"
-    良くない。PostToolUse の時点で支払いは実行済みだ。PreToolUse で金額を見て deny し、理由に承認依頼ツールを使うよう書いて誘導する。
+<div class="quiz" data-answer="D" markdown>
 
-??? question "Q3. 上の PreToolUse のガードがバグで例外を出した。既定の動作と、止まるようにする設定は？"
-    既定では、例外のまま通常の許可の流れに進み、操作が通りうる。matcher に `on_failure="block"`（TS は `onFailure: "block"`）を付けると、失敗時も止まる。
+- A. システムプロンプトに「Unix 時刻は ISO 8601 に直してから比べること」と書き足す
+- B. PostToolUse フックで `decision: "block"` を返し、形式が違うことを理由に添える
+- C. PostToolUse フックで日時を変換し、変換した値を `systemMessage` に書いて伝える
+- D. PostToolUse フックで両方の日時を ISO 8601 にそろえ、`updatedToolOutput` で差し替える
+
+</div>
+
+??? success "答えと解説"
+    **正解: D。** ばらばらな形式は、PostToolUse で1つにそろえてからモデルに渡す。
+
+    - A: プロンプトでの依頼は確率的で、取り違えが残る
+    - B: `decision: "block"` は理由を添えるだけで、元の出力はそのままモデルに見える
+    - C: `systemMessage` はユーザー向けの表示で、モデルには届かない
+
+**Q2.** 同じエージェントに、ポイントを手動で付ける `grant_points` ツールがある。1回に 3,000 ポイントを超える付与は、`request_supervisor_approval` で上長の承認を取る決まりだ。最も適切な実装はどれか。（1つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="B" markdown>
+
+- A. PostToolUse フックで付与量を確かめ、超えていれば `additionalContext` で警告を足す
+- B. PreToolUse フックで付与量を見て deny し、`permissionDecisionReason` で承認依頼を示す
+- C. システムプロンプトに「3,000 ポイントを超える付与は必ず承認を依頼すること」と書き足す
+- D. PreToolUse フックで付与量を見て deny し、承認依頼への案内を `systemMessage` に書く
+
+</div>
+
+??? success "答えと解説"
+    **正解: B。** 実行前に止めるのは PreToolUse で、代わりの手順は `permissionDecisionReason` でモデルに伝える。
+
+    - A: PostToolUse の時点で、ポイントはもう付与されている
+    - C: プロンプトの指示は守られない率がゼロにならない。「必ず」守らせる規則には足りない
+    - D: 止める点は正しいが、`systemMessage` はモデルに届かない。モデルは次に何をすべきか分からない
+
+**Q3.** 上の PreToolUse のガードが、入力に想定した項目が無かったため例外を出した。その呼び出しでは、3,000 ポイントを超える付与がそのまま実行された。最も適切な対応はどれか。（1つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="B" markdown>
+
+- A. 例外が出れば既定で止まるはずなので、matcher のツール名の書き間違いを疑って直す
+- B. 既定では例外のとき操作が進むので、HookMatcher に `on_failure="block"` を付ける
+- C. 同じ matcher に、常に allow を返す2つ目のフックを足して、判定を二重にする
+- D. ガードを PostToolUse に移し、例外が出ても結果の差し替えで影響を打ち消す
+
+</div>
+
+??? success "答えと解説"
+    **正解: B。** 既定では、コールバックが例外を出すと操作はそのまま進む。ガードは `on_failure="block"`（TS は `onFailure`）で、失敗時も止まるようにする。
+
+    - A: 例外のときに止まるのは既定の動作ではない。原因は matcher ではない
+    - C: allow を足しても、止める判定にはならない。失敗したガードは deny を返していない
+    - D: PostToolUse では、付与はもう実行済みだ。結果を差し替えても付与は取り消せない
 
 ## 出典
 - [Claude Certified Architect – Foundations Exam Guide v1.1](https://cc.sj-cdn.net/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1794946250/Claude_Certified_Architect_-_Foundations_Exam_Guide.pdf)（公式、Task Statement 1.5）
