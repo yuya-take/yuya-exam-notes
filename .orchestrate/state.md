@@ -8,16 +8,16 @@
 | # | 種類 | 対象 | 作業セッション | ブランチ | 状態 | 検証 | メモ |
 |---|---|---|---|---|---|---|---|
 | 1 | exam-add | ccaf を公式の Exam Guide v1.1 で作り直す | session_017JP5BoRvce63isKveaZoxQ | work/ccaf/exam-guide-v2 | 統合済み | OK（差し戻し1回で修正） | 第1波。チェックリストをここで確定。旧セッション session_017JP5BovYpHcB8b2VjdFjYz（Default 環境で PDF を読めず）は停止を指示 |
-| 2 | study | ccaf 1. エージェントループと stop_reason による制御 | session_017JP5BrCxbjR3XYoMdXg1sn | work/ccaf/agentic-loop-stop-reason | 作業中 | — | ccaf/notes/01-agentic-architecture/agentic-loop-stop-reason.md |
-| 3 | study | ccaf 1. コーディネーターとサブエージェントのハブ＆スポーク構成 | session_017JP5Bqye9jJJiXSm2pVeeH | work/ccaf/coordinator-subagent-pattern | 作業中 | — | ccaf/notes/01-agentic-architecture/coordinator-subagent-pattern.md |
-| 4 | study | ccaf 1. 調査範囲の分割と、統合結果の抜けを埋める反復ループ | session_017JP5BnTohaTSGJHnUZFwCm | work/ccaf/scope-partitioning-iterative-refinement | 検証中 | 範囲 OK・形 OK・事実を確認中 | ccaf/notes/01-agentic-architecture/scope-partitioning-iterative-refinement.md |
-| 5 | study | ccaf 1. Task ツールによるサブエージェントの起動と AgentDefinition | session_017JP5BnDaCCUYnov5bjc1pu | work/ccaf/task-tool-agent-definition | 作業中 | — | ccaf/notes/01-agentic-architecture/task-tool-agent-definition.md |
-| 6 | study | ccaf 1. サブエージェントへのコンテキストの渡し方 | session_017JP5BqftoWoDrku6Acexa7 | work/ccaf/subagent-context-passing | 作業中 | — | ccaf/notes/01-agentic-architecture/subagent-context-passing.md |
-| 7 | study | ccaf 1. ワークフローの順序をプログラムで強制する | — | work/ccaf/programmatic-workflow-enforcement | 待ち | — | ccaf/notes/01-agentic-architecture/programmatic-workflow-enforcement.md |
-| 8 | study | ccaf 1. 人への引き継ぎの要約と、複数の用件を含む依頼の分解 | — | work/ccaf/structured-handoff-request-decomposition | 待ち | — | ccaf/notes/01-agentic-architecture/structured-handoff-request-decomposition.md |
-| 9 | study | ccaf 1. Agent SDK のフックによるツール呼び出しの遮断とデータの正規化 | — | work/ccaf/sdk-hooks-interception | 待ち | — | ccaf/notes/01-agentic-architecture/sdk-hooks-interception.md |
-| 10 | study | ccaf 1. タスク分解の選び方: プロンプトチェーンと動的な分解 | — | work/ccaf/prompt-chaining-vs-dynamic-decomposition | 待ち | — | ccaf/notes/01-agentic-architecture/prompt-chaining-vs-dynamic-decomposition.md |
-| 11 | study | ccaf 1. セッションの再開とフォーク | — | work/ccaf/session-resume-fork | 待ち | — | ccaf/notes/01-agentic-architecture/session-resume-fork.md |
+| 2 | study | ccaf 1. エージェントループと stop_reason による制御 | session_017JP5BrCxbjR3XYoMdXg1sn | work/ccaf/agentic-loop-stop-reason | 差し戻し中 | 範囲・形 OK。事実: 誤りなし、補強4点を差し戻し | ccaf/notes/01-agentic-architecture/agentic-loop-stop-reason.md |
+| 3 | study | ccaf 1. コーディネーターとサブエージェントのハブ＆スポーク構成 | session_017JP5Bqye9jJJiXSm2pVeeH | work/ccaf/coordinator-subagent-pattern | 差し戻し中 | 範囲・形 OK。事実: 言い過ぎ1件・例題 Q7 と骨組みが同じ確認問題1件 | ccaf/notes/01-agentic-architecture/coordinator-subagent-pattern.md |
+| 4 | study | ccaf 1. 調査範囲の分割と、統合結果の抜けを埋める反復ループ | session_017JP5BnTohaTSGJHnUZFwCm | work/ccaf/scope-partitioning-iterative-refinement | 差し戻し中 | 範囲・形 OK。事実: 誤りなし。例の題材が例題と同じため差し替え | ccaf/notes/01-agentic-architecture/scope-partitioning-iterative-refinement.md |
+| 5 | study | ccaf 1. Task ツールによるサブエージェントの起動と AgentDefinition | session_017JP5BnDaCCUYnov5bjc1pu | work/ccaf/task-tool-agent-definition | 差し戻し中 | 範囲・形 OK。事実: ガイドと現行ドキュメントのずれの言い切り3件 | ccaf/notes/01-agentic-architecture/task-tool-agent-definition.md |
+| 6 | study | ccaf 1. サブエージェントへのコンテキストの渡し方 | session_017JP5BqftoWoDrku6Acexa7 | work/ccaf/subagent-context-passing | 差し戻し中 | 範囲・形 OK。事実: 18件中1件の誤り（resume の例外） | ccaf/notes/01-agentic-architecture/subagent-context-passing.md |
+| 7 | study | ccaf 1. ワークフローの順序をプログラムで強制する | session_017JP5BojR6EkGL7t3GCVGsW | work/ccaf/programmatic-workflow-enforcement | 作業中 | — | ccaf/notes/01-agentic-architecture/programmatic-workflow-enforcement.md |
+| 8 | study | ccaf 1. 人への引き継ぎの要約と、複数の用件を含む依頼の分解 | session_017JP5BnVZNgfCi6tsogPb2e | work/ccaf/structured-handoff-request-decomposition | 作業中 | — | ccaf/notes/01-agentic-architecture/structured-handoff-request-decomposition.md |
+| 9 | study | ccaf 1. Agent SDK のフックによるツール呼び出しの遮断とデータの正規化 | session_017JP5Bp96N8dPjB2McPcf3d | work/ccaf/sdk-hooks-interception | 作業中 | — | ccaf/notes/01-agentic-architecture/sdk-hooks-interception.md |
+| 10 | study | ccaf 1. タスク分解の選び方: プロンプトチェーンと動的な分解 | session_017JP5Bn9XrnVyYGB8fdN7zt | work/ccaf/prompt-chaining-vs-dynamic-decomposition | 作業中 | — | ccaf/notes/01-agentic-architecture/prompt-chaining-vs-dynamic-decomposition.md |
+| 11 | study | ccaf 1. セッションの再開とフォーク | session_017JP5BpK39wy3M5FzfYiNph | work/ccaf/session-resume-fork | 作業中 | — | ccaf/notes/01-agentic-architecture/session-resume-fork.md |
 | 12 | study | ccaf 2. ツールの説明文と境界の設計 | — | work/ccaf/tool-descriptions-boundaries | 待ち | — | ccaf/notes/02-tool-design-mcp/tool-descriptions-boundaries.md |
 | 13 | study | ccaf 2. MCP ツールの構造化エラー応答 | — | work/ccaf/mcp-structured-errors | 待ち | — | ccaf/notes/02-tool-design-mcp/mcp-structured-errors.md |
 | 14 | study | ccaf 2. エージェントへのツールの割り振り | — | work/ccaf/tool-distribution | 待ち | — | ccaf/notes/02-tool-design-mcp/tool-distribution.md |
@@ -64,3 +64,6 @@
 - 作業セッションは、以後すべて環境 env_01FrJkXT4Kuns344Sxbp7THf で起動する（判断: オーケストレータ）
 - 第2波の各ノートは、担当のタスクステートメント（TS）の Knowledge / Skills を公式ガイドの PDF から漏れなく拾う。チェックリストの項目は増やさない（判断: オーケストレータ。fact-checker が挙げた未収録の論点は、項目ではなくノートの中身の問題のため）
 - TS が重なる項目（tool_choice 2.3・4.3、複数パスのレビュー 1.6・4.6、エラーの伝え方 2.2・5.3）は、チェックリストで番号が付いている側のノートを主にし、もう一方からは参照だけにする（判断: オーケストレータ）
+- ガイドと現行ドキュメントの名前・仕様のずれ（Task→Agent など）は、ガイドの書き方を主にし、ずれは「間違えやすいところ」に1行で書く（判断: オーケストレータ。試験はガイドに基づくため）
+- 1.3 の「コーディネーターのプロンプトには目的と品質の基準を書く」は subagent-context-passing を主にする（判断: オーケストレータ）
+- 例や確認問題の題材も、ガイドの例題から借りない（骨組みが同じ翻案も避ける）（判断: オーケストレータ。fact-checker の指摘を受けて、以後の指示に入れた）
