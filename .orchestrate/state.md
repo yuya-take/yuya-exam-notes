@@ -23,15 +23,15 @@
 | 14 | study | ccaf 2. エージェントへのツールの割り振り | session_017JP5BnBQxvzNAnaMM6khoR | work/ccaf/tool-distribution | 統合済み | OK | ccaf/notes/02-tool-design-mcp/tool-distribution.md |
 | 15 | study | ccaf 2. tool_choice の設定 | session_017JP5BpAuWt4BUHosNqA5i1 | work/ccaf/tool-choice | 統合済み | OK | ccaf/notes/02-tool-design-mcp/tool-choice.md |
 | 16 | study | ccaf 2. Claude Code と Agent SDK への MCP サーバーの組み込み | session_017JP5BpsNMKWUXXkHy3QmPG | work/ccaf/mcp-server-integration | 統合済み | OK | ccaf/notes/02-tool-design-mcp/mcp-server-integration.md |
-| 17 | study | ccaf 2. MCP のツールとリソースの使い分けと、既存の MCP サーバーの活用 | session_017JP5Bpc4LeXGAyme2VNiie | work/ccaf/mcp-resources-vs-tools | 作業中 | — | ccaf/notes/02-tool-design-mcp/mcp-resources-vs-tools.md |
-| 18 | study | ccaf 2. 組み込みツール | session_017JP5Bqry4cK6X8VRGcsNx9 | work/ccaf/builtin-tools-incremental-exploration | 作業中 | — | ccaf/notes/02-tool-design-mcp/builtin-tools-incremental-exploration.md |
-| 19 | study | ccaf 3. CLAUDE.md の階層 | session_017JP5BqkcpPReHssP49DB6u | work/ccaf/claude-md-hierarchy | 作業中 | — | ccaf/notes/03-claude-code/claude-md-hierarchy.md |
-| 20 | study | ccaf 3. CLAUDE.md のモジュール化 | session_017JP5BqQnxGKcEii5QAXjFm | work/ccaf/claude-md-modularization | 作業中 | — | ccaf/notes/03-claude-code/claude-md-modularization.md |
-| 21 | study | ccaf 3. パス指定ルールによる規約の条件付き読み込み | session_017JP5Bn6U4VRwdfjWriktGu | work/ccaf/path-scoped-rules | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/03-claude-code/path-scoped-rules.md |
-| 22 | study | ccaf 3. カスタムスラッシュコマンドとスキルのスコープ、CLAUDE.md との使い分け | — | work/ccaf/slash-commands-and-skills | 待ち | — | ccaf/notes/03-claude-code/slash-commands-and-skills.md |
-| 23 | study | ccaf 3. SKILL.md の frontmatter | — | work/ccaf/skill-frontmatter | 待ち | — | ccaf/notes/03-claude-code/skill-frontmatter.md |
-| 24 | study | ccaf 3. プランモードと直接実行の使い分け、Explore サブエージェント | — | work/ccaf/plan-mode-vs-direct | 待ち | — | ccaf/notes/03-claude-code/plan-mode-vs-direct.md |
-| 25 | study | ccaf 3. Claude Code での反復的な改善 | — | work/ccaf/iterative-refinement | 待ち | — | ccaf/notes/03-claude-code/iterative-refinement.md |
+| 17 | study | ccaf 2. MCP のツールとリソースの使い分けと、既存の MCP サーバーの活用 | session_017JP5Bpc4LeXGAyme2VNiie | work/ccaf/mcp-resources-vs-tools | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/02-tool-design-mcp/mcp-resources-vs-tools.md |
+| 18 | study | ccaf 2. 組み込みツール | session_017JP5Bqry4cK6X8VRGcsNx9 | work/ccaf/builtin-tools-incremental-exploration | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/02-tool-design-mcp/builtin-tools-incremental-exploration.md |
+| 19 | study | ccaf 3. CLAUDE.md の階層 | session_017JP5BqkcpPReHssP49DB6u | work/ccaf/claude-md-hierarchy | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/03-claude-code/claude-md-hierarchy.md |
+| 20 | study | ccaf 3. CLAUDE.md のモジュール化 | session_017JP5BqQnxGKcEii5QAXjFm | work/ccaf/claude-md-modularization | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/03-claude-code/claude-md-modularization.md |
+| 21 | study | ccaf 3. パス指定ルールによる規約の条件付き読み込み | session_017JP5Bn6U4VRwdfjWriktGu | work/ccaf/path-scoped-rules | 差し戻し中 | 範囲・形 OK。事実: 誤りなし。未確認の解消と補強 | ccaf/notes/03-claude-code/path-scoped-rules.md |
+| 22 | study | ccaf 3. カスタムスラッシュコマンドとスキルのスコープ、CLAUDE.md との使い分け | session_017JP5BnPunvNhjFRfJHtVgU | work/ccaf/slash-commands-and-skills | 作業中 | — | ccaf/notes/03-claude-code/slash-commands-and-skills.md |
+| 23 | study | ccaf 3. SKILL.md の frontmatter | session_017JP5BnjUmWKw5oVHD5kHvx | work/ccaf/skill-frontmatter | 作業中 | — | ccaf/notes/03-claude-code/skill-frontmatter.md |
+| 24 | study | ccaf 3. プランモードと直接実行の使い分け、Explore サブエージェント | session_017JP5BoE31BiMXJBsCaSGDJ | work/ccaf/plan-mode-vs-direct | 作業中 | — | ccaf/notes/03-claude-code/plan-mode-vs-direct.md |
+| 25 | study | ccaf 3. Claude Code での反復的な改善 | session_017JP5BpQbHDRnjSWCnY8aHj | work/ccaf/iterative-refinement | 作業中 | — | ccaf/notes/03-claude-code/iterative-refinement.md |
 | 26 | study | ccaf 3. CI での Claude Code の非対話実行と構造化出力 | — | work/ccaf/ci-non-interactive | 待ち | — | ccaf/notes/03-claude-code/ci-non-interactive.md |
 | 27 | study | ccaf 3. CI での自動レビューとテスト生成の質を上げる工夫 | — | work/ccaf/ci-review-test-quality | 待ち | — | ccaf/notes/03-claude-code/ci-review-test-quality.md |
 | 28 | study | ccaf 4. 明確な基準で誤検知を減らすプロンプト | — | work/ccaf/explicit-criteria-false-positives | 待ち | — | ccaf/notes/04-prompt-engineering/explicit-criteria-false-positives.md |
