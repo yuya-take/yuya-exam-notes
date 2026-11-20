@@ -111,7 +111,7 @@
 - [ ] 抽出用スキーマの設計（必須と任意、nullable、enum の "other"＋詳細と "unclear"、4.3） → [ノート](notes/04-prompt-engineering/extraction-schema-design.md)
 - [ ] 検証・再試行・フィードバックのループ（エラーを添えた再試行、再試行が効かない場合、detected_pattern、4.4） → [ノート](notes/04-prompt-engineering/validation-retry-loop.md)
 - [ ] Message Batches API を使うバッチ処理の設計（向く処理と向かない処理、custom_id、SLA の計算、4.5） → [ノート](notes/04-prompt-engineering/message-batches-api.md)
-- [ ] 独立したインスタンスによるレビューと、複数パスのレビュー（Self-review の限界、ファイル単位＋横断のパス、4.6）
+- [ ] 独立したインスタンスによるレビューと、複数パスのレビュー（Self-review の限界、ファイル単位＋横断のパス、4.6） → [ノート](notes/04-prompt-engineering/independent-multipass-review.md)
 
 ### 5. コンテキスト管理と信頼性（15%）
 - [ ] 長い対話で重要な事実を保つ（要約で落ちる情報、事実ブロック、ツール出力の絞り込み、5.1） → [ノート](notes/05-context-reliability/preserving-key-facts.md)
