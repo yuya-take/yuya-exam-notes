@@ -20,7 +20,7 @@ flowchart LR
 | サブエージェントが受け取るもの | 受け取らないもの |
 |---|---|
 | 自分のシステムプロンプト（AgentDefinition.prompt）と、Agent ツールのプロンプト | 親の会話履歴とツール結果 |
-| プロジェクトの CLAUDE.md（omitClaudeMd を指定すると読まない） | 親のシステムプロンプト |
+| プロジェクトの CLAUDE.md（omitClaudeMd を指定すると読まない。この欄は TypeScript SDK だけ） | 親のシステムプロンプト |
 | ツールの定義（親から継承、または指定した一部） | 先に読み込んだスキル（AgentDefinition.skills に書いたものは除く） |
 
 出典を保つ渡し方の例（本文とメタデータ（その情報についての情報）を分ける）:
@@ -31,9 +31,9 @@ flowchart LR
 
 ## 試験で問われそうなポイント
 - 統合役のサブエージェントの出力に情報が抜ける → 前段（Web 検索・文書分析）の結果をそのままプロンプトに含めているかを疑う
-- 最終レポートで出典が消える → 各発見を claim・抜粋・出典 URL・日付の構造化データで渡す設計を選ぶ
+- 最終レポートで出典が消える → 各発見を claim・抜粋・出典 URL・文書名・ページ番号・日付の構造化データで渡す設計を選ぶ
 - コーディネーターの指示の書き方 → 「何を調べ、どの水準なら十分か」を示し、子が状況に応じて動けるようにする
-- 同じサブエージェントを2回呼んでも、1回目の内容は覚えていない → 2回目のプロンプトに必要な結果を入れ直す
+- 新しく呼んだ子は前回を覚えていない → 続けさせたいなら resume（再開）するか、必要な結果をプロンプトに入れ直す
 - Task ツールでの起動・AgentDefinition・並列起動 → 別ノート（Task ツールによるサブエージェントの起動と AgentDefinition）
 - 分岐した方針を共通の分析から試すフォーク → 別ノート（セッションの再開とフォーク）
 
@@ -55,6 +55,7 @@ flowchart LR
 
 ## 出典
 - [Subagents in the SDK — What subagents inherit](https://code.claude.com/docs/en/agent-sdk/subagents)（公式）
+- [Subagents in the SDK — Resume subagents](https://code.claude.com/docs/en/agent-sdk/subagents#resume-subagents)（公式）
 - [Create custom subagents（Claude Code）](https://code.claude.com/docs/en/sub-agents)（公式）
 - [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system)（公式・エンジニアリングブログ）
 - Claude Certified Architect – Foundations Exam Guide v1.1、Task Statement 1.3（公式）
