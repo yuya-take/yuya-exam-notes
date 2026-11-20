@@ -25,7 +25,7 @@
 | 16 | study | ccaf 2. Claude Code と Agent SDK への MCP サーバーの組み込み | session_017JP5BpsNMKWUXXkHy3QmPG | work/ccaf/mcp-server-integration | 統合済み | OK | ccaf/notes/02-tool-design-mcp/mcp-server-integration.md |
 | 17 | study | ccaf 2. MCP のツールとリソースの使い分けと、既存の MCP サーバーの活用 | session_017JP5Bpc4LeXGAyme2VNiie | work/ccaf/mcp-resources-vs-tools | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/02-tool-design-mcp/mcp-resources-vs-tools.md |
 | 18 | study | ccaf 2. 組み込みツール | session_017JP5Bqry4cK6X8VRGcsNx9 | work/ccaf/builtin-tools-incremental-exploration | 差し戻し中 | 範囲・形 OK。事実: 筋の誤り1件（Edit の分岐）、根拠なし1件 | ccaf/notes/02-tool-design-mcp/builtin-tools-incremental-exploration.md |
-| 19 | study | ccaf 3. CLAUDE.md の階層 | session_017JP5BqkcpPReHssP49DB6u | work/ccaf/claude-md-hierarchy | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/03-claude-code/claude-md-hierarchy.md |
+| 19 | study | ccaf 3. CLAUDE.md の階層 | session_017JP5BqkcpPReHssP49DB6u | work/ccaf/claude-md-hierarchy | 差し戻し中 | 範囲・形 OK。事実: 誤りなし。精度の補強3点 | ccaf/notes/03-claude-code/claude-md-hierarchy.md |
 | 20 | study | ccaf 3. CLAUDE.md のモジュール化 | session_017JP5BqQnxGKcEii5QAXjFm | work/ccaf/claude-md-modularization | 差し戻し中 | 範囲・形 OK。事実: 言い過ぎ4件、抜け1件 | ccaf/notes/03-claude-code/claude-md-modularization.md |
 | 21 | study | ccaf 3. パス指定ルールによる規約の条件付き読み込み | session_017JP5Bn6U4VRwdfjWriktGu | work/ccaf/path-scoped-rules | 差し戻し中 | 範囲・形 OK。事実: 誤りなし。未確認の解消と補強 | ccaf/notes/03-claude-code/path-scoped-rules.md |
 | 22 | study | ccaf 3. カスタムスラッシュコマンドとスキルのスコープ、CLAUDE.md との使い分け | session_017JP5BnPunvNhjFRfJHtVgU | work/ccaf/slash-commands-and-skills | 作業中 | — | ccaf/notes/03-claude-code/slash-commands-and-skills.md |
