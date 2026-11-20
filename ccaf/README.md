@@ -99,7 +99,7 @@
 - [ ] パス指定ルールによる規約の条件付き読み込み（paths の glob パターン、3.3） → [ノート](notes/03-claude-code/path-scoped-rules.md)
 - [ ] カスタムスラッシュコマンドとスキルのスコープ、CLAUDE.md との使い分け（.claude/commands/、.claude/skills/、3.2） → [ノート](notes/03-claude-code/slash-commands-and-skills.md)
 - [ ] SKILL.md の frontmatter（context: fork、allowed-tools、argument-hint、3.2） → [ノート](notes/03-claude-code/skill-frontmatter.md)
-- [ ] プランモードと直接実行の使い分け、Explore サブエージェント（Plan mode vs direct execution、3.4）
+- [ ] プランモードと直接実行の使い分け、Explore サブエージェント（Plan mode vs direct execution、3.4） → [ノート](notes/03-claude-code/plan-mode-vs-direct.md)
 - [ ] Claude Code での反復的な改善（入出力例、テスト駆動、インタビュー、問題の伝え方、3.5）
 - [ ] CI での Claude Code の非対話実行と構造化出力（-p、--output-format json、--json-schema、3.6）
 - [ ] CI での自動レビューとテスト生成の質を上げる工夫（過去の指摘・既存テスト・CLAUDE.md・独立したレビュー、3.6）
