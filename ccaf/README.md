@@ -79,7 +79,7 @@
 - [ ] Task ツールによるサブエージェントの起動と AgentDefinition（allowedTools、並列起動、1.3） → [ノート](notes/01-agentic-architecture/task-tool-agent-definition.md)
 - [ ] サブエージェントへのコンテキストの渡し方（明示的な受け渡しと出典の保持、1.3） → [ノート](notes/01-agentic-architecture/subagent-context-passing.md)
 - [ ] ワークフローの順序をプログラムで強制する（前提ゲートとプロンプト指示の違い、1.4） → [ノート](notes/01-agentic-architecture/programmatic-workflow-enforcement.md)
-- [ ] 人への引き継ぎの要約と、複数の用件を含む依頼の分解（Structured handoff、1.4）
+- [ ] 人への引き継ぎの要約と、複数の用件を含む依頼の分解（Structured handoff、1.4） → [ノート](notes/01-agentic-architecture/structured-handoff-request-decomposition.md)
 - [ ] Agent SDK のフックによるツール呼び出しの遮断とデータの正規化（PostToolUse など、1.5） → [ノート](notes/01-agentic-architecture/sdk-hooks-interception.md)
 - [ ] タスク分解の選び方: プロンプトチェーンと動的な分解（Prompt chaining vs dynamic decomposition、1.6） → [ノート](notes/01-agentic-architecture/prompt-chaining-vs-dynamic-decomposition.md)
 - [ ] セッションの再開とフォーク（--resume、fork_session、要約から始め直す判断、1.7）
