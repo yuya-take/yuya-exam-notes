@@ -19,7 +19,7 @@
 | 10 | study | ccaf 1. タスク分解の選び方: プロンプトチェーンと動的な分解 | session_017JP5Bn9XrnVyYGB8fdN7zt | work/ccaf/prompt-chaining-vs-dynamic-decomposition | 統合済み | OK | ccaf/notes/01-agentic-architecture/prompt-chaining-vs-dynamic-decomposition.md |
 | 11 | study | ccaf 1. セッションの再開とフォーク | session_017JP5BpK39wy3M5FzfYiNph | work/ccaf/session-resume-fork | 統合済み | OK | ccaf/notes/01-agentic-architecture/session-resume-fork.md |
 | 12 | study | ccaf 2. ツールの説明文と境界の設計 | session_017JP5BnRSp2vGdqm2eJ2nEZ | work/ccaf/tool-descriptions-boundaries | 統合済み | OK | ccaf/notes/02-tool-design-mcp/tool-descriptions-boundaries.md |
-| 13 | study | ccaf 2. MCP ツールの構造化エラー応答 | session_017JP5BpcXdWZWkcFNSqS865 | work/ccaf/mcp-structured-errors | 差し戻し中 | 範囲・形 OK。事実: 版は修正済み。errorCategory の値など3点 | ccaf/notes/02-tool-design-mcp/mcp-structured-errors.md |
+| 13 | study | ccaf 2. MCP ツールの構造化エラー応答 | session_017JP5BpcXdWZWkcFNSqS865 | work/ccaf/mcp-structured-errors | 統合済み | OK | ccaf/notes/02-tool-design-mcp/mcp-structured-errors.md |
 | 14 | study | ccaf 2. エージェントへのツールの割り振り | session_017JP5BnBQxvzNAnaMM6khoR | work/ccaf/tool-distribution | 統合済み | OK | ccaf/notes/02-tool-design-mcp/tool-distribution.md |
 | 15 | study | ccaf 2. tool_choice の設定 | session_017JP5BpAuWt4BUHosNqA5i1 | work/ccaf/tool-choice | 統合済み | OK | ccaf/notes/02-tool-design-mcp/tool-choice.md |
 | 16 | study | ccaf 2. Claude Code と Agent SDK への MCP サーバーの組み込み | session_017JP5BpsNMKWUXXkHy3QmPG | work/ccaf/mcp-server-integration | 統合済み | OK | ccaf/notes/02-tool-design-mcp/mcp-server-integration.md |

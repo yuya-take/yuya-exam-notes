@@ -86,7 +86,7 @@
 
 ### 2. ツール設計と MCP の組み込み（18%）
 - [ ] ツールの説明文と境界の設計（似たツールの区別、改名と分割、2.1） → [ノート](notes/02-tool-design-mcp/tool-descriptions-boundaries.md)
-- [ ] MCP ツールの構造化エラー応答（isError、エラーの分類、再試行の可否、2.2）
+- [ ] MCP ツールの構造化エラー応答（isError、エラーの分類、再試行の可否、2.2） → [ノート](notes/02-tool-design-mcp/mcp-structured-errors.md)
 - [ ] エージェントへのツールの割り振り（ツールの数と役割ごとの制限、2.3） → [ノート](notes/02-tool-design-mcp/tool-distribution.md)
 - [ ] tool_choice の設定（auto / any / 特定ツールの強制、2.3・4.3） → [ノート](notes/02-tool-design-mcp/tool-choice.md)
 - [ ] Claude Code と Agent SDK への MCP サーバーの組み込み（.mcp.json と ~/.claude.json、環境変数の展開、2.4） → [ノート](notes/02-tool-design-mcp/mcp-server-integration.md)
