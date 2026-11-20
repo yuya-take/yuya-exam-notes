@@ -18,16 +18,16 @@
 | 9 | study | ccaf 1. Agent SDK のフックによるツール呼び出しの遮断とデータの正規化 | session_017JP5Bp96N8dPjB2McPcf3d | work/ccaf/sdk-hooks-interception | 統合済み | OK | ccaf/notes/01-agentic-architecture/sdk-hooks-interception.md |
 | 10 | study | ccaf 1. タスク分解の選び方: プロンプトチェーンと動的な分解 | session_017JP5Bn9XrnVyYGB8fdN7zt | work/ccaf/prompt-chaining-vs-dynamic-decomposition | 統合済み | OK | ccaf/notes/01-agentic-architecture/prompt-chaining-vs-dynamic-decomposition.md |
 | 11 | study | ccaf 1. セッションの再開とフォーク | session_017JP5BpK39wy3M5FzfYiNph | work/ccaf/session-resume-fork | 統合済み | OK | ccaf/notes/01-agentic-architecture/session-resume-fork.md |
-| 12 | study | ccaf 2. ツールの説明文と境界の設計 | session_017JP5BnRSp2vGdqm2eJ2nEZ | work/ccaf/tool-descriptions-boundaries | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/02-tool-design-mcp/tool-descriptions-boundaries.md |
+| 12 | study | ccaf 2. ツールの説明文と境界の設計 | session_017JP5BnRSp2vGdqm2eJ2nEZ | work/ccaf/tool-descriptions-boundaries | 差し戻し中 | 範囲・形 OK。事実: 根拠なし3件、抜け1件、例題 Q2 と重なり | ccaf/notes/02-tool-design-mcp/tool-descriptions-boundaries.md |
 | 13 | study | ccaf 2. MCP ツールの構造化エラー応答 | session_017JP5BpcXdWZWkcFNSqS865 | work/ccaf/mcp-structured-errors | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/02-tool-design-mcp/mcp-structured-errors.md |
-| 14 | study | ccaf 2. エージェントへのツールの割り振り | session_017JP5BnBQxvzNAnaMM6khoR | work/ccaf/tool-distribution | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/02-tool-design-mcp/tool-distribution.md |
+| 14 | study | ccaf 2. エージェントへのツールの割り振り | session_017JP5BnBQxvzNAnaMM6khoR | work/ccaf/tool-distribution | 差し戻し中 | 範囲・形 OK。事実: 誤りなし。例題 Q9 と同じ組み立ての確認問題 | ccaf/notes/02-tool-design-mcp/tool-distribution.md |
 | 15 | study | ccaf 2. tool_choice の設定 | session_017JP5BpAuWt4BUHosNqA5i1 | work/ccaf/tool-choice | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/02-tool-design-mcp/tool-choice.md |
 | 16 | study | ccaf 2. Claude Code と Agent SDK への MCP サーバーの組み込み | session_017JP5BpsNMKWUXXkHy3QmPG | work/ccaf/mcp-server-integration | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/02-tool-design-mcp/mcp-server-integration.md |
-| 17 | study | ccaf 2. MCP のツールとリソースの使い分けと、既存の MCP サーバーの活用 | — | work/ccaf/mcp-resources-vs-tools | 待ち | — | ccaf/notes/02-tool-design-mcp/mcp-resources-vs-tools.md |
-| 18 | study | ccaf 2. 組み込みツール | — | work/ccaf/builtin-tools-incremental-exploration | 待ち | — | ccaf/notes/02-tool-design-mcp/builtin-tools-incremental-exploration.md |
-| 19 | study | ccaf 3. CLAUDE.md の階層 | — | work/ccaf/claude-md-hierarchy | 待ち | — | ccaf/notes/03-claude-code/claude-md-hierarchy.md |
-| 20 | study | ccaf 3. CLAUDE.md のモジュール化 | — | work/ccaf/claude-md-modularization | 待ち | — | ccaf/notes/03-claude-code/claude-md-modularization.md |
-| 21 | study | ccaf 3. パス指定ルールによる規約の条件付き読み込み | — | work/ccaf/path-scoped-rules | 待ち | — | ccaf/notes/03-claude-code/path-scoped-rules.md |
+| 17 | study | ccaf 2. MCP のツールとリソースの使い分けと、既存の MCP サーバーの活用 | session_017JP5Bpc4LeXGAyme2VNiie | work/ccaf/mcp-resources-vs-tools | 作業中 | — | ccaf/notes/02-tool-design-mcp/mcp-resources-vs-tools.md |
+| 18 | study | ccaf 2. 組み込みツール | session_017JP5Bqry4cK6X8VRGcsNx9 | work/ccaf/builtin-tools-incremental-exploration | 作業中 | — | ccaf/notes/02-tool-design-mcp/builtin-tools-incremental-exploration.md |
+| 19 | study | ccaf 3. CLAUDE.md の階層 | session_017JP5BqkcpPReHssP49DB6u | work/ccaf/claude-md-hierarchy | 作業中 | — | ccaf/notes/03-claude-code/claude-md-hierarchy.md |
+| 20 | study | ccaf 3. CLAUDE.md のモジュール化 | session_017JP5BqQnxGKcEii5QAXjFm | work/ccaf/claude-md-modularization | 作業中 | — | ccaf/notes/03-claude-code/claude-md-modularization.md |
+| 21 | study | ccaf 3. パス指定ルールによる規約の条件付き読み込み | session_017JP5Bn6U4VRwdfjWriktGu | work/ccaf/path-scoped-rules | 作業中 | — | ccaf/notes/03-claude-code/path-scoped-rules.md |
 | 22 | study | ccaf 3. カスタムスラッシュコマンドとスキルのスコープ、CLAUDE.md との使い分け | — | work/ccaf/slash-commands-and-skills | 待ち | — | ccaf/notes/03-claude-code/slash-commands-and-skills.md |
 | 23 | study | ccaf 3. SKILL.md の frontmatter | — | work/ccaf/skill-frontmatter | 待ち | — | ccaf/notes/03-claude-code/skill-frontmatter.md |
 | 24 | study | ccaf 3. プランモードと直接実行の使い分け、Explore サブエージェント | — | work/ccaf/plan-mode-vs-direct | 待ち | — | ccaf/notes/03-claude-code/plan-mode-vs-direct.md |
