@@ -30,7 +30,7 @@ jobs:
       - name: 公開するノートを集めてビルドする
         run: |
           python3 .claude/scripts/build_site.py
-          mkdocs build
+          mkdocs build -f mkdocs.gen.yml
 
       - uses: actions/upload-pages-artifact@v3
         with:

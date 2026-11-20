@@ -1,6 +1,7 @@
 site_name: yuya-exam-notes
 site_description: 資格試験の学習ノート
 docs_dir: site_src # .claude/scripts/build_site.py が作る。直接編集しない
+# nav は build_site.py が mkdocs.gen.yml に書く（README のチェックリストの順）。ビルドは mkdocs build -f mkdocs.gen.yml
 site_dir: site
 use_directory_urls: true
 
@@ -11,6 +12,7 @@ theme:
     - navigation.instant
     - navigation.sections
     - navigation.top
+    - navigation.footer # ページ下の「前へ」「次へ」
     - navigation.indexes
     - search.highlight
     - content.code.copy
