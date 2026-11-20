@@ -34,7 +34,7 @@
 | 25 | study | ccaf 3. Claude Code での反復的な改善 | session_017JP5BpQbHDRnjSWCnY8aHj | work/ccaf/iterative-refinement | 統合済み | OK | ccaf/notes/03-claude-code/iterative-refinement.md |
 | 26 | study | ccaf 3. CI での Claude Code の非対話実行と構造化出力 | session_017JP5BpvU85qkVAKamTXvTe | work/ccaf/ci-non-interactive | 統合済み | OK | ccaf/notes/03-claude-code/ci-non-interactive.md |
 | 27 | study | ccaf 3. CI での自動レビューとテスト生成の質を上げる工夫 | session_017JP5BqWE91Wtg51mNYYYKm | work/ccaf/ci-review-test-quality | 統合済み | OK | ccaf/notes/03-claude-code/ci-review-test-quality.md |
-| 28 | study | ccaf 4. 明確な基準で誤検知を減らすプロンプト | session_017JP5BmppTkoYdcQ1T9LAaf | work/ccaf/explicit-criteria-false-positives | 差し戻し中 | 範囲・形 OK。事実: 約20件中8件（言い過ぎ・出典の取り違えなど） | ccaf/notes/04-prompt-engineering/explicit-criteria-false-positives.md |
+| 28 | study | ccaf 4. 明確な基準で誤検知を減らすプロンプト | session_017JP5BmppTkoYdcQ1T9LAaf | work/ccaf/explicit-criteria-false-positives | 統合済み | OK | ccaf/notes/04-prompt-engineering/explicit-criteria-false-positives.md |
 | 29 | study | ccaf 4. few-shot プロンプティング | session_017JP5BnfzgQs95p4w549BJk | work/ccaf/few-shot-prompting | 差し戻し中 | 範囲・形 OK。事実: 2件、例題 Q1・Q2 との重なり | ccaf/notes/04-prompt-engineering/few-shot-prompting.md |
 | 30 | study | ccaf 4. tool_use と JSON スキーマによる構造化出力 | session_017JP5BpJ2dYTqowegSVWMRe | work/ccaf/tool-use-json-schema | 差し戻し中 | 範囲・形 OK。事実: 2件（頻度の裏付けなし、対象モデルの言い過ぎ） | ccaf/notes/04-prompt-engineering/tool-use-json-schema.md |
 | 31 | study | ccaf 4. 抽出用スキーマの設計 | session_017JP5BqUNGBXx1M3njri7TU | work/ccaf/extraction-schema-design | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/04-prompt-engineering/extraction-schema-design.md |
