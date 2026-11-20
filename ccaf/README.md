@@ -73,7 +73,7 @@
 各項目の末尾の番号は、ガイドのタスクステートメント（Task Statement）の番号。
 
 ### 1. エージェントの構成とオーケストレーション（27%）
-- [ ] エージェントループと stop_reason による制御（Agentic loop: tool_use / end_turn、1.1）
+- [ ] エージェントループと stop_reason による制御（Agentic loop: tool_use / end_turn、1.1） → [ノート](notes/01-agentic-architecture/agentic-loop-stop-reason.md)
 - [ ] コーディネーターとサブエージェントのハブ＆スポーク構成（Coordinator-subagent pattern、1.2）
 - [ ] 調査範囲の分割と、統合結果の抜けを埋める反復ループ（Scope partitioning & iterative refinement、1.2）
 - [ ] Task ツールによるサブエージェントの起動と AgentDefinition（allowedTools、並列起動、1.3）
