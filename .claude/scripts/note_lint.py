@@ -15,9 +15,9 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-REQUIRED_HEADINGS = ["一言でいうと", "仕組み", "試験で問われそうなポイント", "間違えやすいところ", "確認問題", "出典"]
+REQUIRED_HEADINGS = ["3行まとめ", "仕組み", "試験で問われそうなポイント", "間違えやすいところ", "確認問題", "出典"]
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)\s]+)\)")
-SKIP_DIRS = {".git", "node_modules", ".claude"}  # .claude はスキルのテンプレート（プレースホルダのリンクを含む）
+SKIP_DIRS = {".git", "node_modules", ".claude", "site", "site_src"}  # .claude はスキルのテンプレート（プレースホルダのリンクを含む）
 # 使うスキルが初めて実行されたときに作られるファイル。まだ無くてもリンク切れにしない
 LAZY_FILES = {"quiz-log.md", "mistakes.md", "cheatsheet.md", "flashcards.csv", "study-log.md", "retro.md", "glossary.md"}
 
