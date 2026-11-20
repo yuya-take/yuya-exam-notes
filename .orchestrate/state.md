@@ -18,7 +18,7 @@
 | 9 | study | ccaf 1. Agent SDK のフックによるツール呼び出しの遮断とデータの正規化 | session_017JP5Bp96N8dPjB2McPcf3d | work/ccaf/sdk-hooks-interception | 検証中 | 範囲 OK・形 OK・事実を確認中 | ccaf/notes/01-agentic-architecture/sdk-hooks-interception.md |
 | 10 | study | ccaf 1. タスク分解の選び方: プロンプトチェーンと動的な分解 | session_017JP5Bn9XrnVyYGB8fdN7zt | work/ccaf/prompt-chaining-vs-dynamic-decomposition | 作業中 | — | ccaf/notes/01-agentic-architecture/prompt-chaining-vs-dynamic-decomposition.md |
 | 11 | study | ccaf 1. セッションの再開とフォーク | session_017JP5BpK39wy3M5FzfYiNph | work/ccaf/session-resume-fork | 作業中 | — | ccaf/notes/01-agentic-architecture/session-resume-fork.md |
-| 12 | study | ccaf 2. ツールの説明文と境界の設計 | — | work/ccaf/tool-descriptions-boundaries | 待ち | — | ccaf/notes/02-tool-design-mcp/tool-descriptions-boundaries.md |
+| 12 | study | ccaf 2. ツールの説明文と境界の設計 | session_017JP5BnRSp2vGdqm2eJ2nEZ | work/ccaf/tool-descriptions-boundaries | 作業中 | — | ccaf/notes/02-tool-design-mcp/tool-descriptions-boundaries.md |
 | 13 | study | ccaf 2. MCP ツールの構造化エラー応答 | — | work/ccaf/mcp-structured-errors | 待ち | — | ccaf/notes/02-tool-design-mcp/mcp-structured-errors.md |
 | 14 | study | ccaf 2. エージェントへのツールの割り振り | — | work/ccaf/tool-distribution | 待ち | — | ccaf/notes/02-tool-design-mcp/tool-distribution.md |
 | 15 | study | ccaf 2. tool_choice の設定 | — | work/ccaf/tool-choice | 待ち | — | ccaf/notes/02-tool-design-mcp/tool-choice.md |
