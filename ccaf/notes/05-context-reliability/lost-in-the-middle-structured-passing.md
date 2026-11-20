@@ -5,7 +5,7 @@
 ## 3行まとめ
 - 長い入力では、先頭と末尾は確実に処理されるが、**真ん中の発見は抜けやすい**（lost in the middle（位置の影響））
 - 対策は並べ方: 要点のまとめを先頭に置き、詳細は見出し付きのセクションに分ける。長い資料は上、質問・指示は末尾
-- 渡す側を直す: サブエージェントには日付・出典・方法などのメタデータ付きの構造化データを返させ、長い推論の文章は返させない
+- 渡す側を直す: サブエージェントには日付・出典・方法などのメタデータ付きの構造化データを返させる。下流のコンテキストの予算が限られるときは、長い推論の文章は返させない
 
 ## 仕組み
 
@@ -34,8 +34,9 @@ flowchart TB
   "method": "社内調査 n=200", "relevance": 0.9}]}
 ```
 
-- 理由: 下流（統合役）のコンテキストの予算が限られていると、長い文章は真ん中が埋もれ、日付や方法が無いと正しく統合できない
-- 公式のブログでも、サブエージェントは数万トークン探索しても、返すのは 1,000〜2,000 トークンの凝縮した要約が多いとしている
+- 理由（ガイド 5.1）: 下流（統合役）のコンテキストの予算が限られる。メタデータが下流での正確な統合を支える
+- ノートの推論: 長い文章が積み重なると入力が長くなり、上の位置の影響も受けやすくなると考えられる（ガイド・公式に記述なし）
+- 参考: Effective context engineering の記事では、サブエージェントは数万トークン探索しても、返すのは 1,000〜2,000 トークンの凝縮した要約が多いとしている
 
 ## 試験で問われそうなポイント
 - 統合レポートで、入力の中ほどにあった結果だけが抜ける → 要点のまとめを先頭に置き、詳細を見出しで区切る
@@ -64,7 +65,6 @@ flowchart TB
 ## 出典
 - [Prompting best practices — Long context prompting](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)（公式。旧 long context tips を統合）
 - [Context windows](https://platform.claude.com/docs/en/build-with-claude/context-windows)（公式。context rot）
-- [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)（公式・エンジニアリングブログ）
-- [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system)（公式・エンジニアリングブログ）
+- [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)（公式・エンジニアリングブログ。1,000〜2,000 トークンの要約の参考。構造化データを返させる推奨の根拠はガイド 5.1）
 - Claude Certified Architect – Foundations Exam Guide v1.1、Task Statement 5.1（公式）
 - 未確認: 位置の影響の大きさ（真ん中でどれだけ落ちるか）を示す公式の数値。公式にあるのは「質問を末尾に置くと最大 30%」だけ
