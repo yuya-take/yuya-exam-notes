@@ -30,12 +30,12 @@ flowchart TD
 |---|---|---|
 | `tool_use` | ツールを呼びたい | 実行して結果を返し、続ける |
 | `end_turn` | 応答を終えた | 終了する |
-| `max_tokens` | 出力が上限で切れた | 完了扱いにしない。上限を上げて再送する |
+| `max_tokens` | 出力が上限で切れた | 完了扱いにしない。上限を上げて再送するか、続きを生成させる。途中で切れた `tool_use` は上限を上げて再送する |
 
 回数や予算の上限（Agent SDK の `max_turns`、`max_budget_usd`）は、暴走を止める安全装置にすぎない。正常な終わりは、あくまで `end_turn` で判定する。
 
 ??? info "そのほかの stop_reason と細かい決まり"
-    - `pause_turn`: サーバーツール（Anthropic 側で動くツール）のループが、反復の上限（既定で10回）に達した。応答をそのまま assistant として足し、user メッセージを足さずに再送する
+    - `pause_turn`: サーバーツール（Anthropic 側で動くツール）のループが、反復の上限（既定で10回）に達した。応答をそのまま assistant として足し、user メッセージを足さずに再送する。自分で実行するツールで止まったときは必ず `tool_use` で、`pause_turn` にはならない
     - `stop_sequence` / `refusal` / `model_context_window_exceeded`: それぞれ個別に処理する
     - `tool_result` の直後にテキストを足すと、空の `end_turn` 応答を招くことがある
     - 結果がまだ返っていないサーバーツールの呼び出しが同じ応答にあるときは、user メッセージに `tool_result` だけを入れる
