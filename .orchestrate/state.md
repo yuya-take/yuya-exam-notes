@@ -19,10 +19,10 @@
 | 10 | study | ccaf 1. タスク分解の選び方: プロンプトチェーンと動的な分解 | session_017JP5Bn9XrnVyYGB8fdN7zt | work/ccaf/prompt-chaining-vs-dynamic-decomposition | 統合済み | OK | ccaf/notes/01-agentic-architecture/prompt-chaining-vs-dynamic-decomposition.md |
 | 11 | study | ccaf 1. セッションの再開とフォーク | session_017JP5BpK39wy3M5FzfYiNph | work/ccaf/session-resume-fork | 統合済み | OK | ccaf/notes/01-agentic-architecture/session-resume-fork.md |
 | 12 | study | ccaf 2. ツールの説明文と境界の設計 | session_017JP5BnRSp2vGdqm2eJ2nEZ | work/ccaf/tool-descriptions-boundaries | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/02-tool-design-mcp/tool-descriptions-boundaries.md |
-| 13 | study | ccaf 2. MCP ツールの構造化エラー応答 | session_017JP5BpcXdWZWkcFNSqS865 | work/ccaf/mcp-structured-errors | 作業中 | — | ccaf/notes/02-tool-design-mcp/mcp-structured-errors.md |
-| 14 | study | ccaf 2. エージェントへのツールの割り振り | session_017JP5BnBQxvzNAnaMM6khoR | work/ccaf/tool-distribution | 作業中 | — | ccaf/notes/02-tool-design-mcp/tool-distribution.md |
-| 15 | study | ccaf 2. tool_choice の設定 | session_017JP5BpAuWt4BUHosNqA5i1 | work/ccaf/tool-choice | 作業中 | — | ccaf/notes/02-tool-design-mcp/tool-choice.md |
-| 16 | study | ccaf 2. Claude Code と Agent SDK への MCP サーバーの組み込み | session_017JP5BpsNMKWUXXkHy3QmPG | work/ccaf/mcp-server-integration | 作業中 | — | ccaf/notes/02-tool-design-mcp/mcp-server-integration.md |
+| 13 | study | ccaf 2. MCP ツールの構造化エラー応答 | session_017JP5BpcXdWZWkcFNSqS865 | work/ccaf/mcp-structured-errors | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/02-tool-design-mcp/mcp-structured-errors.md |
+| 14 | study | ccaf 2. エージェントへのツールの割り振り | session_017JP5BnBQxvzNAnaMM6khoR | work/ccaf/tool-distribution | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/02-tool-design-mcp/tool-distribution.md |
+| 15 | study | ccaf 2. tool_choice の設定 | session_017JP5BpAuWt4BUHosNqA5i1 | work/ccaf/tool-choice | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/02-tool-design-mcp/tool-choice.md |
+| 16 | study | ccaf 2. Claude Code と Agent SDK への MCP サーバーの組み込み | session_017JP5BpsNMKWUXXkHy3QmPG | work/ccaf/mcp-server-integration | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/02-tool-design-mcp/mcp-server-integration.md |
 | 17 | study | ccaf 2. MCP のツールとリソースの使い分けと、既存の MCP サーバーの活用 | — | work/ccaf/mcp-resources-vs-tools | 待ち | — | ccaf/notes/02-tool-design-mcp/mcp-resources-vs-tools.md |
 | 18 | study | ccaf 2. 組み込みツール | — | work/ccaf/builtin-tools-incremental-exploration | 待ち | — | ccaf/notes/02-tool-design-mcp/builtin-tools-incremental-exploration.md |
 | 19 | study | ccaf 3. CLAUDE.md の階層 | — | work/ccaf/claude-md-hierarchy | 待ち | — | ccaf/notes/03-claude-code/claude-md-hierarchy.md |
