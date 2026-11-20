@@ -5,7 +5,7 @@
 ## 3行まとめ
 - frontmatter（SKILL.md の先頭の `---` で囲んだ YAML の設定）で、スキルの動き方を決める
 - 出力が多い・寄り道が多いスキルは **`context: fork`** で別のサブエージェントに走らせ、本体の会話を汚さない
-- 試験の決め手は「本体のコンテキストを守りたいか（fork）」「ツールを絞りたいか（allowed-tools）」「引数を忘れさせたくないか（argument-hint）」
+- 試験の決め手は「本体のコンテキストを守りたいか（fork）」「ツールを絞りたいか（allowed-tools）」「引数の入れ方を示したいか（argument-hint）」
 
 ## 仕組み
 
@@ -19,9 +19,9 @@ flowchart LR
 | 項目 | 意味 | 使いどころ |
 |---|---|---|
 | `context: fork` | 別のサブエージェントの文脈でスキルを実行する | コードベース全体の分析、案出し（ブレインストーミング）など、途中経過が長いもの |
-| `agent` | fork したときのサブエージェントの種類（例: `Explore`） | 読むだけの調査なら Explore にする |
-| `allowed-tools` | スキル実行中に使うツールを指定する（例: `Read Grep`） | 書き込みだけ許して、破壊的な操作をさせない |
-| `argument-hint` | 引数の書き方のヒント（例: `[issue-number]`） | 必須の引数があり、渡し忘れを防ぎたいとき |
+| `agent` | fork したときのサブエージェントの種類（例: `Explore`）。省くと general-purpose | 読むだけの調査なら Explore にする |
+| `allowed-tools` | ガイドでは: 使えるツールを制限する／現行: そのターンだけ確認なしで使えるツールの事前承認（例: `Read Grep`） | ガイドの想定は破壊的な操作の防止。現行で外すなら `disallowed-tools` |
+| `argument-hint` | 補完のときに出る、引数の書き方のヒント（例: `[issue-number]`） | 必要な引数を呼ぶ人に示したいとき（ガイドは「引数なしのときに入力を促す」と書く） |
 | `description` | 何をするか・いつ使うか。Claude が自動で使うかの判断に使う | どのスキルにも書く（推奨はこれだけ） |
 | `disable-model-invocation` | `true` で Claude が自分からは呼ばない | デプロイなど、副作用があり人が起動したいもの |
 
@@ -33,15 +33,15 @@ flowchart LR
 description: リポジトリ全体の依存関係を調べて報告する
 context: fork
 agent: Explore
-argument-hint: [対象ディレクトリ]
+argument-hint: "[対象ディレクトリ]"
 ---
 $ARGUMENTS 以下の依存関係を洗い出し、要点を5行で報告する。
 ```
 
 ## 試験で問われそうなポイント
 - 分析の途中経過で本体の会話が埋まる → `context: fork` を付ける（CLAUDE.md に「短く」と書くのではない）
-- スキル実行中に削除などをさせたくない → frontmatter の `allowed-tools` で使えるツールを絞る
-- 引数なしで呼ばれて失敗が続く → `argument-hint` で必要な引数を示す
+- スキル実行中に削除などをさせたくない → frontmatter の `allowed-tools` で使えるツールを絞る（ガイドの前提。現行で絞るなら `disallowed-tools` か deny ルール）
+- 引数なしで呼ばれて失敗が続く → `argument-hint` で必要な引数を示す（補完のヒントで、必須にはならない）
 - fork したスキルは会話の履歴を見ない → 必要な情報はすべて SKILL.md と引数に書く
 
 ## 間違えやすいところ
@@ -58,7 +58,7 @@ $ARGUMENTS 以下の依存関係を洗い出し、要点を5行で報告する�
 1. 移行の候補を10案出して比べるスキルを使うと、本体の会話がその検討で埋まり、元の作業の指示が薄れる。どう直す？
    <details><summary>答え</summary>frontmatter に `context: fork` を付け、別のサブエージェントで検討させて結論だけを本体に戻す。途中経過が本体のコンテキストに残らない。</details>
 2. `/release` を引数なしで打つ人が多く、毎回「バージョンは？」と聞き返している。frontmatter で何を足す？
-   <details><summary>答え</summary>`argument-hint: [version]` を足し、補完のときに必要な引数を見せる。本文では `$ARGUMENTS` で受け取る。</details>
+   <details><summary>答え</summary>`argument-hint: [version]` を足し、補完のときに必要な引数を見せる（打ち忘れが減ることを期待するもので、必須にはならない）。本文では `$ARGUMENTS` で受け取る。</details>
 3. 「API の命名規約」だけを書いたスキルに `context: fork` を付けたら、何も返ってこない。なぜ？
    <details><summary>答え</summary>fork するとスキルの本文がサブエージェントへの指示になる。規約だけで手順が無いので、やることが無い。規約は fork せず本体で使う（または CLAUDE.md へ）。</details>
 
