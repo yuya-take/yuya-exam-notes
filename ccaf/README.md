@@ -101,7 +101,7 @@
 - [ ] SKILL.md の frontmatter（context: fork、allowed-tools、argument-hint、3.2） → [ノート](notes/03-claude-code/skill-frontmatter.md)
 - [ ] プランモードと直接実行の使い分け、Explore サブエージェント（Plan mode vs direct execution、3.4） → [ノート](notes/03-claude-code/plan-mode-vs-direct.md)
 - [ ] Claude Code での反復的な改善（入出力例、テスト駆動、インタビュー、問題の伝え方、3.5） → [ノート](notes/03-claude-code/iterative-refinement.md)
-- [ ] CI での Claude Code の非対話実行と構造化出力（-p、--output-format json、--json-schema、3.6）
+- [ ] CI での Claude Code の非対話実行と構造化出力（-p、--output-format json、--json-schema、3.6） → [ノート](notes/03-claude-code/ci-non-interactive.md)
 - [ ] CI での自動レビューとテスト生成の質を上げる工夫（過去の指摘・既存テスト・CLAUDE.md・独立したレビュー、3.6） → [ノート](notes/03-claude-code/ci-review-test-quality.md)
 
 ### 4. プロンプトエンジニアリングと構造化出力（20%）

@@ -32,7 +32,7 @@
 | 23 | study | ccaf 3. SKILL.md の frontmatter | session_017JP5BnjUmWKw5oVHD5kHvx | work/ccaf/skill-frontmatter | 統合済み | OK | ccaf/notes/03-claude-code/skill-frontmatter.md |
 | 24 | study | ccaf 3. プランモードと直接実行の使い分け、Explore サブエージェント | session_017JP5BoE31BiMXJBsCaSGDJ | work/ccaf/plan-mode-vs-direct | 統合済み | OK | ccaf/notes/03-claude-code/plan-mode-vs-direct.md |
 | 25 | study | ccaf 3. Claude Code での反復的な改善 | session_017JP5BpQbHDRnjSWCnY8aHj | work/ccaf/iterative-refinement | 統合済み | OK | ccaf/notes/03-claude-code/iterative-refinement.md |
-| 26 | study | ccaf 3. CI での Claude Code の非対話実行と構造化出力 | session_017JP5BpvU85qkVAKamTXvTe | work/ccaf/ci-non-interactive | 差し戻し中 | 範囲・形 OK。事実: 誤りなし。未確認の解消、例題 Q10 の文言の訳 | ccaf/notes/03-claude-code/ci-non-interactive.md |
+| 26 | study | ccaf 3. CI での Claude Code の非対話実行と構造化出力 | session_017JP5BpvU85qkVAKamTXvTe | work/ccaf/ci-non-interactive | 統合済み | OK | ccaf/notes/03-claude-code/ci-non-interactive.md |
 | 27 | study | ccaf 3. CI での自動レビューとテスト生成の質を上げる工夫 | session_017JP5BqWE91Wtg51mNYYYKm | work/ccaf/ci-review-test-quality | 統合済み | OK | ccaf/notes/03-claude-code/ci-review-test-quality.md |
 | 28 | study | ccaf 4. 明確な基準で誤検知を減らすプロンプト | session_017JP5BmppTkoYdcQ1T9LAaf | work/ccaf/explicit-criteria-false-positives | 差し戻し中 | 範囲・形 OK。事実: 約20件中8件（言い過ぎ・出典の取り違えなど） | ccaf/notes/04-prompt-engineering/explicit-criteria-false-positives.md |
 | 29 | study | ccaf 4. few-shot プロンプティング | session_017JP5BnfzgQs95p4w549BJk | work/ccaf/few-shot-prompting | 差し戻し中 | 範囲・形 OK。事実: 2件、例題 Q1・Q2 との重なり | ccaf/notes/04-prompt-engineering/few-shot-prompting.md |
