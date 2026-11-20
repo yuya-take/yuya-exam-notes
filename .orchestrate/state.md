@@ -29,7 +29,7 @@
 | 20 | study | ccaf 3. CLAUDE.md のモジュール化 | session_017JP5BqQnxGKcEii5QAXjFm | work/ccaf/claude-md-modularization | 統合済み | OK | ccaf/notes/03-claude-code/claude-md-modularization.md |
 | 21 | study | ccaf 3. パス指定ルールによる規約の条件付き読み込み | session_017JP5Bn6U4VRwdfjWriktGu | work/ccaf/path-scoped-rules | 統合済み | OK | ccaf/notes/03-claude-code/path-scoped-rules.md |
 | 22 | study | ccaf 3. カスタムスラッシュコマンドとスキルのスコープ、CLAUDE.md との使い分け | session_017JP5BnPunvNhjFRfJHtVgU | work/ccaf/slash-commands-and-skills | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/03-claude-code/slash-commands-and-skills.md |
-| 23 | study | ccaf 3. SKILL.md の frontmatter | session_017JP5BnjUmWKw5oVHD5kHvx | work/ccaf/skill-frontmatter | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/03-claude-code/skill-frontmatter.md |
+| 23 | study | ccaf 3. SKILL.md の frontmatter | session_017JP5BnjUmWKw5oVHD5kHvx | work/ccaf/skill-frontmatter | 差し戻し中 | 範囲・形 OK。事実: 表・ポイントと現行仕様の食い違い3件 | ccaf/notes/03-claude-code/skill-frontmatter.md |
 | 24 | study | ccaf 3. プランモードと直接実行の使い分け、Explore サブエージェント | session_017JP5BoE31BiMXJBsCaSGDJ | work/ccaf/plan-mode-vs-direct | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/03-claude-code/plan-mode-vs-direct.md |
 | 25 | study | ccaf 3. Claude Code での反復的な改善 | session_017JP5BpQbHDRnjSWCnY8aHj | work/ccaf/iterative-refinement | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/03-claude-code/iterative-refinement.md |
 | 26 | study | ccaf 3. CI での Claude Code の非対話実行と構造化出力 | session_017JP5BpvU85qkVAKamTXvTe | work/ccaf/ci-non-interactive | 作業中 | — | ccaf/notes/03-claude-code/ci-non-interactive.md |
