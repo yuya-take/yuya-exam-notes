@@ -35,7 +35,7 @@
 | 26 | study | ccaf 3. CI での Claude Code の非対話実行と構造化出力 | session_017JP5BpvU85qkVAKamTXvTe | work/ccaf/ci-non-interactive | 作業中 | — | ccaf/notes/03-claude-code/ci-non-interactive.md |
 | 27 | study | ccaf 3. CI での自動レビューとテスト生成の質を上げる工夫 | session_017JP5BqWE91Wtg51mNYYYKm | work/ccaf/ci-review-test-quality | 作業中 | — | ccaf/notes/03-claude-code/ci-review-test-quality.md |
 | 28 | study | ccaf 4. 明確な基準で誤検知を減らすプロンプト | session_017JP5BmppTkoYdcQ1T9LAaf | work/ccaf/explicit-criteria-false-positives | 作業中 | — | ccaf/notes/04-prompt-engineering/explicit-criteria-false-positives.md |
-| 29 | study | ccaf 4. few-shot プロンプティング | — | work/ccaf/few-shot-prompting | 待ち | — | ccaf/notes/04-prompt-engineering/few-shot-prompting.md |
+| 29 | study | ccaf 4. few-shot プロンプティング | session_017JP5BnfzgQs95p4w549BJk | work/ccaf/few-shot-prompting | 作業中 | — | ccaf/notes/04-prompt-engineering/few-shot-prompting.md |
 | 30 | study | ccaf 4. tool_use と JSON スキーマによる構造化出力 | — | work/ccaf/tool-use-json-schema | 待ち | — | ccaf/notes/04-prompt-engineering/tool-use-json-schema.md |
 | 31 | study | ccaf 4. 抽出用スキーマの設計 | — | work/ccaf/extraction-schema-design | 待ち | — | ccaf/notes/04-prompt-engineering/extraction-schema-design.md |
 | 32 | study | ccaf 4. 検証・再試行・フィードバックのループ | — | work/ccaf/validation-retry-loop | 待ち | — | ccaf/notes/04-prompt-engineering/validation-retry-loop.md |
