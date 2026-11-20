@@ -138,6 +138,7 @@ argument-hint: "<目標（例: ccaf のドメイン1をノート化）> [--max <
 - `outcome_branch`: `work/<exam>/<slug>`（slug は成果物のファイル名に合わせる）
 - `title`: `<種類> <exam> <項目の短い名前>`
 - `model` / `effort`: `--model` / `--effort` の指定があるときだけ渡す
+- `environment_id`: 状態ファイルに「作業セッションの環境」があれば、それを渡す。無ければ渡さない（このセッションの環境を引き継ぐ）。このリポジトリ用の環境（`yuya-exam-notes`）があれば、それを使う。ネットワークの許可などが、作業セッションにも必要になるため
 - `permission_mode`: 渡さない（引き継ぐ）。`plan` は使わない。承認待ちで止まるため
 - `prompt`: 下の「作業の指示」
 
