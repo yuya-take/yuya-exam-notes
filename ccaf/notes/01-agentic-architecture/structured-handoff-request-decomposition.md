@@ -23,7 +23,8 @@ flowchart LR
 ```
 
 - 並行の調査は、API ではパラレルツール使用（parallel tool use、1回の応答で複数のツールを呼ぶこと）で行える。既定で有効
-- 並行に呼んだときは、すべての tool_result を次の user メッセージ1通にまとめて返す
+- 並行に呼んだときは、すべての tool_result を次の user メッセージ1通にまとめて返す。分けて返すと、以後 Claude が並行に呼ばなくなる
+- 実行しなかった呼び出しにも、`is_error: true` の tool_result を返す
 - 「共有の情報（shared context）」は、ガイドに定義が無い。ここでは「各調査が使う、一度だけ取得した顧客情報」と解釈した（未確認）
 
 ### 構造化した引き継ぎ（structured handoff）
@@ -36,6 +37,7 @@ flowchart LR
 | 推奨アクション | あり | 受け手は承認・却下を決めるだけにできる |
 | 対応済みのこと・引き継ぐ理由 | なし（自作の補足） | 二重の対応と、同じ説明の繰り返しを防ぐ |
 
+- 作業の途中で人に回すときは、そこまでの調査結果も引き継ぐ（mid-process escalation）
 - 形の例（自作）: `{"customer_id": "...", "issue": "...", "root_cause": "...", "amount": 0, "recommended_action": "..."}`
 
 ## 試験で問われそうなポイント
@@ -64,7 +66,7 @@ flowchart LR
 
 ## 出典
 - Claude Certified Architect – Foundations Exam Guide v1.1、Task Statement 1.4・Exercise 1（公式。PDF はリポジトリに置かない）
-- [Parallel tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use)（公式。ページ後半は読み切れず、その部分は未確認）
+- [Parallel tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use)（公式）
 - [Handle tool calls](https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls)（公式）
 - [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)（公式ブログ。並列化の sectioning、人の判断に戻す checkpoint）
 - [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system)（公式ブログ。委任時に目的・出力形式・境界を渡す、並行の調査と統合）
