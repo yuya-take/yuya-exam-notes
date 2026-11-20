@@ -46,8 +46,9 @@ flowchart TD
 
 - 書式の揺れ（日付の書き方、金額の単位など）は、スキーマだけでなくプロンプトに正規化のルール（normalization rules）を書いて揃える
 - 説明（description）に「無ければ null」「推定しない」を書く。公式は説明を詳しく書くことをツールの性能で最も大事な要素としている
-- strict（`strict: true`）で使う JSON Schema には制限がある。`enum`・`required`・`["string","null"]` の型の配列は使えるが、`minimum`/`maximum`、`minLength`/`maxLength`、`oneOf` は使えない。オブジェクトは `additionalProperties: false` が要る
-- strict のスキーマ全体で、任意の項目は24個まで、型の配列や `anyOf` を使う項目は16個まで（公式の上限表。原文の文言は未確認）
+- strict（`strict: true`）で使う JSON Schema には制限がある。`enum`・`required` は使えるが、`minimum`/`maximum`、`minLength`/`maxLength`、`oneOf` は使えない。オブジェクトは `additionalProperties: false` が要る。`["string","null"]` の型の配列が使えることは、上限の表の記述（type arrays の例）で確かめた
+- 上限は、1リクエスト内のすべての strict スキーマ（strict ツールと `output_config.format` の両方）の合計で、任意の項目は24個まで、型の配列や `anyOf` を使う項目は16個まで。strict ツールは1リクエスト20個まで
+- strict でも enum の値の大文字・小文字は保証されない。"other" や "unclear" を後工程で拾うときは、大文字・小文字を区別せずに比べる
 
 ## 試験で問われそうなポイント
 - 一部の文書にしか無い項目で、モデルがもっともらしい値を埋めてくる → 必須の値をやめて nullable にし、無ければ null と返させる
@@ -58,7 +59,7 @@ flowchart TD
 
 ## 間違えやすいところ
 - アンチパターン: 文書に無いこともある項目を必須の値にする。スキーマを満たすために、モデルが値を作ってしまう
-- スキーマに合っていても中身が正しいとは限らない（意味の誤りは防げない）→ 別ノート「tool_use と JSON スキーマによる構造化出力」
+- スキーマに合っていても中身が正しいとは限らない（明細の合計が総額と合わない、値が別の項目に入る、など意味の誤りは防げない）→ 別ノート「tool_use と JSON スキーマによる構造化出力」
 - "other" だけで詳細の項目を付けないと、何だったかが失われ、enum に足すべき候補も見えない
 - "unclear" と null は別物。"unclear" は「書いてあるが決めきれない」、null は「書いていない」
 - ガイドは「optional (nullable)」とまとめて書く。JSON Schema では任意（キーが無い）と nullable（キーはあり値が null）は別の指定
@@ -74,5 +75,5 @@ flowchart TD
 
 ## 出典
 - [Claude Certified Architect – Foundations Exam Guide v1.1](https://cc.sj-cdn.net/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1794946250/Claude_Certified_Architect_-_Foundations_Exam_Guide.pdf)（公式、Task Statement 4.3、演習3）
-- [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs)（公式。対応する JSON Schema の機能と上限。ページの後半は要約でしか読めず、文言は未確認）
+- [Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs)（公式。対応する JSON Schema の機能、Schema complexity limits、Enum value casing）
 - [Define tools](https://platform.claude.com/docs/en/agents-and-tools/tool-use/define-tools)（公式。説明を詳しく書く）
