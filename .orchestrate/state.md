@@ -7,7 +7,7 @@
 ## タスク
 | # | 種類 | 対象 | 作業セッション | ブランチ | 状態 | 検証 | メモ |
 |---|---|---|---|---|---|---|---|
-| 1 | exam-add | ccaf を公式の Exam Guide で作り直す | — | work/ccaf/exam-guide | 起動準備 | — | 第1波。チェックリストをここで確定 |
+| 1 | exam-add | ccaf を公式の Exam Guide で作り直す | session_017JP5BovYpHcB8b2VjdFjYz | work/ccaf/exam-guide | 作業中 | — | 第1波。チェックリストをここで確定 |
 | 2〜 | study | 確定したチェックリストの各項目 | — | — | 待ち | — | 第2波。単位はユーザーに確認中 |
 
 ## 未回答の連絡
