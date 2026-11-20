@@ -36,7 +36,7 @@
 | 27 | study | ccaf 3. CI での自動レビューとテスト生成の質を上げる工夫 | session_017JP5BqWE91Wtg51mNYYYKm | work/ccaf/ci-review-test-quality | 統合済み | OK | ccaf/notes/03-claude-code/ci-review-test-quality.md |
 | 28 | study | ccaf 4. 明確な基準で誤検知を減らすプロンプト | session_017JP5BmppTkoYdcQ1T9LAaf | work/ccaf/explicit-criteria-false-positives | 差し戻し中 | 範囲・形 OK。事実: 約20件中8件（言い過ぎ・出典の取り違えなど） | ccaf/notes/04-prompt-engineering/explicit-criteria-false-positives.md |
 | 29 | study | ccaf 4. few-shot プロンプティング | session_017JP5BnfzgQs95p4w549BJk | work/ccaf/few-shot-prompting | 差し戻し中 | 範囲・形 OK。事実: 2件、例題 Q1・Q2 との重なり | ccaf/notes/04-prompt-engineering/few-shot-prompting.md |
-| 30 | study | ccaf 4. tool_use と JSON スキーマによる構造化出力 | session_017JP5BpJ2dYTqowegSVWMRe | work/ccaf/tool-use-json-schema | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/04-prompt-engineering/tool-use-json-schema.md |
+| 30 | study | ccaf 4. tool_use と JSON スキーマによる構造化出力 | session_017JP5BpJ2dYTqowegSVWMRe | work/ccaf/tool-use-json-schema | 差し戻し中 | 範囲・形 OK。事実: 2件（頻度の裏付けなし、対象モデルの言い過ぎ） | ccaf/notes/04-prompt-engineering/tool-use-json-schema.md |
 | 31 | study | ccaf 4. 抽出用スキーマの設計 | session_017JP5BqUNGBXx1M3njri7TU | work/ccaf/extraction-schema-design | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/04-prompt-engineering/extraction-schema-design.md |
 | 32 | study | ccaf 4. 検証・再試行・フィードバックのループ | session_017JP5Bqa3LM44QDd3ovpLvL | work/ccaf/validation-retry-loop | 作業中 | — | ccaf/notes/04-prompt-engineering/validation-retry-loop.md |
 | 33 | study | ccaf 4. Message Batches API を使うバッチ処理の設計 | session_017JP5Br7Lzte4GUHaxWBQ1k | work/ccaf/message-batches-api | 作業中 | — | ccaf/notes/04-prompt-engineering/message-batches-api.md |
@@ -71,3 +71,4 @@
 - 2.4 の「MCP ツールの説明文を詳しく書き、組み込みの Grep などより選ばれるようにする」は mcp-server-integration（#16）が主（判断: オーケストレータ。tool-descriptions-boundaries にはこの話が無く、どちらのノートにも実質的な説明が無かったため）
 - MCP 仕様の版: 現行は 2026-07-28。ガイドの書き方を主にし、版の違いは試験の判断に関わるときだけ「間違えやすいところ」に書く（判断: オーケストレータ）
 - 例の数: ガイドは 3.5 の入出力例が2〜3個、4.2 の few-shot が2〜4個（訂正。判断: オーケストレータ。#29 の指摘で、共通の注意の「few-shot は2〜3個」を直した）
+- tool_choice の any / tool を 400 で拒否するのは define-tools の表にある6モデル（Fable 5.2、Mythos 5.2、Opus 5.5、Sonnet 5.5、Fable 5.1、Mythos 5.1）だけで、Opus 5 と Haiku 5.5 は受け付ける（訂正。判断: オーケストレータ。共通の注意の「新しいモデル」という言い方が不正確だった）
