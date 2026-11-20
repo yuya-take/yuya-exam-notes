@@ -13,16 +13,16 @@
 | 4 | study | ccaf 1. 調査範囲の分割と、統合結果の抜けを埋める反復ループ | session_017JP5BnTohaTSGJHnUZFwCm | work/ccaf/scope-partitioning-iterative-refinement | 統合済み | OK | ccaf/notes/01-agentic-architecture/scope-partitioning-iterative-refinement.md |
 | 5 | study | ccaf 1. Task ツールによるサブエージェントの起動と AgentDefinition | session_017JP5BnDaCCUYnov5bjc1pu | work/ccaf/task-tool-agent-definition | 統合済み | OK | ccaf/notes/01-agentic-architecture/task-tool-agent-definition.md |
 | 6 | study | ccaf 1. サブエージェントへのコンテキストの渡し方 | session_017JP5BqftoWoDrku6Acexa7 | work/ccaf/subagent-context-passing | 統合済み | OK | ccaf/notes/01-agentic-architecture/subagent-context-passing.md |
-| 7 | study | ccaf 1. ワークフローの順序をプログラムで強制する | session_017JP5BojR6EkGL7t3GCVGsW | work/ccaf/programmatic-workflow-enforcement | 作業中 | — | ccaf/notes/01-agentic-architecture/programmatic-workflow-enforcement.md |
-| 8 | study | ccaf 1. 人への引き継ぎの要約と、複数の用件を含む依頼の分解 | session_017JP5BnVZNgfCi6tsogPb2e | work/ccaf/structured-handoff-request-decomposition | 作業中 | — | ccaf/notes/01-agentic-architecture/structured-handoff-request-decomposition.md |
+| 7 | study | ccaf 1. ワークフローの順序をプログラムで強制する | session_017JP5BojR6EkGL7t3GCVGsW | work/ccaf/programmatic-workflow-enforcement | 差し戻し中 | 範囲・形 OK。事実: 一部誤り1件、補強2点、例題 Q1 と似た作りの確認問題 | ccaf/notes/01-agentic-architecture/programmatic-workflow-enforcement.md |
+| 8 | study | ccaf 1. 人への引き継ぎの要約と、複数の用件を含む依頼の分解 | session_017JP5BnVZNgfCi6tsogPb2e | work/ccaf/structured-handoff-request-decomposition | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/01-agentic-architecture/structured-handoff-request-decomposition.md |
 | 9 | study | ccaf 1. Agent SDK のフックによるツール呼び出しの遮断とデータの正規化 | session_017JP5Bp96N8dPjB2McPcf3d | work/ccaf/sdk-hooks-interception | 統合済み | OK | ccaf/notes/01-agentic-architecture/sdk-hooks-interception.md |
-| 10 | study | ccaf 1. タスク分解の選び方: プロンプトチェーンと動的な分解 | session_017JP5Bn9XrnVyYGB8fdN7zt | work/ccaf/prompt-chaining-vs-dynamic-decomposition | 作業中 | — | ccaf/notes/01-agentic-architecture/prompt-chaining-vs-dynamic-decomposition.md |
-| 11 | study | ccaf 1. セッションの再開とフォーク | session_017JP5BpK39wy3M5FzfYiNph | work/ccaf/session-resume-fork | 作業中 | — | ccaf/notes/01-agentic-architecture/session-resume-fork.md |
+| 10 | study | ccaf 1. タスク分解の選び方: プロンプトチェーンと動的な分解 | session_017JP5Bn9XrnVyYGB8fdN7zt | work/ccaf/prompt-chaining-vs-dynamic-decomposition | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/01-agentic-architecture/prompt-chaining-vs-dynamic-decomposition.md |
+| 11 | study | ccaf 1. セッションの再開とフォーク | session_017JP5BpK39wy3M5FzfYiNph | work/ccaf/session-resume-fork | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/01-agentic-architecture/session-resume-fork.md |
 | 12 | study | ccaf 2. ツールの説明文と境界の設計 | session_017JP5BnRSp2vGdqm2eJ2nEZ | work/ccaf/tool-descriptions-boundaries | 作業中 | — | ccaf/notes/02-tool-design-mcp/tool-descriptions-boundaries.md |
-| 13 | study | ccaf 2. MCP ツールの構造化エラー応答 | — | work/ccaf/mcp-structured-errors | 待ち | — | ccaf/notes/02-tool-design-mcp/mcp-structured-errors.md |
-| 14 | study | ccaf 2. エージェントへのツールの割り振り | — | work/ccaf/tool-distribution | 待ち | — | ccaf/notes/02-tool-design-mcp/tool-distribution.md |
-| 15 | study | ccaf 2. tool_choice の設定 | — | work/ccaf/tool-choice | 待ち | — | ccaf/notes/02-tool-design-mcp/tool-choice.md |
-| 16 | study | ccaf 2. Claude Code と Agent SDK への MCP サーバーの組み込み | — | work/ccaf/mcp-server-integration | 待ち | — | ccaf/notes/02-tool-design-mcp/mcp-server-integration.md |
+| 13 | study | ccaf 2. MCP ツールの構造化エラー応答 | session_017JP5BpcXdWZWkcFNSqS865 | work/ccaf/mcp-structured-errors | 作業中 | — | ccaf/notes/02-tool-design-mcp/mcp-structured-errors.md |
+| 14 | study | ccaf 2. エージェントへのツールの割り振り | session_017JP5BnBQxvzNAnaMM6khoR | work/ccaf/tool-distribution | 作業中 | — | ccaf/notes/02-tool-design-mcp/tool-distribution.md |
+| 15 | study | ccaf 2. tool_choice の設定 | session_017JP5BpAuWt4BUHosNqA5i1 | work/ccaf/tool-choice | 作業中 | — | ccaf/notes/02-tool-design-mcp/tool-choice.md |
+| 16 | study | ccaf 2. Claude Code と Agent SDK への MCP サーバーの組み込み | session_017JP5BpsNMKWUXXkHy3QmPG | work/ccaf/mcp-server-integration | 作業中 | — | ccaf/notes/02-tool-design-mcp/mcp-server-integration.md |
 | 17 | study | ccaf 2. MCP のツールとリソースの使い分けと、既存の MCP サーバーの活用 | — | work/ccaf/mcp-resources-vs-tools | 待ち | — | ccaf/notes/02-tool-design-mcp/mcp-resources-vs-tools.md |
 | 18 | study | ccaf 2. 組み込みツール | — | work/ccaf/builtin-tools-incremental-exploration | 待ち | — | ccaf/notes/02-tool-design-mcp/builtin-tools-incremental-exploration.md |
 | 19 | study | ccaf 3. CLAUDE.md の階層 | — | work/ccaf/claude-md-hierarchy | 待ち | — | ccaf/notes/03-claude-code/claude-md-hierarchy.md |
