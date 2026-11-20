@@ -3,7 +3,7 @@
 > ドメイン: 3. Claude Code の設定とワークフロー（20%） ／ 更新: 2026-11-20
 
 ## 3行まとめ
-- CI では `claude -p`（`--print`、非対話モード（non-interactive mode））で動かす。プロンプトを処理し、結果を stdout に出して終わる
+- CI では `claude -p`（`--print`、非対話モード（non-interactive mode））で動かす。対話画面を開かずに応答を出力する
 - 結果をプログラムが読むなら `--output-format json` と `--json-schema` を組み合わせる。人がログで読むだけなら既定の `text` で足りる
 - 決め手: 「止まらない」は `-p`、「パースできる」は `json` + `--json-schema`、「勝手に危ないことをしない」は `--allowedTools` / `--permission-mode`
 
@@ -42,7 +42,8 @@ jq -e '.structured_output.findings' out.json   # 無ければ失敗させる
 ```
 
 - GitHub Actions: `anthropics/claude-code-action@v1` に `prompt` を渡すと自動実行（automation mode）。CLI のフラグは `claude_args` で渡し、キーは `anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}` のように secrets を参照する
-- Action で `--json-schema` を使ったときに `structured_output` を後続のステップへどう渡すかは未確認
+- Action の `claude_args` に `--json-schema` を渡すと、全フィールドが1つの JSON 文字列としてアクションの出力 `structured_output` に入る。後続のステップは `fromJSON(steps.<id>.outputs.structured_output).<欄>` で読むか、`env:` で渡して jq で取り出す
+- `${{ }}` をスクリプトに直接埋め込まない。引用符などでスクリプトが壊れたり、コマンドとして実行されたりするので `env:` 経由で渡す
 
 ## 試験で問われそうなポイント
 - レビュー結果を PR のインラインコメントとして自動投稿したい → `--output-format json` + `--json-schema` で形を決め、`structured_output` を読む
@@ -58,7 +59,7 @@ jq -e '.structured_output.findings' out.json   # 無ければ失敗させる
 - `structured_output` が無いことがある（Claude が依頼を断ったときなど）。使う前に有無を確かめる
 - 不正なスキーマは実行前に `Error: --json-schema is not a valid JSON Schema` で終わる（v2.1.329 で確かめた）。`format`（例: `email`）は注釈扱いで検証されない
 - 終了コード: 成功は 0、失敗は 0 以外。ただし実行中の失敗（認証が無いなど）は stdout の結果として出る
-- `-p` で許可していないツールは、入力待ちで止まるのではなく拒否される（v2.1.302 以降、`-p` は Manual mode で始まる）。「何もせずに終わった」ときは許可を疑う
+- `-p` で許可していないツールは、入力待ちで止まるのではなく拒否される（v2.1.302 以降、`--permission-mode` や `permissions.defaultMode` で何も設定していなければ `-p` は Manual mode で始まる）。「何もせずに終わった」ときは許可を疑う
 - `--bare` は CLAUDE.md も読まない。CLAUDE.md の規約を CI で効かせたいなら `--bare` を外すか、`--append-system-prompt-file` で渡す
 - `-p` は信頼の確認ダイアログを出さない。プロジェクトの `.claude/settings.json` の hooks や `.mcp.json` のサーバーも動く
 - ガイドに出てくるのは `-p`、`--output-format json`、`--json-schema` まで。`--bare` や `--permission-prompts none` は現行ドキュメントにある追加の仕組み
@@ -75,4 +76,5 @@ jq -e '.structured_output.findings' out.json   # 無ければ失敗させる
 - [Run Claude Code programmatically（Basic usage、Start faster with bare mode、Get structured output、Auto-approve tools）](https://code.claude.com/docs/en/headless)（公式）
 - [CLI reference（CLI flags）](https://code.claude.com/docs/en/cli-reference)（公式）
 - [Claude Code GitHub Actions（Interactive and automation modes、Pass CLI arguments）](https://code.claude.com/docs/en/github-actions)（公式）
+- [claude-code-action docs/usage.md（Structured Outputs）](https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md)（公式）
 - [Claude Certified Architect – Foundations Exam Guide v1.1（Task Statement 3.6）](https://cc.sj-cdn.net/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1794946250/Claude_Certified_Architect_-_Foundations_Exam_Guide.pdf)（公式）
