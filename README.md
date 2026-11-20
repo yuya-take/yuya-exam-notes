@@ -43,4 +43,6 @@
 - **フック:** Claude が `git commit` / `git push` するとき、機微情報をパターンで検査して止める
 - **GitHub Actions:** PR と `main` への push で、機微情報の検査とノートのチェックを行う（Claude 以外のコミットも対象）
 
-詳しい規則は [CLAUDE.md](CLAUDE.md)。
+詳しい規則は [CLAUDE.md](https://github.com/yuya-take/yuya-exam-notes/blob/main/CLAUDE.md)。
+
+ノートは GitHub Pages でも読める（`main` に入ると `.github/workflows/pages.yml` が MkDocs でサイトを作り直す）。
