@@ -94,7 +94,7 @@
 - [ ] 組み込みツール（Read / Write / Edit / Bash / Grep / Glob）の選び方と、コードを段階的に読む進め方（2.5） → [ノート](notes/02-tool-design-mcp/builtin-tools-incremental-exploration.md)
 
 ### 3. Claude Code の設定とワークフロー（20%）
-- [ ] CLAUDE.md の階層（ユーザー / プロジェクト / ディレクトリ）と /memory での確認（3.1）
+- [ ] CLAUDE.md の階層（ユーザー / プロジェクト / ディレクトリ）と /memory での確認（3.1） → [ノート](notes/03-claude-code/claude-md-hierarchy.md)
 - [ ] CLAUDE.md のモジュール化（@import と .claude/rules/、3.1） → [ノート](notes/03-claude-code/claude-md-modularization.md)
 - [ ] パス指定ルールによる規約の条件付き読み込み（paths の glob パターン、3.3） → [ノート](notes/03-claude-code/path-scoped-rules.md)
 - [ ] カスタムスラッシュコマンドとスキルのスコープ、CLAUDE.md との使い分け（.claude/commands/、.claude/skills/、3.2）
