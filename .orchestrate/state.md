@@ -20,7 +20,7 @@
 | 11 | study | ccaf 1. セッションの再開とフォーク | session_017JP5BpK39wy3M5FzfYiNph | work/ccaf/session-resume-fork | 統合済み | OK | ccaf/notes/01-agentic-architecture/session-resume-fork.md |
 | 12 | study | ccaf 2. ツールの説明文と境界の設計 | session_017JP5BnRSp2vGdqm2eJ2nEZ | work/ccaf/tool-descriptions-boundaries | 差し戻し中 | 範囲・形 OK。事実: 根拠なし3件、抜け1件、例題 Q2 と重なり | ccaf/notes/02-tool-design-mcp/tool-descriptions-boundaries.md |
 | 13 | study | ccaf 2. MCP ツールの構造化エラー応答 | session_017JP5BpcXdWZWkcFNSqS865 | work/ccaf/mcp-structured-errors | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/02-tool-design-mcp/mcp-structured-errors.md |
-| 14 | study | ccaf 2. エージェントへのツールの割り振り | session_017JP5BnBQxvzNAnaMM6khoR | work/ccaf/tool-distribution | 差し戻し中 | 範囲・形 OK。事実: 誤りなし。例題 Q9 と同じ組み立ての確認問題 | ccaf/notes/02-tool-design-mcp/tool-distribution.md |
+| 14 | study | ccaf 2. エージェントへのツールの割り振り | session_017JP5BnBQxvzNAnaMM6khoR | work/ccaf/tool-distribution | 統合済み | OK | ccaf/notes/02-tool-design-mcp/tool-distribution.md |
 | 15 | study | ccaf 2. tool_choice の設定 | session_017JP5BpAuWt4BUHosNqA5i1 | work/ccaf/tool-choice | 差し戻し中 | 範囲・形 OK。事実: 誤りなし。言い回しの精度2点 | ccaf/notes/02-tool-design-mcp/tool-choice.md |
 | 16 | study | ccaf 2. Claude Code と Agent SDK への MCP サーバーの組み込み | session_017JP5BpsNMKWUXXkHy3QmPG | work/ccaf/mcp-server-integration | 差し戻し中 | 範囲・形 OK。事実: 軽微な誤り1件、担当の付け替え1件 | ccaf/notes/02-tool-design-mcp/mcp-server-integration.md |
 | 17 | study | ccaf 2. MCP のツールとリソースの使い分けと、既存の MCP サーバーの活用 | session_017JP5Bpc4LeXGAyme2VNiie | work/ccaf/mcp-resources-vs-tools | 作業中 | — | ccaf/notes/02-tool-design-mcp/mcp-resources-vs-tools.md |
