@@ -106,7 +106,7 @@
 
 ### 4. プロンプトエンジニアリングと構造化出力（20%）
 - [ ] 明確な基準で誤検知を減らすプロンプト（報告する・しないの基準、重大度の定義、4.1） → [ノート](notes/04-prompt-engineering/explicit-criteria-false-positives.md)
-- [ ] few-shot プロンプティング（曖昧なケースの判断、出力形式の統一、抽出の精度、4.2）
+- [ ] few-shot プロンプティング（曖昧なケースの判断、出力形式の統一、抽出の精度、4.2） → [ノート](notes/04-prompt-engineering/few-shot-prompting.md)
 - [ ] tool_use と JSON スキーマによる構造化出力（構文エラーは防げるが意味の誤りは防げない、4.3）
 - [ ] 抽出用スキーマの設計（必須と任意、nullable、enum の "other"＋詳細と "unclear"、4.3）
 - [ ] 検証・再試行・フィードバックのループ（エラーを添えた再試行、再試行が効かない場合、detected_pattern、4.4）
