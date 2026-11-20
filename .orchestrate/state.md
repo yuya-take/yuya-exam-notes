@@ -47,7 +47,7 @@
 | 38 | study | ccaf 5. マルチエージェントでのエラーの伝え方 | session_017JP5Bo96bKwXe9kkzH81tG | work/ccaf/multiagent-error-propagation | 統合済み | OK | ccaf/notes/05-context-reliability/multiagent-error-propagation.md |
 | 39 | study | ccaf 5. 大きなコードベースの探索でのコンテキスト管理 | session_017JP5BmxLuJhZGJuT6Df7Cp | work/ccaf/large-codebase-context | 統合済み | OK | ccaf/notes/05-context-reliability/large-codebase-context.md |
 | 40 | study | ccaf 5. 人によるレビューの流れと確信度の較正 | session_017JP5BqVM4CBTZjXYA5CPse | work/ccaf/human-review-confidence-calibration | 統合済み | OK | ccaf/notes/05-context-reliability/human-review-confidence-calibration.md |
-| 41 | study | ccaf 5. 複数ソースの統合で出典を保ち、矛盾と時期の違いを扱う | session_017JP5BosN4tMtxe8YrgorA7 | work/ccaf/information-provenance | 作業中 | — | ccaf/notes/05-context-reliability/information-provenance.md |
+| 41 | study | ccaf 5. 複数ソースの統合で出典を保ち、矛盾と時期の違いを扱う | session_017JP5BosN4tMtxe8YrgorA7 | work/ccaf/information-provenance | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/05-context-reliability/information-provenance.md |
 
 ## 未回答の連絡
 - なし
