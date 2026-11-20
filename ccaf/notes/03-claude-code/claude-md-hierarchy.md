@@ -17,8 +17,8 @@
 | プロジェクト（project-level） | `./CLAUDE.md` または `./.claude/CLAUDE.md` | チーム全員（バージョン管理で共有） | 起動時 |
 | ディレクトリ（directory-level） | サブディレクトリの `CLAUDE.md` | チーム全員（リポジトリに入れた場合） | そのサブディレクトリのファイルを読む・書くときに、必要になってから |
 
-- 起動したディレクトリより上にある CLAUDE.md は、起動時に読み込まれる
-- 公式ドキュメントには、ほかに組織全体の managed policy（IT 部門が配る、除外できない CLAUDE.md）と、`./CLAUDE.local.md`（自分だけのプロジェクト用。`.gitignore` に入れる）もある
+- 起動したディレクトリと、それより上にある CLAUDE.md は、起動時に読み込まれる
+- 公式ドキュメントには、ほかに組織全体の managed policy（IT 部門が配る CLAUDE.md。`claudeMdExcludes` では除外できない）と、`./CLAUDE.local.md`（自分だけのプロジェクト用。`.gitignore` に入れる）もある
 
 ### 読み込みの順序
 
@@ -36,7 +36,8 @@ flowchart LR
 |---|---|
 | メモリファイルの一覧を見て、開いて直す | `/memory` |
 | 起動時に読み込まれたファイルを確かめる | `/context all` の Memory files の一覧 |
-| いつ・なぜ読み込まれたかを記録する | `InstructionsLoaded` フック |
+| サブディレクトリの CLAUDE.md が読み込まれたかを見る | ターミナルに出るパス付きの `Loaded` の行（`/context` の一覧には出ない） |
+| いつ・なぜ読み込まれたかを記録する | `InstructionsLoaded` フック（サブディレクトリの分は読み込み理由 `nested_traversal`） |
 
 ### 分割の仕組み（概要だけ）
 - `@path` の import と `.claude/rules/` で CLAUDE.md を分ける → 別ノート（CLAUDE.md のモジュール化）
@@ -66,5 +67,6 @@ flowchart LR
 
 ## 出典
 - [How Claude remembers your project（Memory）](https://code.claude.com/docs/en/memory)（公式）
+- [Hooks reference の InstructionsLoaded](https://code.claude.com/docs/en/hooks)（公式）
 - [Claude Certified Architect – Foundations Exam Guide v1.1 の Task Statement 3.1](https://cc.sj-cdn.net/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1794946250/Claude_Certified_Architect_-_Foundations_Exam_Guide.pdf)（公式）
 - 未確認: ディレクトリ階層の CLAUDE.md が `/memory` の一覧に出るかどうか（公式ドキュメントに記述が無い）
