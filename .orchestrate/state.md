@@ -37,7 +37,7 @@
 | 28 | study | ccaf 4. 明確な基準で誤検知を減らすプロンプト | session_017JP5BmppTkoYdcQ1T9LAaf | work/ccaf/explicit-criteria-false-positives | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/04-prompt-engineering/explicit-criteria-false-positives.md |
 | 29 | study | ccaf 4. few-shot プロンプティング | session_017JP5BnfzgQs95p4w549BJk | work/ccaf/few-shot-prompting | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/04-prompt-engineering/few-shot-prompting.md |
 | 30 | study | ccaf 4. tool_use と JSON スキーマによる構造化出力 | session_017JP5BpJ2dYTqowegSVWMRe | work/ccaf/tool-use-json-schema | 作業中 | — | ccaf/notes/04-prompt-engineering/tool-use-json-schema.md |
-| 31 | study | ccaf 4. 抽出用スキーマの設計 | — | work/ccaf/extraction-schema-design | 待ち | — | ccaf/notes/04-prompt-engineering/extraction-schema-design.md |
+| 31 | study | ccaf 4. 抽出用スキーマの設計 | session_017JP5BqUNGBXx1M3njri7TU | work/ccaf/extraction-schema-design | 作業中 | — | ccaf/notes/04-prompt-engineering/extraction-schema-design.md |
 | 32 | study | ccaf 4. 検証・再試行・フィードバックのループ | — | work/ccaf/validation-retry-loop | 待ち | — | ccaf/notes/04-prompt-engineering/validation-retry-loop.md |
 | 33 | study | ccaf 4. Message Batches API を使うバッチ処理の設計 | — | work/ccaf/message-batches-api | 待ち | — | ccaf/notes/04-prompt-engineering/message-batches-api.md |
 | 34 | study | ccaf 4. 独立したインスタンスによるレビューと、複数パスのレビュー | — | work/ccaf/independent-multipass-review | 待ち | — | ccaf/notes/04-prompt-engineering/independent-multipass-review.md |
