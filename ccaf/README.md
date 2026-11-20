@@ -82,7 +82,7 @@
 - [ ] 人への引き継ぎの要約と、複数の用件を含む依頼の分解（Structured handoff、1.4） → [ノート](notes/01-agentic-architecture/structured-handoff-request-decomposition.md)
 - [ ] Agent SDK のフックによるツール呼び出しの遮断とデータの正規化（PostToolUse など、1.5） → [ノート](notes/01-agentic-architecture/sdk-hooks-interception.md)
 - [ ] タスク分解の選び方: プロンプトチェーンと動的な分解（Prompt chaining vs dynamic decomposition、1.6） → [ノート](notes/01-agentic-architecture/prompt-chaining-vs-dynamic-decomposition.md)
-- [ ] セッションの再開とフォーク（--resume、fork_session、要約から始め直す判断、1.7）
+- [ ] セッションの再開とフォーク（--resume、fork_session、要約から始め直す判断、1.7） → [ノート](notes/01-agentic-architecture/session-resume-fork.md)
 
 ### 2. ツール設計と MCP の組み込み（18%）
 - [ ] ツールの説明文と境界の設計（似たツールの区別、改名と分割、2.1）
