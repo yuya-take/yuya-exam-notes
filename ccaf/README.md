@@ -75,7 +75,7 @@
 ### 1. エージェントの構成とオーケストレーション（27%）
 - [ ] エージェントループと stop_reason による制御（Agentic loop: tool_use / end_turn、1.1） → [ノート](notes/01-agentic-architecture/agentic-loop-stop-reason.md)
 - [ ] コーディネーターとサブエージェントのハブ＆スポーク構成（Coordinator-subagent pattern、1.2）
-- [ ] 調査範囲の分割と、統合結果の抜けを埋める反復ループ（Scope partitioning & iterative refinement、1.2）
+- [ ] 調査範囲の分割と、統合結果の抜けを埋める反復ループ（Scope partitioning & iterative refinement、1.2） → [ノート](notes/01-agentic-architecture/scope-partitioning-iterative-refinement.md)
 - [ ] Task ツールによるサブエージェントの起動と AgentDefinition（allowedTools、並列起動、1.3）
 - [ ] サブエージェントへのコンテキストの渡し方（明示的な受け渡しと出典の保持、1.3）
 - [ ] ワークフローの順序をプログラムで強制する（前提ゲートとプロンプト指示の違い、1.4）
