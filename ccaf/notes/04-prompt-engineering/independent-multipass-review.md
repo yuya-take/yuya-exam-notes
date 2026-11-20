@@ -12,7 +12,7 @@
 ### 自己レビューの限界（self-review limitations）
 - 生成したセッションは自分の推論を覚えているので、自分の判断を疑いにくい
 - 「見直して」と指示する・拡張思考（extended thinking、答える前に長く考える機能）を足すだけでは、別インスタンスほど細かい問題を拾えない（ガイドの記述）
-- Claude Code の `/code-review` は、会話を見ていない新しいサブエージェント（fresh subagent）で差分を見る。作った推論に引きずられない
+- Claude Code の `/code-review` は、ターミナルでは会話を見ていない新しいサブエージェント（fresh subagent）で差分を見る。作った推論に引きずられない
 
 ### 複数パスのレビューの流れ
 
@@ -36,19 +36,20 @@ flowchart LR
 | 苦手 | ファイルをまたぐ問題は見えない | 細部の確認は浅くなる |
 
 ### 確信度で振り分ける検証のパス
-- 指摘ごとにモデル自身の確信度（confidence）と重大度を付けさせ、低いものを人の確認へ回す（ガイドの「calibrated review routing」）
+- 指摘ごとにモデル自身の確信度（confidence）を付けさせ、較正したレビューの振り分け（calibrated review routing）に使う（ガイド 4.6）
 - 公式のモデル別ガイドの推奨: 別の検証段階があるなら、発見の段階では確信度で絞らず全部報告させ、確信度と重大度を添えさせる
-- 「発見は網羅、絞り込みは後段」と役割を分けると、見落とし（recall の低下）を防げる
+- 確信度の低いものを人の確認へ回す流れは 5.5 の論点（人によるレビューと確信度の較正）
+- 確信度での絞り込みを発見の段階から外すと、よく効く（公式）。効いたかは評価データで recall（見落としの少なさ）や F1 を測って確かめる
 
 ## 試験で問われそうなポイント
 - 生成したコードの見直しで細かいバグが漏れる → 生成時の推論を渡さない2つ目のインスタンスにレビューさせる
-- 多数のファイルの1回のレビューで、深さがばらつく・同じコードに逆の指摘が出る → ファイル単位＋横断のパスに分ける
+- 大きな複数ファイルのレビューで注意の分散（attention dilution）や矛盾した指摘（contradictory findings）を避けたい → ファイル単位＋横断のパスに分ける
 - 呼び出し元と呼び出し先で契約がずれるような問題 → 横断のパスの担当
 - 発見の段階で「確信度の高いものだけ」と絞ると、本物のバグまで落ちる → 発見は網羅し、確信度は後段の振り分けに使う
 
 ## 間違えやすいところ
 - 書いたのと同じセッションで「厳しく自己レビューして」と頼むのはアンチパターン。指示を強めても推論の持ち越しは消えない
-- 多数のファイルを1回のパスに詰めるのもアンチパターン。見る深さがばらつき、同じ書き方に逆の指摘が出る
+- 大きなレビューを1回のパスにまとめるのもアンチパターン。注意が分散し、指摘どうしが矛盾しやすい
 - 確信度は「振り分け」に使う。4.1 の「確信度の高いものだけ報告して」で精度を上げる、とは別（4.1 では明確な基準の方が効く）
 - 自己申告の確信度は較正（calibration、ラベル付きデータで閾値を合わせること）しないと当てにならない（5.2・5.5 の論点）
 - ガイドの「拡張思考より別インスタンスの方が効く」、「ファイル単位＋横断のパス」は、公式ドキュメントで同じ形の記述は未確認（ガイドの記述が根拠）
@@ -62,9 +63,10 @@ flowchart LR
    <details><summary>答え</summary>発見の段階で絞ると、確信度は低いが本物のバグが消える。発見の段階では全部出させ、指摘ごとに確信度と重大度を付けさせて、後段の振り分けに使う。</details>
 
 ## 出典
-- Claude Certified Architect – Foundations Exam Guide v1.1（公式 PDF、Task Statement 4.6、1.6、3.6、4.1）
-- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices)（公式。`/code-review` は会話を見ていない新しいサブエージェントで見る、別セッションが一番手軽な独立したレビュアー）
-- [Code review（ローカルの `/code-review`）](https://code.claude.com/docs/en/code-review-local)（公式。独自のコンテキストを持つサブエージェントで動く）
-- [Prompting Claude Opus 4.8 – Code review harnesses](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8)（公式。発見の段階は網羅、確信度と重大度を添え、絞り込みは後段）
+- Claude Certified Architect – Foundations Exam Guide v1.1（公式 PDF、Task Statement 4.6、1.6、3.6、4.1、5.5）
+- [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices)（公式。ターミナルでは `/code-review` は会話を見ていない新しいサブエージェントで見る、別セッションが一番手軽な独立したレビュアー）
+- [Code review（ローカルの `/code-review`）](https://code.claude.com/docs/en/code-review-local)（公式。ターミナルのセッションでは、独自のコンテキストを持つサブエージェントで動く）
+- [Prompting Claude Opus 4.8 – Code review harnesses](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8)（公式。発見の段階は網羅、確信度と重大度を添え、絞り込みは後段。評価データで recall・F1 を確かめる）
+- [Prompting Claude Sonnet 5 – Code review harnesses](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5)（公式。同じ趣旨の節）
 - [Prompting best practices – Chain complex prompts](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)（公式。下書き → 基準でレビュー → 直すのチェーン）
 - 関連: [タスク分解の選び方](../01-agentic-architecture/prompt-chaining-vs-dynamic-decomposition.md)、[CI での自動レビューとテスト生成](../03-claude-code/ci-review-test-quality.md)
