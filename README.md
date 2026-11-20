@@ -45,4 +45,4 @@
 
 詳しい規則は [CLAUDE.md](https://github.com/yuya-take/yuya-exam-notes/blob/main/CLAUDE.md)。
 
-ノートは GitHub Pages でも読める（`main` に入ると `.github/workflows/pages.yml` が MkDocs でサイトを作り直す）。
+ノートは GitHub Pages（https://yuya-take.github.io/yuya-exam-notes/）でも読める（`main` に入ると `.github/workflows/pages.yml` が MkDocs でサイトを作り直す）。
