@@ -67,14 +67,62 @@ Agent SDK では、`mcpServers` オプションでコードから渡すか、`se
 
 ## 確認問題
 
-??? question "Q1. 社内の在庫 DB を引く MCP サーバーを、開発チーム全員の Claude Code で使えるようにしたい。接続には各自の個人トークンが要る。どう設定する？"
-    リポジトリ直下の `.mcp.json` にサーバーを書いてコミットする。トークンは `"Authorization": "Bearer ${INVENTORY_TOKEN}"` のように環境変数の展開で参照し、値は各自の環境変数に置く。トークンを直接書くと秘密がリポジトリに残る。各自の `~/.claude.json` に書かせると設定がばらつく。
+**Q1.** 開発チームが Claude Code でコードを書くときに、社内の在庫 DB を引く MCP サーバーを全員で使いたい。接続には開発者ごとの個人トークンが要る。最も適切な設定はどれか。（1つ選べ）
+{ .quiz-q }
 
-??? question "Q2. ある開発者が、評価中の翻訳用 MCP サーバーを自分の全プロジェクトで試したい。チームのリポジトリには入れたくない。どのスコープにする？"
-    user スコープ（`~/.claude.json`、`claude mcp add --scope user`）。全プロジェクトで効き、共有されない。project スコープだとチームに配られ、local だとそのプロジェクトでしか使えない。
+<div class="quiz" data-answer="B" markdown>
 
-??? question "Q3. `.mcp.json` の `wiki` サーバーと、自分の local スコープの `wiki` サーバーが別の URL を指している。どちらが使われる？"
-    local スコープの定義。優先順位は local → project → user だ。項目は混ざらず、勝った側の定義をまるごと使う。
+- A. サーバーの定義を手順書にまとめ、各自の `~/.claude.json` に書き写してもらう
+- B. `.mcp.json` に定義を書いてコミットし、トークンは `${INVENTORY_TOKEN}` で参照して値は各自の環境変数に置く
+- C. `.mcp.json` に定義とチーム共用のトークンを直接書き、リポジトリにコミットする
+- D. 各自が `--scope` を付けずに `claude mcp add` を実行し、自分の環境に追加する
+
+</div>
+
+??? success "答えと解説"
+    **正解: B。** 共有するサーバーは project スコープの `.mcp.json` で配り、秘密は `${VAR}` の展開で各自の環境から渡す。
+
+    - A: 手で書き写すと、人によって設定がばらつく
+    - C: `.mcp.json` はリポジトリに入るので、トークンの値がリポジトリに残る
+    - D: `--scope` を省くと local になり、本人のそのプロジェクトでしか効かない。チームには配られない
+
+**Q2.** ある開発者が、評価中の翻訳用 MCP サーバーを、自分が触るすべてのプロジェクトの Claude Code で試したい。チームのリポジトリには入れたくない。最も適切な追加のしかたはどれか。（1つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="D" markdown>
+
+- A. 今のリポジトリの `.mcp.json` に足し、試し終わったら消してコミットし直す
+- B. `--scope` を付けずに `claude mcp add` で、今のプロジェクトに追加する
+- C. 今のリポジトリの `.mcp.json` に足し、`.gitignore` に入れてコミットされないようにする
+- D. `claude mcp add --scope user` で、`~/.claude.json` に追加する
+
+</div>
+
+??? success "答えと解説"
+    **正解: D。** user スコープは自分の全プロジェクトで効き、チームとは共有されない。
+
+    - A: project スコープはチームに配るためのもので、試す間も共有ファイルを汚す
+    - B: 既定の local スコープは、そのプロジェクトだけで効く。全プロジェクトでは使えない
+    - C: `.mcp.json` が効くのはそのプロジェクトだけなので、ほかのプロジェクトでは使えない
+
+**Q3.** チームの `.mcp.json` に、`url` と認証用の `headers` を持つ `wiki` サーバーがある。ある開発者が、`.mcp.json` は変えずに、自分だけ `wiki` をステージング環境の URL に向けて試したい。最も適切な設定はどれか。（1つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="A" markdown>
+
+- A. local スコープに同じ名前の `wiki` を作り、ステージングの `url` と必要な `headers` をすべて書く
+- B. user スコープに同じ名前の `wiki` を作り、ステージングの `url` と必要な `headers` をすべて書く
+- C. local スコープに同じ名前の `wiki` を作り、`url` だけを書く。`headers` は `.mcp.json` のものが使われる
+- D. `.mcp.json` の `url` を書き換え、その変更だけはコミットしないように気をつける
+
+</div>
+
+??? success "答えと解説"
+    **正解: A。** 同じ名前なら local → project → user の順で優先し、勝った側の定義をまるごと使う。
+
+    - B: user スコープは project スコープより優先度が低いので、`.mcp.json` の定義が使われる
+    - C: 項目は混ざらない。local の定義に `headers` が無ければ、`headers` 無しで接続する
+    - D: 共有ファイルを手元で書き換えることになり、`.mcp.json` を変えないという条件に反する
 
 ## 出典
 - [Connect Claude Code to tools via MCP](https://code.claude.com/docs/en/mcp)（公式。スコープ、優先順位、環境変数の展開、承認、tool search）

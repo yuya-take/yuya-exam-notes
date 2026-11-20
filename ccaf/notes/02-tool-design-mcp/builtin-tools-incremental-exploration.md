@@ -71,17 +71,63 @@ flowchart LR
 
 ## 確認問題
 
-??? question "Q1. 料金計算の処理で「negative quantity」というエラーが出る。初めて触るリポジトリで原因の箇所を探すとき、最初にすることは？"
-    Grep でエラー文を探し、投げている箇所（入口）を見つける。そこから Read でその関数と import 先をたどる。全ファイルを先に読むのはコンテキストの無駄だ。
+**Q1.** Claude Code で、初めて触るリポジトリのバグを直している。料金計算の処理で「negative quantity」というエラーが出る。原因の箇所を探すとき、最初の進め方として最も適切なものはどれか。（1つ選べ）
+{ .quiz-q }
 
-??? question "Q2. 設定ファイルで `timeout: 30` が5か所にあり、そのうち1か所だけを 60 にしたい。Edit が一意に一致せず失敗した。どうする？"
-    前後の行を含めて `old_string` を1か所に絞る。絞れなければ Read で全体を読み、該当箇所だけ直した全文を Write で書く。同じ Edit を繰り返さない。
+<div class="quiz" data-answer="D" markdown>
 
-??? question "Q3. `utils/http.ts` が `fetchJson` を `getJson` という名前で再エクスポートしている。`fetchJson` の利用箇所を漏れなく洗い出すには？"
-    `utils/http.ts` のエクスポート名（`getJson` など）を先にすべて確かめ、元の名前と再エクスポート名のそれぞれで Grep する。元の名前だけでは、別名経由の呼び出しを見落とす。
+- A. `src` の下の全ファイルを先に Read し、全体を把握してから原因を探す
+- B. Glob で `**/*billing*` に一致するファイルを集め、見つかった順に Read する
+- C. 入口らしい `main.ts` を Read し、import 先を最初から順にすべてたどる
+- D. Grep でエラー文を探して投げている箇所を見つけ、そこから Read で import 先をたどる
 
-??? question "Q4. `src` の下にある `*.stories.tsx` をすべて一覧にしたい。Grep と Glob のどちらを使う？"
-    Glob（`src/**/*.stories.tsx`）。ファイル名のパターンで探すからだ。Grep は中身の検索になる。
+</div>
+
+??? success "答えと解説"
+    **正解: D。** Grep で中身から入口を見つけ、Read で流れをたどる段階的な読み方をする。
+
+    - A: 読んだファイルはすべてコンテキストに積み上がる。調べ始めに全部読むのは無駄だ
+    - B: Glob はパス名しか見ない。エラー文はファイルの中身にあるので、その場所に届かない
+    - C: エラーと関係の無い流れまで読むことになる。入口はエラー文から Grep で探す
+
+**Q2.** 設定ファイルに `timeout: 30` が5か所あり、そのうち1か所だけを 60 にしたい。Claude Code の Edit が「複数箇所に一致」で失敗した。次の対応として適切なものはどれか。（2つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="A,C" markdown>
+
+- A. 前後の行を含めて `old_string` を広げ、1か所だけに一致させてから Edit する
+- B. `replace_all: true` を付けて、同じ `old_string` で Edit をやり直す
+- C. 文脈を足しても絞れなければ、Read で全体を読み、1か所だけ直した全文を Write で書く
+- D. 一時的な失敗とみて、同じ `old_string` のまま Edit を何度か繰り返す
+- E. `old_string` を正規表現にして、目的の1か所だけに一致させる
+
+</div>
+
+??? success "答えと解説"
+    **正解: A と C。** Edit は `old_string` がちょうど1回だけ現れるときに通るので、文脈で絞るか、絞れなければ Read＋Write に切り替える。
+
+    - B: `replace_all: true` は全部を同じに直すときのもので、5か所すべてが 60 になる
+    - D: 一致が複数という状態は変わらないので、何度繰り返しても失敗する
+    - E: Edit は完全一致で置き換え、正規表現もあいまい一致も使わない
+
+**Q3.** `utils/http.ts` が、`fetchJson` を `getJson` という別名で再エクスポートしている。`fetchJson` を変える前に、利用箇所を漏れなく洗い出したい。最も適切な進め方はどれか。（1つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="B" markdown>
+
+- A. `fetchJson` の名前で Grep し、見つかった箇所をそのまま一覧にする
+- B. `utils/http.ts` のエクスポート名をすべて洗い出し、名前ごとに Grep する
+- C. Glob で `**/*http*.ts` に一致するファイルを集め、それを利用箇所とみなす
+- D. 全ファイルを Read して、`fetchJson` と `getJson` が出てくる箇所を探す
+
+</div>
+
+??? success "答えと解説"
+    **正解: B。** ラッパーモジュールは、先にエクスポート名を列挙してから、名前ごとに利用箇所を探す。
+
+    - A: 元の名前だけでは、`getJson` 経由の呼び出しを見落とす
+    - C: Glob はパス名で探すだけで、中身で使っているかは分からない
+    - D: 全ファイルを読むとコンテキストに積み上がる。中身の検索は Grep に任せる
 
 ## 出典
 - [Claude Certified Architect – Foundations Exam Guide v1.1（タスクステートメント 2.5）](https://cc.sj-cdn.net/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1794946250/Claude_Certified_Architect_-_Foundations_Exam_Guide.pdf)（公式）

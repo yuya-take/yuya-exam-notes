@@ -76,14 +76,62 @@ jq -e '.structured_output.findings' out.json   # 無ければ失敗させる
 
 ## 確認問題
 
-??? question "Q1. 毎晩のジョブで古くなった依存パッケージを調べさせ、後段のスクリプトがパッケージごとに issue を作る。出力の書き方が毎回少しずつ違い、スクリプトがよく失敗する。どう直す？"
-    `--output-format json` と、`packages`（name・current・latest を持つオブジェクトの配列）を必須にした `--json-schema` を付け、`structured_output.packages` を読む。読む前に `structured_output` があるかを確かめる。プロンプトで「JSON で答えて」と頼むだけでは、形は保証されない。
+**Q1.** 開発基盤チームが、毎晩の CI ジョブで `claude -p` に古くなった依存パッケージを調べさせ、後段のスクリプトがパッケージごとに issue を作っている。出力の書き方が毎回少しずつ違い、スクリプトがよく失敗する。最も適切な直し方はどれか。（1つ選べ）
+{ .quiz-q }
 
-??? question "Q2. `claude -p 'テストを実行して、失敗したら直して'` を CI で動かすと、ジョブは成功で終わるのに何も直っていない。ログには、テストのコマンドが拒否された記録がある。原因と直し方は？"
-    `-p` では、許可していない確認の要る呼び出しは拒否されて先に進む。`--allowedTools "Bash(npm test *),Read,Edit"` のように、要るツールだけを許す。`bypassPermissions` で全部許すのは、CI では広すぎる。
+<div class="quiz" data-answer="A" markdown>
 
-??? question "Q3. 起動を速くするため CI に `--bare` を足したら、CLAUDE.md に書いたレビューの観点が無視されるようになった。なぜか。どうするか。"
-    `--bare` は CLAUDE.md の自動読み込みも省くからだ。`--bare` を外すか、観点を書いたファイルを `--append-system-prompt-file` で渡す。
+- A. `packages` を必須にした `--json-schema` を `json` 出力に添え、`structured_output` の有無を確かめてから読む
+- B. `--output-format json` だけを付け、`result` に入った文字列を JSON として解析する
+- C. プロンプトに「パッケージの一覧を JSON だけで答えて」と書き足し、出力を jq で読む
+- D. 出力の文章からパッケージ名と版を正規表現で切り出し、揺れに合わせてパターンを増やす
+
+</div>
+
+??? success "答えと解説"
+    **正解: A。** 形が決まるのは `--json-schema` を付けたときの `structured_output` だ。断ったときなどは無いことがあるので、有無を確かめてから使う。
+
+    - B: `--output-format json` だけではスキーマは強制されない。`result` は文章の文字列のままだ
+    - C: プロンプトで頼むだけでは、形は保証されない
+    - D: 自由な文章は形が揺れるので、切り出す処理が壊れる
+
+**Q2.** CI で `claude -p 'テストを実行して、失敗したら直して'` を動かすと、ジョブは成功で終わるのに何も直っていない。ログには、テストのコマンドが拒否された記録がある。直し方として最も適切なものはどれか。（1つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="C" markdown>
+
+- A. 入力待ちで止まっているとみて、ジョブのタイムアウトを延ばす
+- B. `--permission-mode bypassPermissions` を付け、すべてのツールを確認なしで使えるようにする
+- C. `--allowedTools "Bash(npm test *),Read,Edit"` のように、要るツールだけを許す
+- D. `--permission-mode dontAsk` を付け、確認を求めずに先へ進めるようにする
+
+</div>
+
+??? success "答えと解説"
+    **正解: C。** `-p` では、許可していないツールは入力待ちで止まらずに拒否される。要るツールだけを `--allowedTools` で許す。
+
+    - A: ジョブは成功で終わっており、止まってはいない。許可していないツールが拒否されたことを疑う
+    - B: すべて許すのは、CI では広すぎる
+    - D: `dontAsk` は確認が要る呼び出しをすべて拒否する。テストのコマンドは拒否されたままだ
+
+**Q3.** あるチームが CI のレビュージョブの起動を速くするため、`claude -p` に `--bare` を足した。すると、CLAUDE.md に書いたレビューの観点が無視されるようになった。最も適切な対応はどれか。（1つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="D" markdown>
+
+- A. プロンプトの冒頭で「CLAUDE.md の観点に必ず従うこと」と強調する
+- B. `--output-format json` に切り替え、観点ごとの結果を受け取れるようにする
+- C. CLAUDE.md の観点を短く書き直し、読み込まれやすくする
+- D. `--bare` を外すか、観点を書いたファイルを `--append-system-prompt-file` で渡す
+
+</div>
+
+??? success "答えと解説"
+    **正解: D。** `--bare` は CLAUDE.md の自動読み込みも省く。読ませたいなら `--bare` を外すか、別の経路で渡す。
+
+    - A: CLAUDE.md は読み込まれていないので、文言を強めても観点は伝わらない
+    - B: 出力の形式を変えても、何が読み込まれるかは変わらない
+    - C: `--bare` では CLAUDE.md をまったく読まないので、短くしても効かない
 
 ## 出典
 - [Run Claude Code programmatically（Basic usage、Start faster with bare mode、Get structured output、Auto-approve tools）](https://code.claude.com/docs/en/headless)（公式）
