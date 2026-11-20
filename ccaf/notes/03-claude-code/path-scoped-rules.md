@@ -45,7 +45,7 @@ paths:
 |---|---|---|
 | 置き場所 | `.claude/rules/` に集める | 対象のディレクトリに置く |
 | 対象の決め方 | glob パターン（種類・場所を自由に組む） | そのディレクトリの下だけ |
-| 読み込むとき | 合うファイルを扱ったとき | そのディレクトリのファイルを扱ったとき |
+| 読み込むとき | 合うファイルを扱ったとき | 作業ディレクトリより下: そこのファイルを扱ったとき。作業ディレクトリとその上: 起動時 |
 | 向いている規約 | テスト・マイグレーションなど散らばるファイル | 1か所にまとまったモジュール固有の事情 |
 
 ## 試験で問われそうなポイント
@@ -56,10 +56,12 @@ paths:
 
 ## 間違えやすいところ
 - アンチパターン: 散らばったテストファイル向けの規約を、各ディレクトリの CLAUDE.md に書き写す。重複して保守がずれ、新しいディレクトリで漏れる
-- `paths` の無いルールは条件付きではない。起動時に `.claude/CLAUDE.md` と同じ優先度で必ず読み込まれる
+- `paths` の無いルールは条件付きではない。起動時に `.claude/CLAUDE.md` と同じ優先度で読み込まれる（`--setting-sources` で `project` を外したときは読み込まれない）
 - `@path` の import（取り込み）で分けても、CLAUDE.md と一緒に読み込まれるのでトークンは減らない。減らせるのは `paths` 付きルール
 - frontmatter の YAML が壊れていると、エラーで止まらず `paths` 無しとして毎回読み込まれる（`claude --debug` で分かる）
-- 一度読み込まれたルールが、合うファイルから離れたあと外れるかは未確認
+- 読み込まれたルールは会話履歴に入る。合うファイルから離れたときに外す仕組みは公式に記述が無い（なので離れても残る、というのは推論）
+- 消えるのは compaction（古い会話を要約して詰めること）のとき。そのあと合うファイルを扱うと読み込み直される
+  - compaction のあとも残したい規約は、`paths` を外すか、プロジェクト直下の CLAUDE.md に移す
 - トピックごとに `.claude/rules/` に分けること自体は 3.1 のノート（claude-md-modularization）、ディレクトリごとの CLAUDE.md は 3.1 のノート（claude-md-hierarchy）が主
 
 ## 確認問題
@@ -72,4 +74,5 @@ paths:
 
 ## 出典
 - [How Claude remembers your project（Organize rules with .claude/rules/、Path-specific rules）](https://code.claude.com/docs/en/memory)（公式）
+- [Explore the context window（What survives compaction）](https://code.claude.com/docs/en/context-window)（公式）
 - [Claude Certified Architect – Foundations Exam Guide v1.1（Task Statement 3.3）](https://cc.sj-cdn.net/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1794946250/Claude_Certified_Architect_-_Foundations_Exam_Guide.pdf)（公式）
