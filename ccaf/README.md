@@ -119,7 +119,7 @@
 - [ ] エスカレーションの基準と、曖昧な依頼の確かめ方（人への引き継ぎ、方針の空白、複数該当、5.2）
 - [ ] マルチエージェントでのエラーの伝え方（アクセス失敗と結果0件の区別、局所的な回復、5.3） → [ノート](notes/05-context-reliability/multiagent-error-propagation.md)
 - [ ] 大きなコードベースの探索でのコンテキスト管理（スクラッチパッド、サブエージェント、/compact、マニフェストによる再開、5.4） → [ノート](notes/05-context-reliability/large-codebase-context.md)
-- [ ] 人によるレビューの流れと確信度の較正（層別抽出、文書種別・フィールド別の精度、5.5）
+- [ ] 人によるレビューの流れと確信度の較正（層別抽出、文書種別・フィールド別の精度、5.5） → [ノート](notes/05-context-reliability/human-review-confidence-calibration.md)
 - [ ] 複数ソースの統合で出典を保ち、矛盾と時期の違いを扱う（Information provenance、5.6）
 
 ---
