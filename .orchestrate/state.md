@@ -21,8 +21,8 @@
 | 12 | study | ccaf 2. ツールの説明文と境界の設計 | session_017JP5BnRSp2vGdqm2eJ2nEZ | work/ccaf/tool-descriptions-boundaries | 差し戻し中 | 範囲・形 OK。事実: 根拠なし3件、抜け1件、例題 Q2 と重なり | ccaf/notes/02-tool-design-mcp/tool-descriptions-boundaries.md |
 | 13 | study | ccaf 2. MCP ツールの構造化エラー応答 | session_017JP5BpcXdWZWkcFNSqS865 | work/ccaf/mcp-structured-errors | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/02-tool-design-mcp/mcp-structured-errors.md |
 | 14 | study | ccaf 2. エージェントへのツールの割り振り | session_017JP5BnBQxvzNAnaMM6khoR | work/ccaf/tool-distribution | 差し戻し中 | 範囲・形 OK。事実: 誤りなし。例題 Q9 と同じ組み立ての確認問題 | ccaf/notes/02-tool-design-mcp/tool-distribution.md |
-| 15 | study | ccaf 2. tool_choice の設定 | session_017JP5BpAuWt4BUHosNqA5i1 | work/ccaf/tool-choice | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/02-tool-design-mcp/tool-choice.md |
-| 16 | study | ccaf 2. Claude Code と Agent SDK への MCP サーバーの組み込み | session_017JP5BpsNMKWUXXkHy3QmPG | work/ccaf/mcp-server-integration | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/02-tool-design-mcp/mcp-server-integration.md |
+| 15 | study | ccaf 2. tool_choice の設定 | session_017JP5BpAuWt4BUHosNqA5i1 | work/ccaf/tool-choice | 差し戻し中 | 範囲・形 OK。事実: 誤りなし。言い回しの精度2点 | ccaf/notes/02-tool-design-mcp/tool-choice.md |
+| 16 | study | ccaf 2. Claude Code と Agent SDK への MCP サーバーの組み込み | session_017JP5BpsNMKWUXXkHy3QmPG | work/ccaf/mcp-server-integration | 差し戻し中 | 範囲・形 OK。事実: 軽微な誤り1件、担当の付け替え1件 | ccaf/notes/02-tool-design-mcp/mcp-server-integration.md |
 | 17 | study | ccaf 2. MCP のツールとリソースの使い分けと、既存の MCP サーバーの活用 | session_017JP5Bpc4LeXGAyme2VNiie | work/ccaf/mcp-resources-vs-tools | 作業中 | — | ccaf/notes/02-tool-design-mcp/mcp-resources-vs-tools.md |
 | 18 | study | ccaf 2. 組み込みツール | session_017JP5Bqry4cK6X8VRGcsNx9 | work/ccaf/builtin-tools-incremental-exploration | 作業中 | — | ccaf/notes/02-tool-design-mcp/builtin-tools-incremental-exploration.md |
 | 19 | study | ccaf 3. CLAUDE.md の階層 | session_017JP5BqkcpPReHssP49DB6u | work/ccaf/claude-md-hierarchy | 作業中 | — | ccaf/notes/03-claude-code/claude-md-hierarchy.md |
@@ -68,3 +68,4 @@
 - 1.3 の「コーディネーターのプロンプトには目的と品質の基準を書く」は subagent-context-passing を主にする（判断: オーケストレータ）
 - 例や確認問題の題材も、ガイドの例題から借りない（骨組みが同じ翻案も避ける）（判断: オーケストレータ。fact-checker の指摘を受けて、以後の指示に入れた）
 - 環境 yuya-exam-notes に modelcontextprotocol.io を追加（MCP の公式仕様を出典にするため。判断: オーケストレータが申請し、ユーザーが承認）
+- 2.4 の「MCP ツールの説明文を詳しく書き、組み込みの Grep などより選ばれるようにする」は mcp-server-integration（#16）が主（判断: オーケストレータ。tool-descriptions-boundaries にはこの話が無く、どちらのノートにも実質的な説明が無かったため）
