@@ -2,14 +2,12 @@
 
 > ドメイン: 2. ツール設計と MCP の組み込み（18%） ／ 更新: 2026-11-20
 
-## 3行まとめ
-- 中身（関数名・エラー文・import）を探すなら Grep、ファイル名・拡張子で探すなら Glob
-- 部分の書き換えは Edit（一意な文字列の置換）。一意に決まらず失敗したら、Read で全体を読んで Write で書き直す
-- コードは全部を先に読まない。Grep で入口を見つけ、Read で import をたどって流れを追う
+!!! abstract "ひとことで"
+    中身（関数名・エラー文・import）を探すなら ==Grep==、ファイル名・拡張子で探すなら ==Glob==。コードは全部を先に読まず、Grep で入口を見つけてから Read で import をたどる。
 
 ## 仕組み
 
-### ツールごとの使いどころ
+Grep は「行の中身」を、Glob は「パス名」を探す。Edit は一部の書き換え、Write は丸ごとの書き換えだ。Write で一部を直すと全体の上書きになり、ほかの部分を壊しやすいので、部分の修正は Edit に任せる。
 
 | ツール | すること | 使うとき | 使わないとき |
 |---|---|---|---|
@@ -20,57 +18,70 @@
 | Write | ファイルを丸ごと新規作成・上書きする | 新しいファイル、全体の書き直し | 一部だけの修正（Edit を使う） |
 | Bash | シェルのコマンドを実行する | テスト・ビルド・git など、専用ツールが無い操作 | ガイドの前提では、読み書きは専用ツールに任せる（目安） |
 
-### Edit が通る条件と、通らないときの切り替え
+Edit は、`old_string` が ==ちょうど1回だけ現れる==ときにだけ通る。0回なら、空白1文字の違いか、読んだ内容が古いのが原因なので、Read で読み直して今の正確な文字列を使う。正規表現もあいまい一致も使わない。複数回なら文脈を足して1か所に絞り、絞れなければ同じ Edit を繰り返さず、Read で全体を読んで Write で書き直す。
 
 ```mermaid
 flowchart TD
-  A[一部を直したい] --> B{old_string が<br>ちょうど1回だけ現れる?}
+  A[一部を直したい] --> B{"old_string がちょうど1回だけ現れる?"}
   B -- はい --> C[Edit で置換]
-  B -- 0回 --> R[Read で読み直し<br>今の正確な文字列を使う] --> B
-  B -- 複数回 --> D{文脈を足して<br>1か所に絞れる?}
+  B -- 0回 --> R["Read で読み直し、今の正確な文字列を使う"] --> B
+  B -- 複数回 --> D{"文脈を足して1か所に絞れる?"}
   D -- はい --> C
-  D -- 全部を同じに直す --> G[replace_all: true]
+  D -- 全部を同じに直す --> G["replace_all: true"]
   D -- いいえ --> E[Read で全体を読む] --> F[Write で全体を書き直す]
+  classDef run fill:#e3f2fd,stroke:#1e88e5,color:#0d47a1
+  classDef judge fill:#fff8e1,stroke:#f9a825,color:#4e342e
+  classDef done fill:#e8f5e9,stroke:#43a047,color:#1b5e20
+  class A,R,E run
+  class B,D judge
+  class C,G,F done
 ```
 
-- 0回は、空白1文字の違いや読んだ内容が古いのが原因。正規表現もあいまい一致も使わない
-- Read は既定で1回 25,000 トークンまで。256 KB を超えるファイルは offset・limit で分けて読む
-
-### 段階的にコードを読む流れ（incremental exploration）
+読むファイルは、読むたびにコンテキスト（会話に積まれる情報）に積み上がる。だから調べ始めに全ファイルを Read せず、段階的に読む（incremental exploration）。Grep で関数名やエラー文から入口を探し、Read で入口を読み、import 先を Read して流れをたどる。足りなければ Grep に戻る。
 
 ```mermaid
 flowchart LR
-  A[Grep で入口を探す<br>関数名・エラー文] --> B[Read で入口を読む]
-  B --> C[import 先を Read<br>流れをたどる]
+  A["Grep で入口を探す（関数名・エラー文）"] --> B[Read で入口を読む]
+  B --> C["import 先を Read して流れをたどる"]
   C -->|足りなければ| A
+  classDef run fill:#e3f2fd,stroke:#1e88e5,color:#0d47a1
+  class A,B,C run
 ```
 
-- ラッパーモジュール（別モジュールの関数を包み直して再エクスポートするファイル）は、先にエクスポート名をすべて洗い出し、名前ごとに Grep で利用箇所を探す（大きなコードベースでのコンテキストの節約は 5.4 のノートで扱う）
+ラッパーモジュール（別モジュールの関数を包み直して再エクスポートするファイル）は、先にエクスポート名をすべて洗い出し、名前ごとに Grep で利用箇所を探す。元の関数名だけを Grep すると、別名で再エクスポートされた呼び出しを見落とすからだ。大きなコードベースでのコンテキストの節約は 5.4 のノートで扱う。
 
-## 試験で問われそうなポイント
-- 「ある関数の呼び出し元をすべて見つけたい」→ Grep（中身の検索）
-- 「テストファイルを全部集めたい」→ Glob（`**/*.test.tsx` のようなパス検索）
-- 「Edit が "複数箇所に一致" で失敗した」→ 文脈を足すか、Read＋Write に切り替える
-- 「初めてのリポジトリでバグの原因を追う」→ 全ファイルを読まず、Grep で入口 → Read で追跡
-- 「ラッパー経由の利用箇所を漏れなく追う」→ エクスポート名を列挙してから、名前ごとに Grep
+??? info "Read の上限・検索の範囲・ガイドとのずれ"
+    - Read は既定で1回 25,000 トークンまで。256 KB を超えるファイルは offset・limit で分けて読む
+    - Grep は `.gitignore` の対象を飛ばすが、Glob は既定で飛ばさない
+    - ずれ: 現行の Claude Code は macOS・Linux・WSL で Glob・Grep を既定で外し、Bash の `find`・`grep` で探す。cat などで1ファイルを見た後なら Read なしで Edit できる。試験はガイドの書き方で考える
 
-## 間違えやすいところ
-- 一意に一致しないのに Edit を何度も繰り返す → Read＋Write に切り替えるのが確実
-- 調べ始めに全ファイルを Read する → コンテキスト（会話に積まれる情報）を無駄に使う。読むたびに積み上がる
-- ラッパーモジュールの元の関数名だけを Grep する → 別名で再エクスポートされた呼び出しを見落とす
-- 一部の修正に Write を使う → 全体の上書きになり、ほかの部分を壊しやすい。部分の修正は Edit
-- ずれ: 現行の Claude Code は macOS・Linux・WSL で Glob・Grep を既定で外し Bash の `find`・`grep` で探す。cat などで1ファイルを見た後なら Read なしで Edit できる。試験はガイドの書き方で考える
-- Grep と Glob を逆に覚える: Grep は「行の中身」、Glob は「パス名」。Grep は `.gitignore` の対象を飛ばすが、Glob は既定で飛ばさない
+## 試験での見分け方
+
+<div class="vs" markdown>
+
+| 問われること | ○ 正しい | × ひっかけ |
+|---|---|---|
+| ある関数の呼び出し元をすべて見つける | Grep（中身の検索） | Glob（パス名しか見ない） |
+| テストファイルを全部集める | Glob（`**/*.test.tsx` のようなパス検索） | Grep（中身の検索） |
+| Edit が「複数箇所に一致」で失敗した | 文脈を足して絞るか、Read＋Write に切り替える | 同じ Edit を何度も繰り返す |
+| 初めてのリポジトリでバグの原因を追う | Grep で入口を探し、Read でたどる | 全ファイルを先に Read する（コンテキストの無駄） |
+| ラッパー経由の利用箇所を漏れなく追う | エクスポート名を列挙してから、名前ごとに Grep | 元の関数名だけで Grep する |
+
+</div>
 
 ## 確認問題
-1. 料金計算の処理で「negative quantity」というエラーが出る。初めて触るリポジトリで原因の箇所を探すとき、最初にすることは？
-   <details><summary>答え</summary>Grep でエラー文を探して投げている箇所（入口）を見つけ、Read でその関数と import 先をたどる。全ファイルを先に読むのはコンテキストの無駄。</details>
-2. 設定ファイルで `timeout: 30` が5か所にあり、そのうち1か所だけを 60 にしたい。Edit が一意に一致せず失敗した。どうする？
-   <details><summary>答え</summary>前後の行を含めて old_string を1か所に絞る。絞れなければ Read で全体を読み、該当箇所だけ直した全文を Write で書く。同じ Edit を繰り返さない。</details>
-3. `utils/http.ts` が `fetchJson` を `getJson` という名前で再エクスポートしている。`fetchJson` の利用箇所を漏れなく洗い出すには？
-   <details><summary>答え</summary>`utils/http.ts` のエクスポート名（`getJson` など）を先にすべて確かめ、元の名前と再エクスポート名のそれぞれで Grep する。元の名前だけでは別名経由の呼び出しを見落とす。</details>
-4. `src` の下にある `*.stories.tsx` をすべて一覧にしたい。Grep と Glob のどちらを使う？
-   <details><summary>答え</summary>Glob（`src/**/*.stories.tsx`）。ファイル名のパターンで探すため。Grep は中身の検索。</details>
+
+??? question "Q1. 料金計算の処理で「negative quantity」というエラーが出る。初めて触るリポジトリで原因の箇所を探すとき、最初にすることは？"
+    Grep でエラー文を探し、投げている箇所（入口）を見つける。そこから Read でその関数と import 先をたどる。全ファイルを先に読むのはコンテキストの無駄だ。
+
+??? question "Q2. 設定ファイルで `timeout: 30` が5か所にあり、そのうち1か所だけを 60 にしたい。Edit が一意に一致せず失敗した。どうする？"
+    前後の行を含めて `old_string` を1か所に絞る。絞れなければ Read で全体を読み、該当箇所だけ直した全文を Write で書く。同じ Edit を繰り返さない。
+
+??? question "Q3. `utils/http.ts` が `fetchJson` を `getJson` という名前で再エクスポートしている。`fetchJson` の利用箇所を漏れなく洗い出すには？"
+    `utils/http.ts` のエクスポート名（`getJson` など）を先にすべて確かめ、元の名前と再エクスポート名のそれぞれで Grep する。元の名前だけでは、別名経由の呼び出しを見落とす。
+
+??? question "Q4. `src` の下にある `*.stories.tsx` をすべて一覧にしたい。Grep と Glob のどちらを使う？"
+    Glob（`src/**/*.stories.tsx`）。ファイル名のパターンで探すからだ。Grep は中身の検索になる。
 
 ## 出典
 - [Claude Certified Architect – Foundations Exam Guide v1.1（タスクステートメント 2.5）](https://cc.sj-cdn.net/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1794946250/Claude_Certified_Architect_-_Foundations_Exam_Guide.pdf)（公式）
