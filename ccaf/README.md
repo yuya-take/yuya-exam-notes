@@ -110,7 +110,7 @@
 - [ ] tool_use と JSON スキーマによる構造化出力（構文エラーは防げるが意味の誤りは防げない、4.3） → [ノート](notes/04-prompt-engineering/tool-use-json-schema.md)
 - [ ] 抽出用スキーマの設計（必須と任意、nullable、enum の "other"＋詳細と "unclear"、4.3） → [ノート](notes/04-prompt-engineering/extraction-schema-design.md)
 - [ ] 検証・再試行・フィードバックのループ（エラーを添えた再試行、再試行が効かない場合、detected_pattern、4.4）
-- [ ] Message Batches API を使うバッチ処理の設計（向く処理と向かない処理、custom_id、SLA の計算、4.5）
+- [ ] Message Batches API を使うバッチ処理の設計（向く処理と向かない処理、custom_id、SLA の計算、4.5） → [ノート](notes/04-prompt-engineering/message-batches-api.md)
 - [ ] 独立したインスタンスによるレビューと、複数パスのレビュー（Self-review の限界、ファイル単位＋横断のパス、4.6）
 
 ### 5. コンテキスト管理と信頼性（15%）
