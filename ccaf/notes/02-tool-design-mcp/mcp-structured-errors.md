@@ -56,7 +56,7 @@ flowchart TD
 - すべてのエラーを再試行する → 検証・業務・権限のエラーは、同じ入力で何度呼んでも失敗する
 - 0件の結果を `isError: true` で返す → 「アクセスできなかった」と区別できなくなる
 - 失敗を空の成功結果に見せかける → エージェントが「データが無い」と誤って結論づける
-- 入力の検証エラーを JSON-RPC のプロトコルエラーで返す → 2025-11-25 版の仕様では、ツール実行エラー（`isError`）側に入る。2025-06-18 版はプロトコルエラーの例に「Invalid arguments」を挙げていた
+- 入力の検証エラーを JSON-RPC のプロトコルエラーで返す → 2025-11-25 版以降（現行の 2026-07-28 版も）の仕様では、ツール実行エラー（`isError`）側に入る。2025-06-18 版はプロトコルエラーの例に「Invalid arguments」を挙げていた
 - 例外を投げっぱなしにする → Agent SDK では生の例外メッセージが Claude に渡るだけ。自分で捕まえて、次に何をすべきかを書いた `isError` の結果を作る
 - 名前の揺れ → ガイドは `isRetryable` と `retriable: false` の両方の綴りを使う。どちらも仕様で決まった名前ではない
 - 再試行の回数 → Claude は `is_error` を見て同じツールを呼び直すことがある。ループ側で上限を決めておく
@@ -71,9 +71,10 @@ flowchart TD
 
 ## 出典
 - Claude Certified Architect – Foundations Exam Guide v1.1, Task Statement 2.2（公式、PDF）: https://cc.sj-cdn.net/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1794946250/Claude_Certified_Architect_-_Foundations_Exam_Guide.pdf
-- [MCP Specification 2025-11-25: Tools（Error Handling）](https://modelcontextprotocol.io/specification/2025-11-25/server/tools)（公式。サイトに接続できず、GitHub の仕様リポジトリの同じ版のソースで確認）
-- [MCP Specification 2025-06-18: Tools](https://modelcontextprotocol.io/specification/2025-06-18/server/tools)（公式。同上）
+- [MCP Specification 2026-07-28（現行版）: Tools（Error Handling）](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)（公式）
+- [MCP Specification 2026-07-28: Schema（CallToolResult、InvalidParamsError）](https://modelcontextprotocol.io/specification/2026-07-28/schema)（公式。`isError` の既定は false、ツールの引数の誤りは `isError` で返す）
+- [MCP Specification 2025-11-25: Tools](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) ／ [2025-06-18: Tools](https://modelcontextprotocol.io/specification/2025-06-18/server/tools)（公式。版による違いの確認）
 - [Handle tool calls](https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls)（公式。`is_error`、「failed」ではなく次に何をすべきかを書く、再試行の上限）
 - [Custom tools（Handle errors）](https://code.claude.com/docs/en/agent-sdk/custom-tools)（公式、Agent SDK）
 - [Writing effective tools for AI agents](https://www.anthropic.com/engineering/writing-tools-for-agents)（公式、エンジニアリングブログ、2025-09。不透明なエラーコードより具体的で実行できる改善を伝える）
-- 未確認: 2025-11-25 版が最新の版か。`isError: true` のときに `structuredContent` へエラー情報を入れてよいか（`outputSchema` との関係）
+- 未確認: `isError: true` のときに `structuredContent` へエラー情報を入れてよいか（`outputSchema` との関係）。2026-07-28 版の仕様には、これについての記述が見当たらない
