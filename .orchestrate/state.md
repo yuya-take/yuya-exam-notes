@@ -18,7 +18,7 @@
 | 9 | study | ccaf 1. Agent SDK のフックによるツール呼び出しの遮断とデータの正規化 | session_017JP5Bp96N8dPjB2McPcf3d | work/ccaf/sdk-hooks-interception | 統合済み | OK | ccaf/notes/01-agentic-architecture/sdk-hooks-interception.md |
 | 10 | study | ccaf 1. タスク分解の選び方: プロンプトチェーンと動的な分解 | session_017JP5Bn9XrnVyYGB8fdN7zt | work/ccaf/prompt-chaining-vs-dynamic-decomposition | 統合済み | OK | ccaf/notes/01-agentic-architecture/prompt-chaining-vs-dynamic-decomposition.md |
 | 11 | study | ccaf 1. セッションの再開とフォーク | session_017JP5BpK39wy3M5FzfYiNph | work/ccaf/session-resume-fork | 差し戻し中 | 範囲・形 OK。事実: 誤りなし。未確認の解消と補強5点 | ccaf/notes/01-agentic-architecture/session-resume-fork.md |
-| 12 | study | ccaf 2. ツールの説明文と境界の設計 | session_017JP5BnRSp2vGdqm2eJ2nEZ | work/ccaf/tool-descriptions-boundaries | 作業中 | — | ccaf/notes/02-tool-design-mcp/tool-descriptions-boundaries.md |
+| 12 | study | ccaf 2. ツールの説明文と境界の設計 | session_017JP5BnRSp2vGdqm2eJ2nEZ | work/ccaf/tool-descriptions-boundaries | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/02-tool-design-mcp/tool-descriptions-boundaries.md |
 | 13 | study | ccaf 2. MCP ツールの構造化エラー応答 | session_017JP5BpcXdWZWkcFNSqS865 | work/ccaf/mcp-structured-errors | 作業中 | — | ccaf/notes/02-tool-design-mcp/mcp-structured-errors.md |
 | 14 | study | ccaf 2. エージェントへのツールの割り振り | session_017JP5BnBQxvzNAnaMM6khoR | work/ccaf/tool-distribution | 作業中 | — | ccaf/notes/02-tool-design-mcp/tool-distribution.md |
 | 15 | study | ccaf 2. tool_choice の設定 | session_017JP5BpAuWt4BUHosNqA5i1 | work/ccaf/tool-choice | 作業中 | — | ccaf/notes/02-tool-design-mcp/tool-choice.md |
@@ -67,3 +67,4 @@
 - ガイドと現行ドキュメントの名前・仕様のずれ（Task→Agent など）は、ガイドの書き方を主にし、ずれは「間違えやすいところ」に1行で書く（判断: オーケストレータ。試験はガイドに基づくため）
 - 1.3 の「コーディネーターのプロンプトには目的と品質の基準を書く」は subagent-context-passing を主にする（判断: オーケストレータ）
 - 例や確認問題の題材も、ガイドの例題から借りない（骨組みが同じ翻案も避ける）（判断: オーケストレータ。fact-checker の指摘を受けて、以後の指示に入れた）
+- 環境 yuya-exam-notes に modelcontextprotocol.io を追加（MCP の公式仕様を出典にするため。判断: オーケストレータが申請し、ユーザーが承認）
