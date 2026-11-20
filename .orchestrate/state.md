@@ -43,7 +43,7 @@
 | 34 | study | ccaf 4. 独立したインスタンスによるレビューと、複数パスのレビュー | session_017JP5BoUkn8eoBbfw68dR7Q | work/ccaf/independent-multipass-review | 統合済み | OK | ccaf/notes/04-prompt-engineering/independent-multipass-review.md |
 | 35 | study | ccaf 5. 長い対話で重要な事実を保つ | session_017JP5Bnu9CuZiJaT1bhq54Q | work/ccaf/preserving-key-facts | 統合済み | OK | ccaf/notes/05-context-reliability/preserving-key-facts.md |
 | 36 | study | ccaf 5. 位置の影響 | session_017JP5BnBip5FhpjyK2R4RCz | work/ccaf/lost-in-the-middle-structured-passing | 統合済み | OK | ccaf/notes/05-context-reliability/lost-in-the-middle-structured-passing.md |
-| 37 | study | ccaf 5. エスカレーションの基準と、曖昧な依頼の確かめ方 | session_017JP5Boy9aQeN8B779G4JBY | work/ccaf/escalation-ambiguity | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/05-context-reliability/escalation-ambiguity.md |
+| 37 | study | ccaf 5. エスカレーションの基準と、曖昧な依頼の確かめ方 | session_017JP5Boy9aQeN8B779G4JBY | work/ccaf/escalation-ambiguity | 差し戻し中 | 範囲・形 OK。事実: 約19件中2件（前提の矛盾、言い過ぎ）と出典の付け方 | ccaf/notes/05-context-reliability/escalation-ambiguity.md |
 | 38 | study | ccaf 5. マルチエージェントでのエラーの伝え方 | session_017JP5Bo96bKwXe9kkzH81tG | work/ccaf/multiagent-error-propagation | 統合済み | OK | ccaf/notes/05-context-reliability/multiagent-error-propagation.md |
 | 39 | study | ccaf 5. 大きなコードベースの探索でのコンテキスト管理 | session_017JP5BmxLuJhZGJuT6Df7Cp | work/ccaf/large-codebase-context | 差し戻し中 | 範囲・形 OK。事実: 約22件中2件（マニフェストの書き方） | ccaf/notes/05-context-reliability/large-codebase-context.md |
 | 40 | study | ccaf 5. 人によるレビューの流れと確信度の較正 | session_017JP5BqVM4CBTZjXYA5CPse | work/ccaf/human-review-confidence-calibration | 差し戻し中 | 範囲・形 OK。事実: 食い違いなし。表の計算1件、ガイドに無い補足の明示 | ccaf/notes/05-context-reliability/human-review-confidence-calibration.md |
