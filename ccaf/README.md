@@ -117,7 +117,7 @@
 - [ ] 長い対話で重要な事実を保つ（要約で落ちる情報、事実ブロック、ツール出力の絞り込み、5.1） → [ノート](notes/05-context-reliability/preserving-key-facts.md)
 - [ ] 位置の影響（lost in the middle）への対策と、エージェント間で渡す情報の構造化（5.1） → [ノート](notes/05-context-reliability/lost-in-the-middle-structured-passing.md)
 - [ ] エスカレーションの基準と、曖昧な依頼の確かめ方（人への引き継ぎ、方針の空白、複数該当、5.2）
-- [ ] マルチエージェントでのエラーの伝え方（アクセス失敗と結果0件の区別、局所的な回復、5.3）
+- [ ] マルチエージェントでのエラーの伝え方（アクセス失敗と結果0件の区別、局所的な回復、5.3） → [ノート](notes/05-context-reliability/multiagent-error-propagation.md)
 - [ ] 大きなコードベースの探索でのコンテキスト管理（スクラッチパッド、サブエージェント、/compact、マニフェストによる再開、5.4）
 - [ ] 人によるレビューの流れと確信度の較正（層別抽出、文書種別・フィールド別の精度、5.5）
 - [ ] 複数ソースの統合で出典を保ち、矛盾と時期の違いを扱う（Information provenance、5.6）
