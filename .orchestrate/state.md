@@ -7,8 +7,47 @@
 ## タスク
 | # | 種類 | 対象 | 作業セッション | ブランチ | 状態 | 検証 | メモ |
 |---|---|---|---|---|---|---|---|
-| 1 | exam-add | ccaf を公式の Exam Guide v1.1 で作り直す | session_017JP5BoRvce63isKveaZoxQ | work/ccaf/exam-guide-v2 | 差し戻し中 | 範囲 OK・形 OK・事実 OK（fact-checker: 約95件で誤りなし）。細部3点を差し戻し | 第1波。チェックリストをここで確定。旧セッション session_017JP5BovYpHcB8b2VjdFjYz（Default 環境で PDF を読めず）は停止を指示 |
-| 2〜 | study | 確定したチェックリストの全項目（1項目1ノート） | — | — | 待ち | — | 第2波。#1 の統合後に起動 |
+| 1 | exam-add | ccaf を公式の Exam Guide v1.1 で作り直す | session_017JP5BoRvce63isKveaZoxQ | work/ccaf/exam-guide-v2 | 統合済み | OK（差し戻し1回で修正） | 第1波。チェックリストをここで確定。旧セッション session_017JP5BovYpHcB8b2VjdFjYz（Default 環境で PDF を読めず）は停止を指示 |
+| 2 | study | ccaf 1. エージェントループと stop_reason による制御 | — | work/ccaf/agentic-loop-stop-reason | 待ち | — | ccaf/notes/01-agentic-architecture/agentic-loop-stop-reason.md |
+| 3 | study | ccaf 1. コーディネーターとサブエージェントのハブ＆スポーク構成 | — | work/ccaf/coordinator-subagent-pattern | 待ち | — | ccaf/notes/01-agentic-architecture/coordinator-subagent-pattern.md |
+| 4 | study | ccaf 1. 調査範囲の分割と、統合結果の抜けを埋める反復ループ | — | work/ccaf/scope-partitioning-iterative-refinement | 待ち | — | ccaf/notes/01-agentic-architecture/scope-partitioning-iterative-refinement.md |
+| 5 | study | ccaf 1. Task ツールによるサブエージェントの起動と AgentDefinition | — | work/ccaf/task-tool-agent-definition | 待ち | — | ccaf/notes/01-agentic-architecture/task-tool-agent-definition.md |
+| 6 | study | ccaf 1. サブエージェントへのコンテキストの渡し方 | — | work/ccaf/subagent-context-passing | 待ち | — | ccaf/notes/01-agentic-architecture/subagent-context-passing.md |
+| 7 | study | ccaf 1. ワークフローの順序をプログラムで強制する | — | work/ccaf/programmatic-workflow-enforcement | 待ち | — | ccaf/notes/01-agentic-architecture/programmatic-workflow-enforcement.md |
+| 8 | study | ccaf 1. 人への引き継ぎの要約と、複数の用件を含む依頼の分解 | — | work/ccaf/structured-handoff-request-decomposition | 待ち | — | ccaf/notes/01-agentic-architecture/structured-handoff-request-decomposition.md |
+| 9 | study | ccaf 1. Agent SDK のフックによるツール呼び出しの遮断とデータの正規化 | — | work/ccaf/sdk-hooks-interception | 待ち | — | ccaf/notes/01-agentic-architecture/sdk-hooks-interception.md |
+| 10 | study | ccaf 1. タスク分解の選び方: プロンプトチェーンと動的な分解 | — | work/ccaf/prompt-chaining-vs-dynamic-decomposition | 待ち | — | ccaf/notes/01-agentic-architecture/prompt-chaining-vs-dynamic-decomposition.md |
+| 11 | study | ccaf 1. セッションの再開とフォーク | — | work/ccaf/session-resume-fork | 待ち | — | ccaf/notes/01-agentic-architecture/session-resume-fork.md |
+| 12 | study | ccaf 2. ツールの説明文と境界の設計 | — | work/ccaf/tool-descriptions-boundaries | 待ち | — | ccaf/notes/02-tool-design-mcp/tool-descriptions-boundaries.md |
+| 13 | study | ccaf 2. MCP ツールの構造化エラー応答 | — | work/ccaf/mcp-structured-errors | 待ち | — | ccaf/notes/02-tool-design-mcp/mcp-structured-errors.md |
+| 14 | study | ccaf 2. エージェントへのツールの割り振り | — | work/ccaf/tool-distribution | 待ち | — | ccaf/notes/02-tool-design-mcp/tool-distribution.md |
+| 15 | study | ccaf 2. tool_choice の設定 | — | work/ccaf/tool-choice | 待ち | — | ccaf/notes/02-tool-design-mcp/tool-choice.md |
+| 16 | study | ccaf 2. Claude Code と Agent SDK への MCP サーバーの組み込み | — | work/ccaf/mcp-server-integration | 待ち | — | ccaf/notes/02-tool-design-mcp/mcp-server-integration.md |
+| 17 | study | ccaf 2. MCP のツールとリソースの使い分けと、既存の MCP サーバーの活用 | — | work/ccaf/mcp-resources-vs-tools | 待ち | — | ccaf/notes/02-tool-design-mcp/mcp-resources-vs-tools.md |
+| 18 | study | ccaf 2. 組み込みツール | — | work/ccaf/builtin-tools-incremental-exploration | 待ち | — | ccaf/notes/02-tool-design-mcp/builtin-tools-incremental-exploration.md |
+| 19 | study | ccaf 3. CLAUDE.md の階層 | — | work/ccaf/claude-md-hierarchy | 待ち | — | ccaf/notes/03-claude-code/claude-md-hierarchy.md |
+| 20 | study | ccaf 3. CLAUDE.md のモジュール化 | — | work/ccaf/claude-md-modularization | 待ち | — | ccaf/notes/03-claude-code/claude-md-modularization.md |
+| 21 | study | ccaf 3. パス指定ルールによる規約の条件付き読み込み | — | work/ccaf/path-scoped-rules | 待ち | — | ccaf/notes/03-claude-code/path-scoped-rules.md |
+| 22 | study | ccaf 3. カスタムスラッシュコマンドとスキルのスコープ、CLAUDE.md との使い分け | — | work/ccaf/slash-commands-and-skills | 待ち | — | ccaf/notes/03-claude-code/slash-commands-and-skills.md |
+| 23 | study | ccaf 3. SKILL.md の frontmatter | — | work/ccaf/skill-frontmatter | 待ち | — | ccaf/notes/03-claude-code/skill-frontmatter.md |
+| 24 | study | ccaf 3. プランモードと直接実行の使い分け、Explore サブエージェント | — | work/ccaf/plan-mode-vs-direct | 待ち | — | ccaf/notes/03-claude-code/plan-mode-vs-direct.md |
+| 25 | study | ccaf 3. Claude Code での反復的な改善 | — | work/ccaf/iterative-refinement | 待ち | — | ccaf/notes/03-claude-code/iterative-refinement.md |
+| 26 | study | ccaf 3. CI での Claude Code の非対話実行と構造化出力 | — | work/ccaf/ci-non-interactive | 待ち | — | ccaf/notes/03-claude-code/ci-non-interactive.md |
+| 27 | study | ccaf 3. CI での自動レビューとテスト生成の質を上げる工夫 | — | work/ccaf/ci-review-test-quality | 待ち | — | ccaf/notes/03-claude-code/ci-review-test-quality.md |
+| 28 | study | ccaf 4. 明確な基準で誤検知を減らすプロンプト | — | work/ccaf/explicit-criteria-false-positives | 待ち | — | ccaf/notes/04-prompt-engineering/explicit-criteria-false-positives.md |
+| 29 | study | ccaf 4. few-shot プロンプティング | — | work/ccaf/few-shot-prompting | 待ち | — | ccaf/notes/04-prompt-engineering/few-shot-prompting.md |
+| 30 | study | ccaf 4. tool_use と JSON スキーマによる構造化出力 | — | work/ccaf/tool-use-json-schema | 待ち | — | ccaf/notes/04-prompt-engineering/tool-use-json-schema.md |
+| 31 | study | ccaf 4. 抽出用スキーマの設計 | — | work/ccaf/extraction-schema-design | 待ち | — | ccaf/notes/04-prompt-engineering/extraction-schema-design.md |
+| 32 | study | ccaf 4. 検証・再試行・フィードバックのループ | — | work/ccaf/validation-retry-loop | 待ち | — | ccaf/notes/04-prompt-engineering/validation-retry-loop.md |
+| 33 | study | ccaf 4. Message Batches API を使うバッチ処理の設計 | — | work/ccaf/message-batches-api | 待ち | — | ccaf/notes/04-prompt-engineering/message-batches-api.md |
+| 34 | study | ccaf 4. 独立したインスタンスによるレビューと、複数パスのレビュー | — | work/ccaf/independent-multipass-review | 待ち | — | ccaf/notes/04-prompt-engineering/independent-multipass-review.md |
+| 35 | study | ccaf 5. 長い対話で重要な事実を保つ | — | work/ccaf/preserving-key-facts | 待ち | — | ccaf/notes/05-context-reliability/preserving-key-facts.md |
+| 36 | study | ccaf 5. 位置の影響 | — | work/ccaf/lost-in-the-middle-structured-passing | 待ち | — | ccaf/notes/05-context-reliability/lost-in-the-middle-structured-passing.md |
+| 37 | study | ccaf 5. エスカレーションの基準と、曖昧な依頼の確かめ方 | — | work/ccaf/escalation-ambiguity | 待ち | — | ccaf/notes/05-context-reliability/escalation-ambiguity.md |
+| 38 | study | ccaf 5. マルチエージェントでのエラーの伝え方 | — | work/ccaf/multiagent-error-propagation | 待ち | — | ccaf/notes/05-context-reliability/multiagent-error-propagation.md |
+| 39 | study | ccaf 5. 大きなコードベースの探索でのコンテキスト管理 | — | work/ccaf/large-codebase-context | 待ち | — | ccaf/notes/05-context-reliability/large-codebase-context.md |
+| 40 | study | ccaf 5. 人によるレビューの流れと確信度の較正 | — | work/ccaf/human-review-confidence-calibration | 待ち | — | ccaf/notes/05-context-reliability/human-review-confidence-calibration.md |
+| 41 | study | ccaf 5. 複数ソースの統合で出典を保ち、矛盾と時期の違いを扱う | — | work/ccaf/information-provenance | 待ち | — | ccaf/notes/05-context-reliability/information-provenance.md |
 
 ## 未回答の連絡
 - なし
