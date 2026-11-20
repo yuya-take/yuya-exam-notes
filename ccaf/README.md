@@ -76,7 +76,7 @@
 - [ ] エージェントループと stop_reason による制御（Agentic loop: tool_use / end_turn、1.1） → [ノート](notes/01-agentic-architecture/agentic-loop-stop-reason.md)
 - [ ] コーディネーターとサブエージェントのハブ＆スポーク構成（Coordinator-subagent pattern、1.2） → [ノート](notes/01-agentic-architecture/coordinator-subagent-pattern.md)
 - [ ] 調査範囲の分割と、統合結果の抜けを埋める反復ループ（Scope partitioning & iterative refinement、1.2） → [ノート](notes/01-agentic-architecture/scope-partitioning-iterative-refinement.md)
-- [ ] Task ツールによるサブエージェントの起動と AgentDefinition（allowedTools、並列起動、1.3）
+- [ ] Task ツールによるサブエージェントの起動と AgentDefinition（allowedTools、並列起動、1.3） → [ノート](notes/01-agentic-architecture/task-tool-agent-definition.md)
 - [ ] サブエージェントへのコンテキストの渡し方（明示的な受け渡しと出典の保持、1.3） → [ノート](notes/01-agentic-architecture/subagent-context-passing.md)
 - [ ] ワークフローの順序をプログラムで強制する（前提ゲートとプロンプト指示の違い、1.4）
 - [ ] 人への引き継ぎの要約と、複数の用件を含む依頼の分解（Structured handoff、1.4）

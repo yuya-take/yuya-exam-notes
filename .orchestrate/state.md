@@ -11,7 +11,7 @@
 | 2 | study | ccaf 1. エージェントループと stop_reason による制御 | session_017JP5BrCxbjR3XYoMdXg1sn | work/ccaf/agentic-loop-stop-reason | 統合済み | OK | ccaf/notes/01-agentic-architecture/agentic-loop-stop-reason.md |
 | 3 | study | ccaf 1. コーディネーターとサブエージェントのハブ＆スポーク構成 | session_017JP5Bqye9jJJiXSm2pVeeH | work/ccaf/coordinator-subagent-pattern | 統合済み | OK | ccaf/notes/01-agentic-architecture/coordinator-subagent-pattern.md |
 | 4 | study | ccaf 1. 調査範囲の分割と、統合結果の抜けを埋める反復ループ | session_017JP5BnTohaTSGJHnUZFwCm | work/ccaf/scope-partitioning-iterative-refinement | 統合済み | OK | ccaf/notes/01-agentic-architecture/scope-partitioning-iterative-refinement.md |
-| 5 | study | ccaf 1. Task ツールによるサブエージェントの起動と AgentDefinition | session_017JP5BnDaCCUYnov5bjc1pu | work/ccaf/task-tool-agent-definition | 差し戻し中 | 範囲・形 OK。事実: ガイドと現行ドキュメントのずれの言い切り3件 | ccaf/notes/01-agentic-architecture/task-tool-agent-definition.md |
+| 5 | study | ccaf 1. Task ツールによるサブエージェントの起動と AgentDefinition | session_017JP5BnDaCCUYnov5bjc1pu | work/ccaf/task-tool-agent-definition | 統合済み | OK | ccaf/notes/01-agentic-architecture/task-tool-agent-definition.md |
 | 6 | study | ccaf 1. サブエージェントへのコンテキストの渡し方 | session_017JP5BqftoWoDrku6Acexa7 | work/ccaf/subagent-context-passing | 統合済み | OK | ccaf/notes/01-agentic-architecture/subagent-context-passing.md |
 | 7 | study | ccaf 1. ワークフローの順序をプログラムで強制する | session_017JP5BojR6EkGL7t3GCVGsW | work/ccaf/programmatic-workflow-enforcement | 作業中 | — | ccaf/notes/01-agentic-architecture/programmatic-workflow-enforcement.md |
 | 8 | study | ccaf 1. 人への引き継ぎの要約と、複数の用件を含む依頼の分解 | session_017JP5BnVZNgfCi6tsogPb2e | work/ccaf/structured-handoff-request-decomposition | 作業中 | — | ccaf/notes/01-agentic-architecture/structured-handoff-request-decomposition.md |
