@@ -32,16 +32,16 @@
 | 23 | study | ccaf 3. SKILL.md の frontmatter | session_017JP5BnjUmWKw5oVHD5kHvx | work/ccaf/skill-frontmatter | 統合済み | OK | ccaf/notes/03-claude-code/skill-frontmatter.md |
 | 24 | study | ccaf 3. プランモードと直接実行の使い分け、Explore サブエージェント | session_017JP5BoE31BiMXJBsCaSGDJ | work/ccaf/plan-mode-vs-direct | 統合済み | OK | ccaf/notes/03-claude-code/plan-mode-vs-direct.md |
 | 25 | study | ccaf 3. Claude Code での反復的な改善 | session_017JP5BpQbHDRnjSWCnY8aHj | work/ccaf/iterative-refinement | 統合済み | OK | ccaf/notes/03-claude-code/iterative-refinement.md |
-| 26 | study | ccaf 3. CI での Claude Code の非対話実行と構造化出力 | session_017JP5BpvU85qkVAKamTXvTe | work/ccaf/ci-non-interactive | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/03-claude-code/ci-non-interactive.md |
+| 26 | study | ccaf 3. CI での Claude Code の非対話実行と構造化出力 | session_017JP5BpvU85qkVAKamTXvTe | work/ccaf/ci-non-interactive | 差し戻し中 | 範囲・形 OK。事実: 誤りなし。未確認の解消、例題 Q10 の文言の訳 | ccaf/notes/03-claude-code/ci-non-interactive.md |
 | 27 | study | ccaf 3. CI での自動レビューとテスト生成の質を上げる工夫 | session_017JP5BqWE91Wtg51mNYYYKm | work/ccaf/ci-review-test-quality | 統合済み | OK | ccaf/notes/03-claude-code/ci-review-test-quality.md |
-| 28 | study | ccaf 4. 明確な基準で誤検知を減らすプロンプト | session_017JP5BmppTkoYdcQ1T9LAaf | work/ccaf/explicit-criteria-false-positives | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/04-prompt-engineering/explicit-criteria-false-positives.md |
-| 29 | study | ccaf 4. few-shot プロンプティング | session_017JP5BnfzgQs95p4w549BJk | work/ccaf/few-shot-prompting | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/04-prompt-engineering/few-shot-prompting.md |
-| 30 | study | ccaf 4. tool_use と JSON スキーマによる構造化出力 | session_017JP5BpJ2dYTqowegSVWMRe | work/ccaf/tool-use-json-schema | 作業中 | — | ccaf/notes/04-prompt-engineering/tool-use-json-schema.md |
+| 28 | study | ccaf 4. 明確な基準で誤検知を減らすプロンプト | session_017JP5BmppTkoYdcQ1T9LAaf | work/ccaf/explicit-criteria-false-positives | 差し戻し中 | 範囲・形 OK。事実: 約20件中8件（言い過ぎ・出典の取り違えなど） | ccaf/notes/04-prompt-engineering/explicit-criteria-false-positives.md |
+| 29 | study | ccaf 4. few-shot プロンプティング | session_017JP5BnfzgQs95p4w549BJk | work/ccaf/few-shot-prompting | 差し戻し中 | 範囲・形 OK。事実: 2件、例題 Q1・Q2 との重なり | ccaf/notes/04-prompt-engineering/few-shot-prompting.md |
+| 30 | study | ccaf 4. tool_use と JSON スキーマによる構造化出力 | session_017JP5BpJ2dYTqowegSVWMRe | work/ccaf/tool-use-json-schema | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/04-prompt-engineering/tool-use-json-schema.md |
 | 31 | study | ccaf 4. 抽出用スキーマの設計 | session_017JP5BqUNGBXx1M3njri7TU | work/ccaf/extraction-schema-design | 作業中 | — | ccaf/notes/04-prompt-engineering/extraction-schema-design.md |
-| 32 | study | ccaf 4. 検証・再試行・フィードバックのループ | — | work/ccaf/validation-retry-loop | 待ち | — | ccaf/notes/04-prompt-engineering/validation-retry-loop.md |
-| 33 | study | ccaf 4. Message Batches API を使うバッチ処理の設計 | — | work/ccaf/message-batches-api | 待ち | — | ccaf/notes/04-prompt-engineering/message-batches-api.md |
-| 34 | study | ccaf 4. 独立したインスタンスによるレビューと、複数パスのレビュー | — | work/ccaf/independent-multipass-review | 待ち | — | ccaf/notes/04-prompt-engineering/independent-multipass-review.md |
-| 35 | study | ccaf 5. 長い対話で重要な事実を保つ | — | work/ccaf/preserving-key-facts | 待ち | — | ccaf/notes/05-context-reliability/preserving-key-facts.md |
+| 32 | study | ccaf 4. 検証・再試行・フィードバックのループ | session_017JP5Bqa3LM44QDd3ovpLvL | work/ccaf/validation-retry-loop | 作業中 | — | ccaf/notes/04-prompt-engineering/validation-retry-loop.md |
+| 33 | study | ccaf 4. Message Batches API を使うバッチ処理の設計 | session_017JP5Br7Lzte4GUHaxWBQ1k | work/ccaf/message-batches-api | 作業中 | — | ccaf/notes/04-prompt-engineering/message-batches-api.md |
+| 34 | study | ccaf 4. 独立したインスタンスによるレビューと、複数パスのレビュー | session_017JP5BoUkn8eoBbfw68dR7Q | work/ccaf/independent-multipass-review | 作業中 | — | ccaf/notes/04-prompt-engineering/independent-multipass-review.md |
+| 35 | study | ccaf 5. 長い対話で重要な事実を保つ | session_017JP5Bnu9CuZiJaT1bhq54Q | work/ccaf/preserving-key-facts | 作業中 | — | ccaf/notes/05-context-reliability/preserving-key-facts.md |
 | 36 | study | ccaf 5. 位置の影響 | — | work/ccaf/lost-in-the-middle-structured-passing | 待ち | — | ccaf/notes/05-context-reliability/lost-in-the-middle-structured-passing.md |
 | 37 | study | ccaf 5. エスカレーションの基準と、曖昧な依頼の確かめ方 | — | work/ccaf/escalation-ambiguity | 待ち | — | ccaf/notes/05-context-reliability/escalation-ambiguity.md |
 | 38 | study | ccaf 5. マルチエージェントでのエラーの伝え方 | — | work/ccaf/multiagent-error-propagation | 待ち | — | ccaf/notes/05-context-reliability/multiagent-error-propagation.md |
