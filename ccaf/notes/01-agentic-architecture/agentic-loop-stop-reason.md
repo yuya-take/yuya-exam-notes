@@ -25,17 +25,18 @@ flowchart TD
 | `tool_use` | Claude がツールを呼んでいる | ツールを実行し、結果を返して続ける |
 | `end_turn` | 応答を自然に終えた | 終了。応答を使う |
 | `max_tokens` | `max_tokens` の上限に達した | 上限を上げて再送するか続きを頼む。途中で切れた `tool_use` は上限を上げて再送 |
-| `pause_turn` | サーバーツール（Anthropic 側で実行するツール）のループが中断した | 応答をそのまま assistant として足して再送 |
+| `pause_turn` | サーバーツール（Anthropic 側で実行するツール）のサーバー側ループが反復の上限（既定で10回）に達した | 応答をそのまま assistant として足し、後ろに user メッセージを足さずに再送 |
 | `stop_sequence` / `refusal` / `model_context_window_exceeded` | 停止文字列・拒否・コンテキスト超過 | それぞれ個別に処理 |
 
 - tool_result の形の決まり
   - assistant の `tool_use` のすぐ次の user メッセージで返す。間に別のメッセージを挟まない
   - `tool_use` 1つにつき `tool_result` 1つ（`tool_use_id` で対応）。並列呼び出しでも1つの user メッセージにまとめる
   - `tool_result` は content の先頭に置く。テキストはその後
+  - 例外: 結果がまだ返っていないサーバーツールの呼び出しが同じ応答にあるときは、user メッセージに `tool_result` だけを入れる
   - ツールが失敗しても `is_error: true` で結果を返す
 - モデル主導（model-driven）と決め打ちの違い
   - エージェント（agent）: 文脈を見て、次に呼ぶツールを Claude が決める
-  - ワークフロー（workflow）: 決まったコードの経路やツールの順番で進める。手順が決まった作業向き
+  - ワークフロー（workflow）: 決め打ちの決定木（decision trees）やツールの順番で進める。手順が決まった作業向き
 - Agent SDK はこのループを自動で回す。Claude がツールを呼ばない応答を返すと終わる。`max_turns` と `max_budget_usd` は暴走を防ぐ上限（既定は無制限）
 
 ## 試験で問われそうなポイント
@@ -47,7 +48,7 @@ flowchart TD
 ## 間違えやすいところ
 - 応答の文面に「完了しました」などの言葉があるかで終了を判定する → 誤り。自然言語の合図は揺れる
 - 「最大 N 回で止める」を主な停止手段にする → 誤り。作業の途中で切れるか、無駄に回る
-- assistant の応答にテキストがあれば完了とみなす → 誤り。`tool_use` の応答にもテキストが付くことがある
+- assistant の応答にテキストがあれば完了とみなす → 誤り。`tool_use` の応答にもテキストが一緒に付く（handle-tool-calls の応答例、agent-loop の説明）
 - `tool_result` の直後にテキストを足す → 空の `end_turn` 応答を招くことがある
 - `pause_turn` と `tool_use` の混同 → 自分で実行するツールで止まったときは必ず `tool_use`
 - `max_tokens` で終わった応答を完了扱いにする → 出力が途中で切れている
@@ -67,4 +68,3 @@ flowchart TD
 - [Parallel tool use](https://platform.claude.com/docs/en/agents-and-tools/tool-use/parallel-tool-use)（公式）
 - [How the agent loop works](https://code.claude.com/docs/en/agent-sdk/agent-loop)（公式、Agent SDK）
 - [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)（公式、エンジニアリングブログ。2024-12 の記事で、ツール類の記述は古い部分があると記事自身が注記）
-- 未確認: 「テキストがあれば完了とみなす」が誤りである根拠は Exam Guide のアンチパターンの記述による。tool_use の応答にテキストが同時に付くことを明言した公式の一文は、今回読んだ範囲では確かめていない
