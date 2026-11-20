@@ -33,7 +33,7 @@ flowchart LR
 
 ### レポートの書き方
 - 確立した発見（well-established）と争いのある発見（contested）を、明示的な節に分ける
-- 元の出典の言い方（例: 「推定」「暫定値」）と方法の文脈（調査対象・手法）を残す
+- 元の出典の言い方と方法の文脈を残す（例の「推定」「暫定値」「調査対象・手法」は私の解釈による具体化）
 
 | 内容の種類 | 形式（ガイドの例） |
 |---|---|
@@ -45,6 +45,7 @@ flowchart LR
 - Citations（引用機能）: 文書ごとに有効にすると、主張ごとに `cited_text`・`document_index`・`document_title` と位置（文字・ページ）を返す
 - 長い文書では、先に関係する箇所を引用させてから作業させる。引用で裏付けられない主張は撤回させる（Reduce hallucinations）
 - Anthropic の調査システムは、発見をまとめた後に CitationAgent（文書とレポートから引用箇所を特定する役）へ渡す
+- Skill authoring best practices の調査統合の例: 出典どうしが一致・対立する点を確かめ、各論点を支える出典を記し、要約に対立する見方を含める
 
 ## 試験で問われそうなポイント
 - 最終レポートで出典が消えている → 要約の段で対応表が捨てられている。サブエージェントに claim・抜粋・URL/文書名・日付を構造化で返させ、統合でも保つ
@@ -56,9 +57,9 @@ flowchart LR
 ## 間違えやすいところ
 - 矛盾する値の一方を勝手に選ぶ、平均を取る、新しいほうだけ残す → どれもアンチパターン。両方を注記して残す（「平均」「新しいほう」はガイドの「arbitrarily selecting」を私が具体化した例）
 - 時期の違うデータを同じ時点の値として並べる → 変化を矛盾と誤読させる
-- 出典を本文の文章に混ぜる・「出典を残して」と頼むだけ → 統合で落ちやすい。欄を分けた構造化データにする
+- 出典を本文の文章に混ぜる・「出典を残して」と頼むだけ → 統合で落ちやすい（私の推論）。欄を分けた構造化データにする（ガイドの Exercise 4）
 - 確立した発見と争いのある発見を同じ調子で書く・「推定」を断定に言い換える → 不確かさが消える
-- ずれ: Citations は structured outputs（JSON スキーマでの出力）と同時に使えない（400 エラー）。ガイドの「構造化した対応表」は設計パターンで、Citations の機能名ではない
+- ずれ: Citations は structured outputs（JSON スキーマでの出力）と同時に使えない（400 エラー）。ガイドの「構造化した対応表」は設計パターンで、Citations の機能名ではない。回避策は1フィールド1行で答えさせてコードで解析する（「JSON だけを返せ」は引用が減るので避ける）
 - 補足（私の解釈）: `conflict_detected` は抽出時の矛盾フラグ（4.4、[検証と再試行のループ](../04-prompt-engineering/validation-retry-loop.md)）。5.6 は統合での扱いが主
 
 ## 確認問題
@@ -74,6 +75,6 @@ flowchart LR
 - [Citations](https://platform.claude.com/docs/en/build-with-claude/citations)（公式。引用の欄、structured outputs と併用不可）
 - [Prompting best practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)（公式。文書を `<document>`・`<source>` タグで渡す、先に引用させる、出力形式の指示）
 - [Reduce hallucinations](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations)（公式。引用で裏付けられない主張を撤回させる）
+- [Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)（公式。Research synthesis workflow の例: 一致・対立の確認、論点ごとの出典、Conflicting viewpoints）
 - [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system)（公式。CitationAgent、一次情報を優先する評価）
-- 未確認: 矛盾する統計や時期の違いの扱い方そのものを説明する公式ドキュメント（ガイド以外では見つからなかった。調査システムの記事にも記述は無い）
-- 未確認: Citations と Prompting best practices のページは途中で切れて読めた部分があり、後半の記述は要約でしか確かめていない
+- 未確認: 矛盾する統計の扱い方や、時期の違いを日付で区別することまで書いた公式ドキュメント（ガイド以外では見つからなかった）
