@@ -98,7 +98,7 @@
 - [ ] CLAUDE.md のモジュール化（@import と .claude/rules/、3.1） → [ノート](notes/03-claude-code/claude-md-modularization.md)
 - [ ] パス指定ルールによる規約の条件付き読み込み（paths の glob パターン、3.3） → [ノート](notes/03-claude-code/path-scoped-rules.md)
 - [ ] カスタムスラッシュコマンドとスキルのスコープ、CLAUDE.md との使い分け（.claude/commands/、.claude/skills/、3.2）
-- [ ] SKILL.md の frontmatter（context: fork、allowed-tools、argument-hint、3.2）
+- [ ] SKILL.md の frontmatter（context: fork、allowed-tools、argument-hint、3.2） → [ノート](notes/03-claude-code/skill-frontmatter.md)
 - [ ] プランモードと直接実行の使い分け、Explore サブエージェント（Plan mode vs direct execution、3.4）
 - [ ] Claude Code での反復的な改善（入出力例、テスト駆動、インタビュー、問題の伝え方、3.5）
 - [ ] CI での Claude Code の非対話実行と構造化出力（-p、--output-format json、--json-schema、3.6）
