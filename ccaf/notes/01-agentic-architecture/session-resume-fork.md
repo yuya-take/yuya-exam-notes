@@ -25,6 +25,7 @@ flowchart LR
 | 要約から始め直す | 新しいセッションに要約を貼る | 新しい `query()` の最初に要約を入れる | 要約だけ | 新しい ID |
 
 - 再開で戻るのは、メッセージ・ツールの呼び出し・ツールの結果（記録した時点のもの）
+- 例外: compaction（古い部分を要約して詰めること）をしたセッションは、最後の要約とそれ以降だけが読み込まれる
 - セッションが保存するのは会話だけ。ファイルの変更を戻すには別の仕組み（file checkpointing）を使う
 - フォークした枝がファイルを書き換えると、同じディレクトリで動くほかのセッションにも見える
 - セッションのファイルは作ったマシンの中だけにある（`~/.claude/projects/<作業ディレクトリ>/` の `.jsonl`）
@@ -32,11 +33,12 @@ flowchart LR
 ### サブエージェントのフォーク（1.3 との境界）
 - 普通のサブエージェントは空の文脈で始まり、必要な情報はプロンプトで明示的に渡す
 - フォークしたサブエージェント（forked subagent）は、親の会話をそのまま引き継いで別の方向を試す。親に返るのは最後の結果だけ
-- Claude Code の `/fork` は、会話を写した別のセッションを作る（agent view が無効なら forked subagent を起動する）
+- forked subagent を自分で起動するのは `/subtask <task>`
+- `/fork` は agent view が有効なら会話を写したバックグラウンドセッションを作る。forked subagent になるのは agent view が無効なときだけ
 
 ## 試験で問われそうなポイント
 - 前日の調査を名前で続けたい → 名前を付けておき `--resume <名前>` で再開する
-- 同じ分析を土台に、2つの方針（例: 2種類のキャッシュ戦略）を比べたい → `fork_session` で枝を2本作る
+- 1回の調査結果をもとに、別々の直し方を並行して試したい（例: 設定で直すか、コードで直すか） → `fork_session` で枝を2本作る
 - 再開の前にコードが変わった → 変わったファイルと変更の中身を伝え、そこだけ調べ直させる。全部を調べ直させない
 - 中断の間にファイルが大きく変わり、前のツール結果の多くが古い → 要点を構造化した要約で新しいセッションを始める
 - 前の文脈の大半がまだ正しい → 要約し直さず、そのまま再開する
@@ -61,8 +63,8 @@ flowchart LR
 ## 出典
 - [Exam Guide v1.1 タスクステートメント 1.3・1.7](https://cc.sj-cdn.net/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1794946250/Claude_Certified_Architect_-_Foundations_Exam_Guide.pdf)（公式）
 - [Work with sessions（Agent SDK）](https://code.claude.com/docs/en/agent-sdk/sessions)（公式）
-- [Manage sessions](https://code.claude.com/docs/en/sessions)（公式）
-- [CLI reference](https://code.claude.com/docs/en/cli-reference)（公式。`-n`、`--continue`、`--fork-session`。フラグ表の `--resume` の行はページが途中で切れて原文は未確認。名前での再開は Manage sessions で確認）
-- [Commands](https://code.claude.com/docs/en/commands)（公式。`/fork`、`/branch`、`/compact`）
-- [Create custom subagents](https://code.claude.com/docs/en/sub-agents)（公式。フォークの節はページが途中で切れて原文を確認できず、親に最後の結果だけ返る点は未確認）
-- 「要約から始め直す方が確実」の根拠は Exam Guide のみ。公式ドキュメントで同じ趣旨の記述は未確認
+- [Manage sessions](https://code.claude.com/docs/en/sessions)（公式。再開で戻るもの、compaction の例外）
+- [CLI reference](https://code.claude.com/docs/en/cli-reference)（公式。`--resume`、`-n`、`--continue`、`--fork-session`）
+- [Commands](https://code.claude.com/docs/en/commands)（公式。`/fork`、`/subtask`、`/branch`）
+- [Create custom subagents](https://code.claude.com/docs/en/sub-agents)（公式。Fork the current conversation の節）
+- 「要約から始め直す方が確実」は Exam Guide が根拠。近い記述として、Agent SDK の sessions ページ「Resume across hosts」に、必要な結果を新しいセッションのプロンプトに渡す方が頑健なことが多い、とある（別のマシンで続ける場面の話）
