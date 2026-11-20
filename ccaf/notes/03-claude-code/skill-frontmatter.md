@@ -68,14 +68,62 @@ $ARGUMENTS 以下の依存関係を洗い出し、要点を5行で報告する�
 
 ## 確認問題
 
-??? question "Q1. 移行の候補を10案出して比べるスキルを使うと、本体の会話がその検討で埋まり、元の作業の指示が薄れる。どう直す？"
-    frontmatter に `context: fork` を付ける。別のサブエージェントで検討させ、結論だけを本体に戻す。途中経過は本体のコンテキストに残らない。
+**Q1.** 旅行予約サービスの開発者が、Claude Code で「DB の移行の候補を10案出して比べる」スキルを使っている。使うたびに本体の会話がその検討で埋まり、元の作業の指示が薄れてしまう。最も適切な直し方はどれか。（1つ選べ）
+{ .quiz-q }
 
-??? question "Q2. `/release` を引数なしで打つ人が多く、毎回「バージョンは？」と聞き返している。frontmatter で何を足す？"
-    `argument-hint: "[version]"` を足し、補完のときに必要な引数を見せる。打ち忘れが減ることを期待するもので、必須にはならない。本文では `$ARGUMENTS` で受け取る。
+<div class="quiz" data-answer="C" markdown>
 
-??? question "Q3. 「API の命名規約」だけを書いたスキルに `context: fork` を付けたら、何も返ってこない。なぜ？"
-    fork すると、スキルの本文がサブエージェントへの指示になる。規約だけで手順が無いので、やることが無い。規約は fork せず本体で使う（または CLAUDE.md へ）。
+- A. CLAUDE.md に「検討の途中経過は短くまとめること」と書き足す
+- B. frontmatter に `disable-model-invocation: true` を付け、人が呼んだときだけ動かす
+- C. frontmatter に `context: fork` を付け、サブエージェントで検討させて結論だけを戻す
+- D. frontmatter の `allowed-tools` で、検討の間に使えるツールを絞る
+
+</div>
+
+??? success "答えと解説"
+    **正解: C。** fork したスキルは別のサブエージェントの文脈で走り、途中経過は本体に残らない。
+
+    - A: 文面で頼んでも、検討は本体の会話で進むので、途中経過は本体に残る
+    - B: 誰が起動するかが変わるだけで、実行は本体の会話のままだ
+    - D: ツールの扱いを決める項目で、途中経過の置き場所は変わらない
+
+**Q2.** 同じチームの `/release` スキルは、リリースするバージョンを引数で受け取る。引数なしで打つ人が多く、毎回「バージョンは？」と聞き返している。frontmatter の直し方として最も適切なものはどれか。（1つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="B" markdown>
+
+- A. `argument-hint: "[version]"` を足し、引数の無い呼び出しをエラーで止める
+- B. `argument-hint: "[version]"` を足し、補完のときに必要な引数を見せる
+- C. `context: fork` を足し、サブエージェントに会話の履歴からバージョンを探させる
+- D. `disable-model-invocation: true` を足し、人が起動するときに引数を付けさせる
+
+</div>
+
+??? success "答えと解説"
+    **正解: B。** `argument-hint` は補完のときに出る引数のヒントで、本文では `$ARGUMENTS` で受け取る。
+
+    - A: `argument-hint` はヒントにすぎず、引数を必須にする仕組みではない
+    - C: fork したサブエージェントは会話の履歴を見ない
+    - D: Claude が自分から呼ばなくなるだけで、引数の付け忘れは減らない
+
+**Q3.** 同じチームで、「API の命名規約」だけを書いたスキルに `context: fork` を付けた。呼ぶと、中身の無い返事しか戻ってこない。原因と対応として最も適切なものはどれか。（1つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="D" markdown>
+
+- A. `agent` を省いて general-purpose になったのが原因なので、`agent: Explore` を足す
+- B. fork は既定で裏で動くのが原因なので、`background: false` を足して結果を待つ
+- C. 会話の履歴が渡っていないのが原因なので、本文に「直前の会話を参照すること」と書く
+- D. 本文がサブエージェントへの指示になるのに手順が無いのが原因なので、fork を外して本体で使う
+
+</div>
+
+??? success "答えと解説"
+    **正解: D。** fork するとスキルの本文がそのまま指示になるので、規約だけで手順が無いとやることが無い（規約は本体で使うか CLAUDE.md へ）。
+
+    - A: サブエージェントの種類を変えても、指示に手順が無い点は変わらない
+    - B: 結果を待つかどうかが変わるだけで、返ってくる中身は同じだ
+    - C: fork したサブエージェントは会話の履歴を見ないので、本文に書いても参照できない
 
 ## 出典
 - [Extend Claude with skills — Frontmatter reference / Run skills in a subagent / Pre-approve tools for a skill / Pass arguments to skills](https://code.claude.com/docs/en/skills)（公式）

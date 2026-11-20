@@ -58,14 +58,62 @@ flowchart LR
 
 ## 確認問題
 
-??? question "Q1. モノレポの `api/` だけが社内の認証規約に従う必要がある。規約は `docs/auth.md` にある。`web/` の作業では読ませたくない。どうする？"
-    `api/CLAUDE.md` に `@../docs/auth.md` を書く。import は取り込み元と一緒に読まれるので、`api/` の CLAUDE.md が読まれるときだけ効く。ルートの CLAUDE.md に書くと全体に効いてしまう。なお `api/` から起動すると、取り込み先は作業ディレクトリの外になるので、初回に承認が要る。
+**Q1.** EC サイトのモノレポで、Claude Code にコードを書かせている。`api/` だけが社内の認証規約に従う必要があり、規約は `docs/auth.md` にある。`web/` の作業では読ませたくない。最も適切な設定はどれか。（1つ選べ）
+{ .quiz-q }
 
-??? question "Q2. 400行の CLAUDE.md を `@` で5ファイルに分けた。「文脈の消費が減ったはず」という説明は正しい？"
-    誤り。import 先は取り込み元と一緒に展開されるので、量は同じだ。減らしたいなら、一部の作業でしか要らない内容を `paths` 付きのルールやスキルに移す。
+<div class="quiz" data-answer="A" markdown>
 
-??? question "Q3. フロントとバックエンドの担当者が、同じ CLAUDE.md を毎週書き換えて衝突している。どう整理する？"
-    `.claude/rules/` に `frontend/`・`backend/` などトピック別のファイルを作って分ける。1ファイル1トピックなので、担当ごとに保守できる。
+- A. `api/CLAUDE.md` に `@../docs/auth.md` と書き、`api/` の CLAUDE.md が読まれるときだけ取り込む
+- B. ルートの CLAUDE.md に `@docs/auth.md` と書き、「`api/` の作業のときだけ従うこと」と添える
+- C. `docs/auth.md` の中身を `api/CLAUDE.md` に書き写し、元のファイルと並べて保守する
+- D. `api/CLAUDE.md` に `@docs/auth.md` と、リポジトリのルート（作業ディレクトリ）を基準に書く
+
+</div>
+
+??? success "答えと解説"
+    **正解: A。** import は取り込み元と同時に展開されるので、`api/` の CLAUDE.md から名指しすれば `api/` の作業にだけ効く。
+
+    - B: ルートの CLAUDE.md と一緒に展開されるので、`web/` の作業でも読まれる
+    - C: 書き写しは保守がずれる。1か所に置いて import する
+    - D: import の相対パスは、作業ディレクトリではなく取り込み元のファイルが基準だ
+
+**Q2.** 社内の開発者向けツールのリポジトリで、400行の CLAUDE.md を `@` の import で5ファイルに分けた。担当者は「これで毎回の文脈の消費が減った」と説明している。最も適切な見方はどれか。（1つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="D" markdown>
+
+- A. 正しい。import 先は、Claude が関係あると判断したときにだけ読み込まれるので、そのぶん減る
+- B. 一部は正しい。import は最初の1段だけが展開されるので、2段目以降に移した分は起動時に読まれない
+- C. 誤り。ただし5ファイルを `paths` 無しで `.claude/rules/` に移せば、起動時には読まれなくなるので減る
+- D. 誤り。import 先は取り込み元と同時に展開される。減らすなら、一部の作業でしか要らない内容を `paths` 付きのルールかスキルに移す
+
+</div>
+
+??? success "答えと解説"
+    **正解: D。** import は整理の仕組みで、取り込んだ分も一緒に文脈に入る。
+
+    - A: import 先は、Claude の判断ではなく、取り込み元と同時に必ず展開される
+    - B: import は `@` で最大4段までたどられる。段を深くしても減らない
+    - C: `paths` 無しのルールは起動時に読まれるので、量は変わらない
+
+**Q3.** 同じリポジトリで、フロントエンドとバックエンドの担当者が、1つの CLAUDE.md を毎週書き換えては衝突している。最も適切な整理の仕方はどれか。（1つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="D" markdown>
+
+- A. 衝突を避けるため、各担当が自分の規約を `~/.claude/rules/` に書く
+- B. CLAUDE.md の中に担当ごとの見出しを作り、各自そこだけを書き足す
+- C. 規約を2つのファイルに分け、ルートの CLAUDE.md から作業ディレクトリ基準のパスで `@` 取り込みする
+- D. `.claude/rules/` に `frontend.md`・`backend.md` などトピック別のファイルを作り、担当ごとに保守する
+
+</div>
+
+??? success "答えと解説"
+    **正解: D。** rules は1ファイル1トピックで分けられるので、担当ごとに編集がぶつからない。
+
+    - A: `~/.claude/rules/` は自分の全プロジェクトに効く個人用のルールで、チームには届かない
+    - B: 1つのファイルに書き足し続ける形（monolithic）のままで、衝突は減らない
+    - C: import の相対パスは取り込み元のファイルが基準で、作業ディレクトリ基準では正しく取り込めない
 
 ## 出典
 - [How Claude remembers your project（Import additional files / Organize rules with .claude/rules/ / My CLAUDE.md is too large）](https://code.claude.com/docs/en/memory)（公式）

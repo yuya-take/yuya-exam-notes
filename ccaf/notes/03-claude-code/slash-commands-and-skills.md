@@ -62,14 +62,63 @@ flowchart TD
 
 ## 確認問題
 
-??? question "Q1. 開発者 A が、変更履歴を作るスキルを自分好みに変えて試したい。リポジトリには `.claude/skills/changelog/` がある。どうする？"
-    `~/.claude/skills/` に `changelog-draft` など別の名前で作る。`.claude/skills/changelog/` を書き換えると、コミット後にチーム全員へ影響する。同じ名前で個人側に作ると、自分の環境ではチームのものが隠れて、差分に気づきにくい。
+**Q1.** 家計簿アプリの開発チームが、Claude Code の変更履歴を作るスキル `.claude/skills/changelog/` をリポジトリで共有している。メンバーの1人が、このスキルを自分好みに変えて試したい。最も適切な方法はどれか。（1つ選べ）
+{ .quiz-q }
 
-??? question "Q2. 「DB のマイグレーション手順（10ステップ）」と「関数名は snake_case」を CLAUDE.md に書いたら、CLAUDE.md が長くなった。どう分ける？"
-    マイグレーション手順はスキル（`.claude/skills/migrate/`）に移す。必要なときだけ読み込まれる。snake_case は全作業に共通なので CLAUDE.md に残す。
+<div class="quiz" data-answer="D" markdown>
 
-??? question "Q3. 開発者 B は `~/.claude/commands/bench.md` に性能計測の定型プロンプトを置いている。チームから「CI 用のマシンでも同じ `/bench` を使いたい」と頼まれた。どうする？"
-    `.claude/commands/bench.md`（か `.claude/skills/bench/`）としてリポジトリにコミットする。`~/.claude/` は B のマシンだけに効き、ほかのマシンやチームには届かない。
+- A. `.claude/skills/changelog/SKILL.md` を書き換えて試し、うまくいけばそのままコミットする
+- B. `~/.claude/skills/changelog/` に同じ名前で作り、自分の環境だけで差し替えて試す
+- C. `.claude/skills/changelog-draft/` に別の名前で作ってコミットし、自分だけが呼ぶ
+- D. `~/.claude/skills/` に `changelog-draft` など別の名前で作って試す
+
+</div>
+
+??? success "答えと解説"
+    **正解: D。** 個人用の変種は `~/.claude/skills/` に、チームのスキルと別の名前で作る。
+
+    - A: コミットすると、試している途中の手順がチーム全員に効く
+    - B: 同じ名前なら個人のほうが優先され、自分の環境ではチームのスキルが隠れて差に気づきにくい
+    - C: `.claude/skills/` に置いてコミットすれば、別の名前でもチーム全員に共有される
+
+**Q2.** 同じチームのリポジトリの CLAUDE.md に、「DB のマイグレーション手順（10ステップ）」と「関数名は snake_case」の両方を書いたら、CLAUDE.md が長くなった。適切な分け方はどれか。（2つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="B,C" markdown>
+
+- A. snake_case の規約もスキルに移し、CLAUDE.md をできるだけ短くする
+- B. マイグレーション手順は `.claude/skills/migrate/` のスキルに移す
+- C. 関数名は snake_case という規約は CLAUDE.md に残す
+- D. マイグレーション手順は `~/.claude/skills/migrate/` のスキルに移す
+- E. 両方とも CLAUDE.md に残し、見出しを付けて読みやすくする
+
+</div>
+
+??? success "答えと解説"
+    **正解: B と C。** その作業のときだけ要る手順はスキル、いつも守らせる規約は CLAUDE.md に置く。
+
+    - A: スキルは呼ばれない限り本文が読み込まれないので、常に守らせたい規約が抜ける
+    - D: `~/.claude/` は自分のマシンにしか効かず、チームに共有されない
+    - E: CLAUDE.md は毎セッション全文が読まれるので、手順書の分も毎回コンテキストを消費する
+
+**Q3.** 同じチームの開発者の1人が、`~/.claude/commands/bench.md` に性能計測の定型プロンプトを置いている。チームから「CI のマシンでも、各自のマシンでも、同じ `/bench` を使いたい」と頼まれた。最も適切な対応はどれか。（1つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="B" markdown>
+
+- A. `~/.claude/skills/bench/SKILL.md` に移し替え、スキルとして共有する
+- B. `.claude/commands/bench.md` としてリポジトリにコミットする
+- C. 定型プロンプトの全文を CLAUDE.md に書き写し、毎セッション読ませる
+- D. 各メンバーと CI のマシンに、`~/.claude/commands/bench.md` を手でコピーしてもらう
+
+</div>
+
+??? success "答えと解説"
+    **正解: B。** どのマシンでも全員に使わせるなら、リポジトリの `.claude/commands/` に入れて git で共有する。
+
+    - A: スコープは置き場所で決まる。`~/.claude/` の下なら、スキルにしても自分のマシンだけに効く
+    - C: 決まった作業のプロンプトを、常に読まれる CLAUDE.md に入れると、毎回コンテキストを消費する
+    - D: git で共有されないので、マシンごとに中身がずれる
 
 ## 出典
 - [Extend Claude with skills](https://code.claude.com/docs/en/skills)（公式）: 置き場所の表、同名時の優先順位、コマンドのスキルへの統合、読み込みのタイミング

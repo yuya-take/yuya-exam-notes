@@ -71,14 +71,63 @@ paths:
 
 ## 確認問題
 
-??? question "Q1. `db/migrations/` と各サービスの `migrations/` にマイグレーションファイルがある。「マイグレーションは必ず down も書く」を、必要なときだけ読ませたい。どう書く？"
-    `.claude/rules/migrations.md` に `paths: ["**/migrations/**/*"]` を書く。散らばったファイルを1つのパターンで拾え、ほかの作業ではトークンを使わない。各ディレクトリの CLAUDE.md に書くと重複し、新しいサービスで漏れる。
+**Q1.** 物流会社のバックエンドのリポジトリで、CI と手元の両方で Claude Code を使っている。マイグレーションファイルは `db/migrations/` と各サービスの `migrations/` に散らばっている。「マイグレーションには必ず down も書く」を、マイグレーションを扱うときだけ読ませたい。最も適切な設定はどれか。（1つ選べ）
+{ .quiz-q }
 
-??? question "Q2. `.claude/rules/style.md` の frontmatter に `paths` を書いたのに、関係ない作業でも毎回読み込まれている。まず何を疑う？"
-    frontmatter の YAML が解析できていないことを疑う。壊れていると `paths` 無しとして起動時に読み込まれる。`claude --debug` で解析エラーを確かめる。
+<div class="quiz" data-answer="A" markdown>
 
-??? question "Q3. 「コミットメッセージの形式」を `paths: ["src/**/*"]` 付きのルールに書いた。何がまずい？"
-    コミットの形式は、触るファイルに関係なく全セッションで要る。`src/` のファイルを扱うまで読み込まれないので、守られないことがある。CLAUDE.md か `paths` 無しのルールに置く。
+- A. `.claude/rules/migrations.md` の frontmatter に `paths: ["**/migrations/**/*"]` を書く
+- B. `db/migrations/` と各サービスの `migrations/` に CLAUDE.md を置き、同じ規約を書き写す
+- C. `.claude/rules/migrations.md` を `paths` 無しで置き、「マイグレーションのときだけ従う」と書く
+- D. ルートの CLAUDE.md から `@docs/migrations.md` で規約を取り込む
+
+</div>
+
+??? success "答えと解説"
+    **正解: A。** 散らばったファイルを1つの glob で拾え、合わない作業ではトークンを使わない。
+
+    - B: 書き写しは保守がずれ、新しいサービスのディレクトリで漏れる
+    - C: `paths` 無しのルールは起動時に読まれる。条件付きにはならない
+    - D: import 先は CLAUDE.md と一緒に読まれるので、どの作業でも読み込まれる
+
+**Q2.** 同じリポジトリで、`.claude/rules/style.md` の frontmatter に `paths` を書いた。ところが、関係のないファイルだけを扱うセッションでも、毎回このルールが読み込まれている。正しい理解と対応はどれか。（2つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="A,C" markdown>
+
+- A. frontmatter の YAML が壊れていると、エラーで止まらず `paths` 無しとして毎回読み込まれる
+- B. `paths` 付きのルールは、起動時に一度読み込まれてから条件で外される仕様なので、異常ではない
+- C. `claude --debug` で起動し、frontmatter の解析エラーが出ていないかを確かめる
+- D. `paths` の仕組みは当てにならないので、ルールの中身をルートの CLAUDE.md に移す
+- E. frontmatter に `paths` と並べて `description` を書けば、条件付きの読み込みが効くようになる
+
+</div>
+
+??? success "答えと解説"
+    **正解: A と C。** 毎回読まれるなら、まず frontmatter の解析エラーを疑い、`claude --debug` で確かめる。
+
+    - B: `paths` 付きのルールは起動時には読まれず、合うファイルを扱うまで待機する
+    - D: 仕組みの問題ではない。CLAUDE.md に移すと、本当にすべての作業で読まれる
+    - E: rules の frontmatter で読まれる項目は `paths` だけで、ほかの項目は黙って無視される
+
+**Q3.** 同じリポジトリで、「コミットメッセージの形式」を `paths: ["src/**/*"]` 付きのルールに書いた。最も適切な直し方はどれか。（1つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="C" markdown>
+
+- A. このままでよい。一度読み込まれれば、compaction の後も会話に残り続ける
+- B. ルールの冒頭に「このルールはどの作業でも必ず守ること」と書き足す
+- C. `paths` を外して起動時に読まれるようにするか、プロジェクト直下の CLAUDE.md に移す
+- D. `paths` に `docs/**/*` も足し、ドキュメントを扱うときにも読み込まれるようにする
+
+</div>
+
+??? success "答えと解説"
+    **正解: C。** コミットの形式は、触るファイルに関係なく全セッションで要るので、条件付きにしない。
+
+    - A: 読み込まれたルールは compaction で消える。そもそも `src/` を扱うまで読まれない
+    - B: ルールの中身に何を書いても、合うファイルを扱うまでは読み込まれない
+    - D: パターンを広げても、合うファイルを扱うまで読まれない点は変わらない
 
 ## 出典
 - [How Claude remembers your project（Organize rules with .claude/rules/、Path-specific rules）](https://code.claude.com/docs/en/memory)（公式）
