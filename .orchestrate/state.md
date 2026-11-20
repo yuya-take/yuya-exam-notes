@@ -1,13 +1,13 @@
 # orchestrate
 - 目標: ccaf の公式情報を集め、単元ごとの要点ノートを作る（認知負荷を低く）。ノートは GitHub Pages で読めるようにする
 - オーケストレータ: session_017JP5Br8ViMpCH6jfqbuZ9u ／ 統合ブランチ: claude/magical-babbage-f5qgza
-- 同時実行: 5 ／ モデル・effort: 引き継ぎ
+- 同時実行: 5 ／ モデル・effort: 引き継ぎ ／ 作業セッションの環境: env_01FrJkXT4Kuns344Sxbp7THf（yuya-exam-notes。cc.sj-cdn.net などを許可）
 - 完了した作業セッションのアーカイブ: する
 
 ## タスク
 | # | 種類 | 対象 | 作業セッション | ブランチ | 状態 | 検証 | メモ |
 |---|---|---|---|---|---|---|---|
-| 1 | exam-add | ccaf を公式の Exam Guide で作り直す | session_017JP5BovYpHcB8b2VjdFjYz | work/ccaf/exam-guide | 作業中 | — | 第1波。チェックリストをここで確定 |
+| 1 | exam-add | ccaf を公式の Exam Guide v1.1 で作り直す | session_017JP5BoRvce63isKveaZoxQ | work/ccaf/exam-guide-v2 | 作業中 | — | 第1波。チェックリストをここで確定。旧セッション session_017JP5BovYpHcB8b2VjdFjYz（Default 環境で PDF を読めず）は停止を指示 |
 | 2〜 | study | 確定したチェックリストの全項目（1項目1ノート） | — | — | 待ち | — | 第2波。#1 の統合後に起動 |
 
 ## 未回答の連絡
@@ -21,3 +21,5 @@
 - #1 の README 作り直しでは、既存の「受験予定日」「最終確認日」「変更履歴」の欄を残し、変更履歴に作り直しを1行追記する（判断: オーケストレータ。/exam-update の記録の形に合わせる）
 - 第2波は、確定したチェックリストの全項目を1項目1ノートで作る（判断: ユーザー）
 - 費用は気にしなくてよい。品質と速さを優先し、同時実行を 3 から 5 に上げる（判断: ユーザーの意向を受けてオーケストレータ）
+- #1 質問「公式ガイドの PDF のホストが止められている」→ A: ホストを許可した個人用環境 yuya-exam-notes を作り（ユーザー承認）、#1 は新しい環境の作業セッションで起動し直す（判断: オーケストレータ）
+- 作業セッションは、以後すべて環境 env_01FrJkXT4Kuns344Sxbp7THf で起動する（判断: オーケストレータ）
