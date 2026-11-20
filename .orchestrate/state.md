@@ -28,13 +28,13 @@
 | 19 | study | ccaf 3. CLAUDE.md の階層 | session_017JP5BqkcpPReHssP49DB6u | work/ccaf/claude-md-hierarchy | 統合済み | OK | ccaf/notes/03-claude-code/claude-md-hierarchy.md |
 | 20 | study | ccaf 3. CLAUDE.md のモジュール化 | session_017JP5BqQnxGKcEii5QAXjFm | work/ccaf/claude-md-modularization | 統合済み | OK | ccaf/notes/03-claude-code/claude-md-modularization.md |
 | 21 | study | ccaf 3. パス指定ルールによる規約の条件付き読み込み | session_017JP5Bn6U4VRwdfjWriktGu | work/ccaf/path-scoped-rules | 統合済み | OK | ccaf/notes/03-claude-code/path-scoped-rules.md |
-| 22 | study | ccaf 3. カスタムスラッシュコマンドとスキルのスコープ、CLAUDE.md との使い分け | session_017JP5BnPunvNhjFRfJHtVgU | work/ccaf/slash-commands-and-skills | 作業中 | — | ccaf/notes/03-claude-code/slash-commands-and-skills.md |
-| 23 | study | ccaf 3. SKILL.md の frontmatter | session_017JP5BnjUmWKw5oVHD5kHvx | work/ccaf/skill-frontmatter | 作業中 | — | ccaf/notes/03-claude-code/skill-frontmatter.md |
+| 22 | study | ccaf 3. カスタムスラッシュコマンドとスキルのスコープ、CLAUDE.md との使い分け | session_017JP5BnPunvNhjFRfJHtVgU | work/ccaf/slash-commands-and-skills | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/03-claude-code/slash-commands-and-skills.md |
+| 23 | study | ccaf 3. SKILL.md の frontmatter | session_017JP5BnjUmWKw5oVHD5kHvx | work/ccaf/skill-frontmatter | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/03-claude-code/skill-frontmatter.md |
 | 24 | study | ccaf 3. プランモードと直接実行の使い分け、Explore サブエージェント | session_017JP5BoE31BiMXJBsCaSGDJ | work/ccaf/plan-mode-vs-direct | 作業中 | — | ccaf/notes/03-claude-code/plan-mode-vs-direct.md |
 | 25 | study | ccaf 3. Claude Code での反復的な改善 | session_017JP5BpQbHDRnjSWCnY8aHj | work/ccaf/iterative-refinement | 作業中 | — | ccaf/notes/03-claude-code/iterative-refinement.md |
-| 26 | study | ccaf 3. CI での Claude Code の非対話実行と構造化出力 | — | work/ccaf/ci-non-interactive | 待ち | — | ccaf/notes/03-claude-code/ci-non-interactive.md |
-| 27 | study | ccaf 3. CI での自動レビューとテスト生成の質を上げる工夫 | — | work/ccaf/ci-review-test-quality | 待ち | — | ccaf/notes/03-claude-code/ci-review-test-quality.md |
-| 28 | study | ccaf 4. 明確な基準で誤検知を減らすプロンプト | — | work/ccaf/explicit-criteria-false-positives | 待ち | — | ccaf/notes/04-prompt-engineering/explicit-criteria-false-positives.md |
+| 26 | study | ccaf 3. CI での Claude Code の非対話実行と構造化出力 | session_017JP5BpvU85qkVAKamTXvTe | work/ccaf/ci-non-interactive | 作業中 | — | ccaf/notes/03-claude-code/ci-non-interactive.md |
+| 27 | study | ccaf 3. CI での自動レビューとテスト生成の質を上げる工夫 | session_017JP5BqWE91Wtg51mNYYYKm | work/ccaf/ci-review-test-quality | 作業中 | — | ccaf/notes/03-claude-code/ci-review-test-quality.md |
+| 28 | study | ccaf 4. 明確な基準で誤検知を減らすプロンプト | session_017JP5BmppTkoYdcQ1T9LAaf | work/ccaf/explicit-criteria-false-positives | 作業中 | — | ccaf/notes/04-prompt-engineering/explicit-criteria-false-positives.md |
 | 29 | study | ccaf 4. few-shot プロンプティング | — | work/ccaf/few-shot-prompting | 待ち | — | ccaf/notes/04-prompt-engineering/few-shot-prompting.md |
 | 30 | study | ccaf 4. tool_use と JSON スキーマによる構造化出力 | — | work/ccaf/tool-use-json-schema | 待ち | — | ccaf/notes/04-prompt-engineering/tool-use-json-schema.md |
 | 31 | study | ccaf 4. 抽出用スキーマの設計 | — | work/ccaf/extraction-schema-design | 待ち | — | ccaf/notes/04-prompt-engineering/extraction-schema-design.md |
