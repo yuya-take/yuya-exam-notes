@@ -42,7 +42,7 @@
 | 33 | study | ccaf 4. Message Batches API を使うバッチ処理の設計 | session_017JP5Br7Lzte4GUHaxWBQ1k | work/ccaf/message-batches-api | 統合済み | OK | ccaf/notes/04-prompt-engineering/message-batches-api.md |
 | 34 | study | ccaf 4. 独立したインスタンスによるレビューと、複数パスのレビュー | session_017JP5BoUkn8eoBbfw68dR7Q | work/ccaf/independent-multipass-review | 統合済み | OK | ccaf/notes/04-prompt-engineering/independent-multipass-review.md |
 | 35 | study | ccaf 5. 長い対話で重要な事実を保つ | session_017JP5Bnu9CuZiJaT1bhq54Q | work/ccaf/preserving-key-facts | 統合済み | OK | ccaf/notes/05-context-reliability/preserving-key-facts.md |
-| 36 | study | ccaf 5. 位置の影響 | session_017JP5BnBip5FhpjyK2R4RCz | work/ccaf/lost-in-the-middle-structured-passing | 差し戻し中 | 範囲・形 OK。事実: 誤りなし。根拠の書き方の軽い点 | ccaf/notes/05-context-reliability/lost-in-the-middle-structured-passing.md |
+| 36 | study | ccaf 5. 位置の影響 | session_017JP5BnBip5FhpjyK2R4RCz | work/ccaf/lost-in-the-middle-structured-passing | 統合済み | OK | ccaf/notes/05-context-reliability/lost-in-the-middle-structured-passing.md |
 | 37 | study | ccaf 5. エスカレーションの基準と、曖昧な依頼の確かめ方 | session_017JP5Boy9aQeN8B779G4JBY | work/ccaf/escalation-ambiguity | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/05-context-reliability/escalation-ambiguity.md |
 | 38 | study | ccaf 5. マルチエージェントでのエラーの伝え方 | session_017JP5Bo96bKwXe9kkzH81tG | work/ccaf/multiagent-error-propagation | 差し戻し中 | 範囲・形 OK。事実: 約25件中2件（条件の抜け、範囲の言い過ぎ） | ccaf/notes/05-context-reliability/multiagent-error-propagation.md |
 | 39 | study | ccaf 5. 大きなコードベースの探索でのコンテキスト管理 | session_017JP5BmxLuJhZGJuT6Df7Cp | work/ccaf/large-codebase-context | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/05-context-reliability/large-codebase-context.md |
