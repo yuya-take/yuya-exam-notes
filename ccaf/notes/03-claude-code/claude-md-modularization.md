@@ -51,7 +51,7 @@ flowchart LR
 | 1つの CLAUDE.md が長く、担当ごとに編集がぶつかる | `.claude/rules/` にトピック別のファイルで分ける | 何でも1つの CLAUDE.md に書き足す（monolithic。ガイドは rules をその代わりに挙げる） |
 | 規約ファイルの中身を複数の CLAUDE.md に書き写している | 1か所に置いて import する | 書き写しを続ける |
 | ある領域のファイルを触るときだけ要るルール | `paths` 付きのルールを考える（3.3） | 常時読む rules に置く |
-| 文脈の消費を減らしたい | 一部の作業でしか要らない内容を、`paths` 付きのルールやスキルに移す | import で分ける、`paths` 無しの rules に移す（import 先は取り込み元と一緒に読まれ、`paths` 無しの rules は起動時に読まれる） |
+| 文脈の消費を減らしたい | 一部の作業でしか要らない内容を、`paths` 付きのルールやスキルに移す | 同じ CLAUDE.md の中身を import で分けるだけ、または `paths` 無しの rules に移す（import 先は取り込み元と一緒に読まれ、`paths` 無しの rules は起動時に読まれる） |
 | import の相対パス | 取り込み元のファイルを基準に書く | 作業ディレクトリを基準に書く |
 
 </div>
@@ -77,7 +77,7 @@ flowchart LR
     - C: 書き写しは保守がずれる。1か所に置いて import する
     - D: import の相対パスは、作業ディレクトリではなく取り込み元のファイルが基準だ
 
-**Q2.** 社内の開発者向けツールのリポジトリで、400行の CLAUDE.md を `@` の import で5ファイルに分けた。担当者は「これで毎回の文脈の消費が減った」と説明している。最も適切な見方はどれか。（1つ選べ）
+**Q2.** 社内の開発者向けツールのリポジトリで、リポジトリ直下の 400行の CLAUDE.md を `@` の import で5ファイルに分けた。担当者は「これで毎回の文脈の消費が減った」と説明している。最も適切な見方はどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="D" markdown>
@@ -90,7 +90,7 @@ flowchart LR
 </div>
 
 ??? success "答えと解説"
-    **正解: D。** import は整理の仕組みで、取り込んだ分も一緒に文脈に入る。
+    **正解: D。** import は整理の仕組みで、取り込んだ分も一緒に文脈に入る。サブディレクトリの CLAUDE.md から取り込んだ場合も、取り込み元が読まれるときに一緒に読まれる。読む時点を決めるのは取り込み元で、import で分けたこと自体では減らない。
 
     - A: import 先は、Claude の判断ではなく、取り込み元と同時に必ず展開される
     - B: import は `@` で最大4段までたどられる。段を深くしても減らない
@@ -103,7 +103,7 @@ flowchart LR
 
 - A. 衝突を避けるため、各担当が自分の規約を `~/.claude/rules/` に書く
 - B. CLAUDE.md の中に担当ごとの見出しを作り、各自そこだけを書き足す
-- C. 規約を2つのファイルに分け、ルートの CLAUDE.md から作業ディレクトリ基準のパスで `@` 取り込みする
+- C. 各担当が自分の規約を `CLAUDE.local.md` に書き、共有の CLAUDE.md には触らない
 - D. `.claude/rules/` に `frontend.md`・`backend.md` などトピック別のファイルを作り、担当ごとに保守する
 
 </div>
@@ -113,7 +113,7 @@ flowchart LR
 
     - A: `~/.claude/rules/` は自分の全プロジェクトに効く個人用のルールで、チームには届かない
     - B: 1つのファイルに書き足し続ける形（monolithic）のままで、衝突は減らない
-    - C: import の相対パスは取り込み元のファイルが基準で、作業ディレクトリ基準では正しく取り込めない
+    - C: `CLAUDE.local.md` は自分だけのファイル（`.gitignore` に入れるもの）なので、チームの規約が共有されない
 
 ## 出典
 - [How Claude remembers your project（Import additional files / Organize rules with .claude/rules/ / My CLAUDE.md is too large）](https://code.claude.com/docs/en/memory)（公式）

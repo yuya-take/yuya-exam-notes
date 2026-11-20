@@ -71,24 +71,24 @@ paths:
 
 ## 確認問題
 
-**Q1.** 物流会社のバックエンドのリポジトリで、CI と手元の両方で Claude Code を使っている。マイグレーションファイルは `db/migrations/` と各サービスの `migrations/` に散らばっている。「マイグレーションには必ず down も書く」を、マイグレーションを扱うときだけ読ませたい。最も適切な設定はどれか。（1つ選べ）
+**Q1.** 物流会社のインフラのリポジトリで、Claude Code を使っている。Terraform の規約を `.claude/rules/terraform.md` に `paths` 無しで置いたところ、アプリのコードだけを触るセッションでも毎回読み込まれている。最も適切な直し方はどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="A" markdown>
 
-- A. `.claude/rules/migrations.md` の frontmatter に `paths: ["**/migrations/**/*"]` を書く
-- B. `db/migrations/` と各サービスの `migrations/` に CLAUDE.md を置き、同じ規約を書き写す
-- C. `.claude/rules/migrations.md` を `paths` 無しで置き、「マイグレーションのときだけ従う」と書く
-- D. ルートの CLAUDE.md から `@docs/migrations.md` で規約を取り込む
+- A. ルールの frontmatter に `paths: ["terraform/**/*"]` を書き足す
+- B. ルールの冒頭に「Terraform の作業のときだけ従うこと」と書き足す
+- C. ルートの CLAUDE.md から `@.claude/rules/terraform.md` で取り込む
+- D. 同じ規約をスキルにし、Claude が要ると判断したときに読ませる
 
 </div>
 
 ??? success "答えと解説"
-    **正解: A。** 散らばったファイルを1つの glob で拾え、合わない作業ではトークンを使わない。
+    **正解: A。** `paths` 付きのルールは起動時には読まれず、`terraform/` の下のファイルを扱ったときだけ読み込まれる。合わない作業ではトークンを使わない。
 
-    - B: 書き写しは保守がずれ、新しいサービスのディレクトリで漏れる
-    - C: `paths` 無しのルールは起動時に読まれる。条件付きにはならない
-    - D: import 先は CLAUDE.md と一緒に読まれるので、どの作業でも読み込まれる
+    - B: `paths` 無しのルールは起動時に読まれる。中身に何を書いても条件付きにはならない
+    - C: import 先は CLAUDE.md と一緒に読まれるので、どの作業でも読み込まれる
+    - D: スキルは手順やワークフローを必要なときに呼ぶためのもの。ファイルに結びついた規約は `paths` 付きのルールに置く
 
 **Q2.** 同じリポジトリで、`.claude/rules/style.md` の frontmatter に `paths` を書いた。ところが、関係のないファイルだけを扱うセッションでも、毎回このルールが読み込まれている。正しい理解と対応はどれか。（2つ選べ）
 { .quiz-q }

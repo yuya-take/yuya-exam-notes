@@ -81,7 +81,7 @@ jq -e '.structured_output.findings' out.json   # 無ければ失敗させる
 
 <div class="quiz" data-answer="A" markdown>
 
-- A. `packages` を必須にした `--json-schema` を `json` 出力に添え、`structured_output` の有無を確かめてから読む
+- A. `--output-format json` に `--json-schema` を添え、`structured_output` から読む
 - B. `--output-format json` だけを付け、`result` に入った文字列を JSON として解析する
 - C. プロンプトに「パッケージの一覧を JSON だけで答えて」と書き足し、出力を jq で読む
 - D. 出力の文章からパッケージ名と版を正規表現で切り出し、揺れに合わせてパターンを増やす
@@ -100,7 +100,7 @@ jq -e '.structured_output.findings' out.json   # 無ければ失敗させる
 
 <div class="quiz" data-answer="C" markdown>
 
-- A. 入力待ちで止まっているとみて、ジョブのタイムアウトを延ばす
+- A. `--max-turns` を増やし、直すまでのターンが足りるようにする
 - B. `--permission-mode bypassPermissions` を付け、すべてのツールを確認なしで使えるようにする
 - C. `--allowedTools "Bash(npm test *),Read,Edit"` のように、要るツールだけを許す
 - D. `--permission-mode dontAsk` を付け、確認を求めずに先へ進めるようにする
@@ -110,7 +110,7 @@ jq -e '.structured_output.findings' out.json   # 無ければ失敗させる
 ??? success "答えと解説"
     **正解: C。** `-p` では、許可していないツールは入力待ちで止まらずに拒否される。要るツールだけを `--allowedTools` で許す。
 
-    - A: ジョブは成功で終わっており、止まってはいない。許可していないツールが拒否されたことを疑う
+    - A: ターン数ではなく、許可していないツールが拒否されているのが原因だ。ターンを増やしても拒否は続く
     - B: すべて許すのは、CI では広すぎる
     - D: `dontAsk` は確認が要る呼び出しをすべて拒否する。テストのコマンドは拒否されたままだ
 

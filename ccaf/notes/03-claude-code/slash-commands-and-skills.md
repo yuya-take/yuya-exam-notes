@@ -101,24 +101,24 @@ flowchart TD
     - D: `~/.claude/` は自分のマシンにしか効かず、チームに共有されない
     - E: CLAUDE.md は毎セッション全文が読まれるので、手順書の分も毎回コンテキストを消費する
 
-**Q3.** 同じチームの開発者の1人が、`~/.claude/commands/bench.md` に性能計測の定型プロンプトを置いている。チームから「CI のマシンでも、各自のマシンでも、同じ `/bench` を使いたい」と頼まれた。最も適切な対応はどれか。（1つ選べ）
+**Q3.** 同じチームのリポジトリにある `.claude/commands/deploy-check.md` を、関係のない作業の途中で Claude が自分から使ってしまう。人が `/deploy-check` と打ったときだけ動かしたい。最も適切な対応はどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="B" markdown>
 
-- A. `~/.claude/skills/bench/SKILL.md` に移し替え、スキルとして共有する
-- B. `.claude/commands/bench.md` としてリポジトリにコミットする
-- C. 定型プロンプトの全文を CLAUDE.md に書き写し、毎セッション読ませる
-- D. 各メンバーと CI のマシンに、`~/.claude/commands/bench.md` を手でコピーしてもらう
+- A. `~/.claude/commands/deploy-check.md` に移し、自分のマシンだけに置く
+- B. frontmatter に `disable-model-invocation: true` を書き足す
+- C. CLAUDE.md に「/deploy-check は自分から使わないこと」と書き足す
+- D. `.claude/skills/deploy-check/SKILL.md` に移し替え、スキルとして使う
 
 </div>
 
 ??? success "答えと解説"
-    **正解: B。** どのマシンでも全員に使わせるなら、リポジトリの `.claude/commands/` に入れて git で共有する。
+    **正解: B。** 現行のドキュメントでは、コマンドもスキルと同じく Claude が自分から使う。人が打ったときだけにするなら frontmatter に `disable-model-invocation: true` を書く（ガイドはコマンドを `/name` で呼ぶものとして書いており、ここは現行の仕様とずれている）。
 
-    - A: スコープは置き場所で決まる。`~/.claude/` の下なら、スキルにしても自分のマシンだけに効く
-    - C: 決まった作業のプロンプトを、常に読まれる CLAUDE.md に入れると、毎回コンテキストを消費する
-    - D: git で共有されないので、マシンごとに中身がずれる
+    - A: 置き場所を変えても Claude が自分から使う点は変わらず、チームにも共有されなくなる
+    - C: frontmatter で止める仕組みがあるのに、文面で頼むだけでは確実には止まらない
+    - D: スキルも Claude が関係あると判断したときに自分から使うので、変わらない
 
 ## 出典
 - [Extend Claude with skills](https://code.claude.com/docs/en/skills)（公式）: 置き場所の表、同名時の優先順位、コマンドのスキルへの統合、読み込みのタイミング
