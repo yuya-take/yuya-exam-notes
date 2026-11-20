@@ -72,10 +72,10 @@ Agent SDK では、`mcpServers` オプションでコードから渡すか、`se
 
 <div class="quiz" data-answer="B" markdown>
 
-- A. サーバーの定義を手順書にまとめ、各自の `~/.claude.json` に書き写してもらう
-- B. `.mcp.json` に定義を書いてコミットし、トークンは `${INVENTORY_TOKEN}` で参照して値は各自の環境変数に置く
+- A. サーバーの定義とトークンの設定手順を手順書にまとめ、各自の `~/.claude.json` に書き写してもらう
+- B. `.mcp.json` に定義を書いてコミットし、トークンは `${VAR}` の形で各自の環境変数から渡す
 - C. `.mcp.json` に定義とチーム共用のトークンを直接書き、リポジトリにコミットする
-- D. 各自が `--scope` を付けずに `claude mcp add` を実行し、自分の環境に追加する
+- D. 各自が `--scope` を付けずに `claude mcp add` を実行し、トークンも含めて自分の環境に追加する
 
 </div>
 
