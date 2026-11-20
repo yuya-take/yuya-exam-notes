@@ -32,10 +32,10 @@
 | 23 | study | ccaf 3. SKILL.md の frontmatter | session_017JP5BnjUmWKw5oVHD5kHvx | work/ccaf/skill-frontmatter | 統合済み | OK | ccaf/notes/03-claude-code/skill-frontmatter.md |
 | 24 | study | ccaf 3. プランモードと直接実行の使い分け、Explore サブエージェント | session_017JP5BoE31BiMXJBsCaSGDJ | work/ccaf/plan-mode-vs-direct | 差し戻し中 | 範囲・形 OK。事実: 誤りなし。例題 Q5 の選択肢をなぞった記述 | ccaf/notes/03-claude-code/plan-mode-vs-direct.md |
 | 25 | study | ccaf 3. Claude Code での反復的な改善 | session_017JP5BpQbHDRnjSWCnY8aHj | work/ccaf/iterative-refinement | 差し戻し中 | 範囲・形 OK。事実: 誤りなし。推論の明示と手薄な項目 | ccaf/notes/03-claude-code/iterative-refinement.md |
-| 26 | study | ccaf 3. CI での Claude Code の非対話実行と構造化出力 | session_017JP5BpvU85qkVAKamTXvTe | work/ccaf/ci-non-interactive | 作業中 | — | ccaf/notes/03-claude-code/ci-non-interactive.md |
+| 26 | study | ccaf 3. CI での Claude Code の非対話実行と構造化出力 | session_017JP5BpvU85qkVAKamTXvTe | work/ccaf/ci-non-interactive | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/03-claude-code/ci-non-interactive.md |
 | 27 | study | ccaf 3. CI での自動レビューとテスト生成の質を上げる工夫 | session_017JP5BqWE91Wtg51mNYYYKm | work/ccaf/ci-review-test-quality | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/03-claude-code/ci-review-test-quality.md |
-| 28 | study | ccaf 4. 明確な基準で誤検知を減らすプロンプト | session_017JP5BmppTkoYdcQ1T9LAaf | work/ccaf/explicit-criteria-false-positives | 作業中 | — | ccaf/notes/04-prompt-engineering/explicit-criteria-false-positives.md |
-| 29 | study | ccaf 4. few-shot プロンプティング | session_017JP5BnfzgQs95p4w549BJk | work/ccaf/few-shot-prompting | 作業中 | — | ccaf/notes/04-prompt-engineering/few-shot-prompting.md |
+| 28 | study | ccaf 4. 明確な基準で誤検知を減らすプロンプト | session_017JP5BmppTkoYdcQ1T9LAaf | work/ccaf/explicit-criteria-false-positives | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/04-prompt-engineering/explicit-criteria-false-positives.md |
+| 29 | study | ccaf 4. few-shot プロンプティング | session_017JP5BnfzgQs95p4w549BJk | work/ccaf/few-shot-prompting | 検証中 | 範囲・形 OK・事実を確認中 | ccaf/notes/04-prompt-engineering/few-shot-prompting.md |
 | 30 | study | ccaf 4. tool_use と JSON スキーマによる構造化出力 | session_017JP5BpJ2dYTqowegSVWMRe | work/ccaf/tool-use-json-schema | 作業中 | — | ccaf/notes/04-prompt-engineering/tool-use-json-schema.md |
 | 31 | study | ccaf 4. 抽出用スキーマの設計 | — | work/ccaf/extraction-schema-design | 待ち | — | ccaf/notes/04-prompt-engineering/extraction-schema-design.md |
 | 32 | study | ccaf 4. 検証・再試行・フィードバックのループ | — | work/ccaf/validation-retry-loop | 待ち | — | ccaf/notes/04-prompt-engineering/validation-retry-loop.md |
@@ -70,3 +70,4 @@
 - 環境 yuya-exam-notes に modelcontextprotocol.io を追加（MCP の公式仕様を出典にするため。判断: オーケストレータが申請し、ユーザーが承認）
 - 2.4 の「MCP ツールの説明文を詳しく書き、組み込みの Grep などより選ばれるようにする」は mcp-server-integration（#16）が主（判断: オーケストレータ。tool-descriptions-boundaries にはこの話が無く、どちらのノートにも実質的な説明が無かったため）
 - MCP 仕様の版: 現行は 2026-07-28。ガイドの書き方を主にし、版の違いは試験の判断に関わるときだけ「間違えやすいところ」に書く（判断: オーケストレータ）
+- 例の数: ガイドは 3.5 の入出力例が2〜3個、4.2 の few-shot が2〜4個（訂正。判断: オーケストレータ。#29 の指摘で、共通の注意の「few-shot は2〜3個」を直した）
