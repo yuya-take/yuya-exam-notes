@@ -66,8 +66,8 @@ flowchart LR
 
 - A. `claude --continue` で直近のセッションを開き、そのまま調査を続ける
 - B. 月曜の結論を要約し、新しいセッションの最初に渡して始め直す
-- C. `--resume api-latency` で再開し、`db/pool.ts` の変更を伝えて関わる分析だけ見直させる
-- D. `--resume api-latency` で再開し、リポジトリ全体を最初から調べ直させる
+- C. `--resume api-latency` で再開し、`db/pool.ts` の変更を伝えて見直させる
+- D. `--resume api-latency` で再開し、リポジトリ全体を調べ直させる
 
 </div>
 

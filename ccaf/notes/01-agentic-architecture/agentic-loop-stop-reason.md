@@ -98,14 +98,14 @@ flowchart TD
     - C: 上限が無いと、暴走したときに止まらない。Agent SDK の `max_turns` と `max_budget_usd` は既定で無制限なので、自分で設定する
     - E: 文面の合図は揺れるうえ、暴走への備えも無い
 
-**Q3.** Claude が1つの応答で `tool_use` ブロックを3つ返した。そのうち1つのツールは、タイムアウトで失敗した。次のリクエストの組み立てとして最も適切なものはどれか。（1つ選べ）
+**Q3.** Claude が1つの応答で `tool_use` ブロックを3つ返した。そのうち1つのツールは、タイムアウトで失敗した。assistant の応答は履歴に足した。次のリクエストの組み立てとして最も適切なものはどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="B" markdown>
 
-- A. 成功した2つの `tool_result` だけを user メッセージで返し、失敗したものは省く
-- B. assistant の応答をそのまま履歴に足し、次の user メッセージの先頭に、3つの `tool_result` をまとめて置く。失敗したものには `is_error: true` を付ける
-- C. `tool_result` を1つずつ別の user メッセージにして、3回に分けて返す
+- A. 成功した2つの `tool_result` だけを次の user メッセージ1通で返し、失敗分は省く
+- B. 3つの `tool_result` を次の user メッセージ1通にまとめ、失敗分には `is_error: true` を付ける
+- C. 3つの `tool_result` を、1つずつ別々の user メッセージに分けて順に返す
 - D. 3つの結果を要約してシステムプロンプトに書き足し、user メッセージで続きを頼む
 
 </div>
