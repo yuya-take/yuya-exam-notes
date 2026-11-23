@@ -19,14 +19,23 @@ theme:
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
+      primary: indigo
+      accent: amber
       toggle:
         icon: material/brightness-7
         name: ダークモードに切り替え
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
+      primary: indigo
+      accent: amber
       toggle:
         icon: material/brightness-4
         name: ライトモードに切り替え
+
+extra_css:
+  - stylesheets/notes.css # site_assets/ から build_site.py が写す
+extra_javascript:
+  - javascripts/quiz.js # 確認問題を選んで答え合わせする
 
 plugins:
   - search:
@@ -40,6 +49,11 @@ markdown_extensions:
   - toc:
       permalink: true
   - pymdownx.details
+  - pymdownx.mark:
+      smart_mark: false # 日本語の直後に == が来ても、マーカーとして読む
+  - pymdownx.highlight:
+      anchor_linenums: false
+  - pymdownx.inlinehilite
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.superfences:

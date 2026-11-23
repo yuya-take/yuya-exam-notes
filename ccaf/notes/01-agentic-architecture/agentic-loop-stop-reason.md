@@ -2,64 +2,120 @@
 
 > ドメイン: 1. エージェントの構成とオーケストレーション（27%） ／ 更新: 2026-11-20
 
-## 3行まとめ
-- ループの継続・終了は **`stop_reason`** だけで決める。`"tool_use"` なら続け、`"end_turn"` なら終える
-- ツールの結果は `tool_result` として会話履歴に足し、次のリクエストで Claude に渡す。次の一手は Claude が決める
-- 自然言語の合図、テキストの有無、回数の上限を主な停止条件にする設計は誤り。回数や予算の上限は安全装置として添えるだけ
+!!! abstract "ひとことで"
+    ループを続けるか止めるかは、==応答の `stop_reason` だけで決める==。`tool_use` なら続け、`end_turn` なら止める。
 
 ## 仕組み
+
+エージェントループは「Claude に聞く、言われたツールを実行する、結果を返す」の繰り返しだ。次に何をするかは毎回 Claude が決める。コードの側がするのは、`stop_reason` を見て続けるか止めるかを判断することだけ。
 
 ```mermaid
 flowchart TD
   A[messages と tools を送る] --> B{stop_reason}
-  B -- tool_use --> C[tool_use ブロックのツールを実行]
-  C --> D[assistant の応答をそのまま履歴に足す]
-  D --> E[user メッセージで tool_result を返す]
-  E --> A
-  B -- end_turn --> F[最終の応答を使う・ループ終了]
-  B -- それ以外 --> G[理由ごとに処理]
+  B -- tool_use --> C[ツールを実行]
+  C --> D[tool_result を履歴に足す]
+  D --> A
+  B -- end_turn --> E[応答を使って終了]
+  classDef run fill:#e3f2fd,stroke:#1e88e5,color:#0d47a1
+  classDef judge fill:#fff8e1,stroke:#f9a825,color:#4e342e
+  classDef done fill:#e8f5e9,stroke:#43a047,color:#1b5e20
+  class A,C,D run
+  class B judge
+  class E done
 ```
 
-| stop_reason | 意味 | ループでの扱い |
+ツールの結果は、次のリクエストで ==`tool_result` として返す==。assistant の応答をそのまま履歴に足し、そのすぐ次の user メッセージの先頭に `tool_result` を置く。1回の応答でツールが3つ呼ばれたら、結果の3つは1つの user メッセージにまとめ、`tool_use_id` で呼び出しと対応させる。ツールが失敗しても結果は捨てず、`is_error: true` を付けて返す。
+
+| stop_reason | 何が起きたか | どうするか |
 |---|---|---|
-| `tool_use` | Claude がツールを呼んでいる | ツールを実行し、結果を返して続ける |
-| `end_turn` | 応答を自然に終えた | 終了。応答を使う |
-| `max_tokens` | `max_tokens` の上限に達した | 上限を上げて再送するか続きを頼む。途中で切れた `tool_use` は上限を上げて再送 |
-| `pause_turn` | サーバーツール（Anthropic 側で実行するツール）のサーバー側ループが反復の上限（既定で10回）に達した | 応答をそのまま assistant として足し、後ろに user メッセージを足さずに再送 |
-| `stop_sequence` / `refusal` / `model_context_window_exceeded` | 停止文字列・拒否・コンテキスト超過 | それぞれ個別に処理 |
+| `tool_use` | ツールを呼びたい | 実行して結果を返し、続ける |
+| `end_turn` | 応答を終えた | 終了する |
+| `max_tokens` | 出力が上限で切れた | 完了扱いにしない。上限を上げて再送するか、続きを生成させる。途中で切れた `tool_use` は上限を上げて再送する |
 
-- tool_result の形の決まり
-  - assistant の `tool_use` のすぐ次の user メッセージで返す。間に別のメッセージを挟まない
-  - `tool_use` 1つにつき `tool_result` 1つ（`tool_use_id` で対応）。並列呼び出しでも1つの user メッセージにまとめる
-  - `tool_result` は content の先頭に置く。テキストはその後
-  - 例外: 結果がまだ返っていないサーバーツールの呼び出しが同じ応答にあるときは、user メッセージに `tool_result` だけを入れる
-  - ツールが失敗しても `is_error: true` で結果を返す
-- モデル主導（model-driven）と決め打ちの違い
-  - エージェント（agent）: 文脈を見て、次に呼ぶツールを Claude が決める
-  - ワークフロー（workflow）: 決め打ちの決定木（decision trees）やツールの順番で進める。手順が決まった作業向き
-- Agent SDK はこのループを自動で回す。Claude がツールを呼ばない応答を返すと終わる。`max_turns` と `max_budget_usd` は暴走を防ぐ上限（既定は無制限）
+回数や予算の上限（Agent SDK の `max_turns`、`max_budget_usd`）は、暴走を止める安全装置にすぎない。正常な終わりは、あくまで `end_turn` で判定する。
 
-## 試験で問われそうなポイント
-- 終了判定の書き方を選ぶ問題 → `stop_reason == "end_turn"` で終え、`"tool_use"` で続ける実装を選ぶ
-- ツール結果の渡し方 → 次の反復の前に `tool_result` を履歴に足す。結果を捨てる・要約だけ system に書く案は外す
-- 手順が毎回変わる調査・対応 → モデル主導のループ。手順が固定の処理 → 決め打ちのワークフローの方が予測しやすい
-- 上限の位置づけ → 回数・予算の上限は安全装置。正常な終了は `end_turn` で判定する
+??? info "そのほかの stop_reason と細かい決まり"
+    - `pause_turn`: サーバーツール（Anthropic 側で動くツール）のループが、反復の上限（既定で10回）に達した。応答をそのまま assistant として足し、user メッセージを足さずに再送する。自分で実行するツールで止まったときは必ず `tool_use` で、`pause_turn` にはならない
+    - `stop_sequence` / `refusal` / `model_context_window_exceeded`: それぞれ個別に処理する
+    - `tool_result` の直後にテキストを足すと、空の `end_turn` 応答を招くことがある
+    - 結果がまだ返っていないサーバーツールの呼び出しが同じ応答にあるときは、user メッセージに `tool_result` だけを入れる
+    - Agent SDK はこのループを自動で回し、ツールを呼ばない応答が来たら終わる。`max_turns` と `max_budget_usd` の既定は無制限
 
-## 間違えやすいところ
-- 応答の文面に「完了しました」などの言葉があるかで終了を判定する → 誤り。自然言語の合図は揺れる
-- 「最大 N 回で止める」を主な停止手段にする → 誤り。作業の途中で切れるか、無駄に回る
-- assistant の応答にテキストがあれば完了とみなす → 誤り。`tool_use` の応答にもテキストが一緒に付く（handle-tool-calls の応答例、agent-loop の説明）
-- `tool_result` の直後にテキストを足す → 空の `end_turn` 応答を招くことがある
-- `pause_turn` と `tool_use` の混同 → 自分で実行するツールで止まったときは必ず `tool_use`
-- `max_tokens` で終わった応答を完了扱いにする → 出力が途中で切れている
+あわせて、**エージェントとワークフローの違い**も押さえておく。エージェントでは、文脈を見て次のツールを Claude が選ぶ。ワークフローは決め打ちの手順で進むので、毎回同じ手順の作業なら、こちらの方が動きを予測しやすい。
+
+## 試験での見分け方
+
+<div class="vs" markdown>
+
+| 問われること | ○ 正しい | × ひっかけ |
+|---|---|---|
+| 終了の判定 | `stop_reason` が `end_turn` なら終える | 「完了しました」などの文言や、テキストの有無で判定する（`tool_use` の応答にもテキストは付く） |
+| 暴走への備え | 回数や予算の上限を、安全装置として添える | 「最大 N 回」を主な停止条件にする |
+| ツールの結果 | 次の反復の前に `tool_result` を履歴に足す | 結果を捨てる、要約して system に書く |
+| 上限で止まった | `max_tokens` は途中で切れたと判断する | 完了として扱う |
+| 手順が毎回変わる作業 | モデル主導のループで回す | 決め打ちのワークフローにする（手順が固定なら逆） |
+
+</div>
 
 ## 確認問題
-1. 社内ナレッジを検索して回答するエージェントで、応答に「以上です」が含まれたらループを抜ける実装になっている。ときどき検索の途中で終わる。どう直すか
-   <details><summary>答え</summary>終了判定を stop_reason に変える。"end_turn" で終え、"tool_use" ならツールを実行して tool_result を返し続ける。文面の合図は揺れるので終了条件に使わない。</details>
-2. ループの暴走が心配なので「10回で必ず打ち切る」を唯一の停止条件にしたい。妥当か
-   <details><summary>答え</summary>妥当ではない。正常な終了は "end_turn" で判定し、回数や予算の上限は暴走を防ぐ安全装置として添える。上限だけだと作業の途中で切れる。</details>
-3. Claude が1つの応答で `tool_use` ブロックを3つ返した。結果をどう返すか
-   <details><summary>答え</summary>assistant の応答をそのまま履歴に足し、次の user メッセージに tool_result を3つ（各 tool_use_id に対応）まとめて先頭に置いて返す。失敗したものも is_error: true で返す。</details>
+
+**Q1.** 開発者向けに、社内のリポジトリとドキュメントを検索して質問に答えるエージェントを Claude API で作っている。ループは「応答のテキストに『以上です』が含まれたら終える」という実装で、ときどき検索の途中で終わってしまう。最も適切な直し方はどれか。（1つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="C" markdown>
+
+- A. システムプロンプトに「調べ終わるまで『以上です』と書かないこと」と書き足す
+- B. 応答にテキストが含まれていなければ続け、含まれていれば終える判定に変える
+- C. `stop_reason` が `tool_use` ならツールを実行して続け、`end_turn` なら終える判定に変える
+- D. ループを固定で10回まわし、10回目の応答を最終回答として使う
+
+</div>
+
+??? success "答えと解説"
+    **正解: C。** 続けるか止めるかは `stop_reason` で決める。
+
+    - A: 文面の合図に頼る点が変わらない。言い回しは揺れるので、終了条件には使えない
+    - B: `tool_use` の応答にもテキストは付く。テキストの有無では判定できない
+    - D: 回数は安全装置にすぎない。作業の途中で切れるか、終わっても無駄に回る
+
+**Q2.** 同じエージェントで、ツール呼び出しが止まらなくなる事態に備えたい。ループの設計として適切なものはどれか。（2つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="A,D" markdown>
+
+- A. 正常な終了は、`stop_reason` が `end_turn` かどうかで判定する
+- B. 「最大10回」を唯一の停止条件にし、`stop_reason` は見ない
+- C. 回数や予算の上限は設けず、`end_turn` が返るまで待ち続ける
+- D. 回数や予算の上限（Agent SDK なら `max_turns`、`max_budget_usd`）を、安全装置として添える
+- E. 応答に「完了」の語が含まれたら終了とし、上限は設けない
+
+</div>
+
+??? success "答えと解説"
+    **正解: A と D。** 終わりの判定は `end_turn`、暴走への備えは上限、と役割を分ける。
+
+    - B: 上限だけだと、作業の途中で切れる
+    - C: 上限が無いと、暴走したときに止まらない。Agent SDK の `max_turns` と `max_budget_usd` は既定で無制限なので、自分で設定する
+    - E: 文面の合図は揺れるうえ、暴走への備えも無い
+
+**Q3.** Claude が1つの応答で `tool_use` ブロックを3つ返した。そのうち1つのツールは、タイムアウトで失敗した。assistant の応答は履歴に足した。次のリクエストの組み立てとして最も適切なものはどれか。（1つ選べ）
+{ .quiz-q }
+
+<div class="quiz" data-answer="B" markdown>
+
+- A. 成功した2つの `tool_result` だけを次の user メッセージ1通で返し、失敗分は省く
+- B. 3つの `tool_result` を次の user メッセージ1通にまとめ、失敗分には `is_error: true` を付ける
+- C. 3つの `tool_result` を、1つずつ別々の user メッセージに分けて順に返す
+- D. 3つの結果を要約してシステムプロンプトに書き足し、user メッセージで続きを頼む
+
+</div>
+
+??? success "答えと解説"
+    **正解: B。** `tool_use` 1つにつき `tool_result` 1つを、`tool_use_id` で対応させて、1つの user メッセージにまとめて返す。
+
+    - A: 失敗も `is_error: true` を付けて返す。省くと、Claude はその呼び出しの結果を知らないまま進む
+    - C: 並列の呼び出しの結果は、1つの user メッセージにまとめる
+    - D: 結果は `tool_result` として会話履歴で返す。system に書いても、呼び出しへの応答にならない
 
 ## 出典
 - Claude Certified Architect – Foundations Exam Guide v1.1, Task Statement 1.1（公式、PDF）: https://cc.sj-cdn.net/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1794946250/Claude_Certified_Architect_-_Foundations_Exam_Guide.pdf
