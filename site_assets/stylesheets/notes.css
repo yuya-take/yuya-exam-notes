@@ -177,3 +177,36 @@
 .md-typeset .quiz-q {
   margin-top: 1.6rem;
 }
+
+/* 模擬試験のモード（<div class="exam-start" data-minutes="120" data-pass="72"></div> のあるページ） */
+body.exam-mode:not(.exam-graded) .md-typeset details.success {
+  display: none; /* 採点するまで解説を隠す */
+}
+.md-typeset .exam-bar {
+  position: sticky;
+  top: 3.2rem;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: center;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.4rem;
+  background: var(--md-default-bg-color);
+  font-size: 0.75rem;
+}
+.md-typeset .exam-timer { font-weight: 700; font-variant-numeric: tabular-nums; }
+.md-typeset .exam-timer.over { color: var(--ng-line); }
+.md-typeset .exam-btn {
+  padding: 0.2rem 0.8rem;
+  border: 1px solid var(--md-primary-fg-color);
+  border-radius: 0.3rem;
+  color: var(--md-primary-fg-color);
+  cursor: pointer;
+}
+.md-typeset .exam-btn:hover { background: var(--md-primary-fg-color); color: var(--md-primary-bg-color); }
+.md-typeset .exam-score { font-size: 1.1rem; font-weight: 700; }
+.md-typeset .exam-score.ok, .md-typeset .exam-result td.ok { color: var(--ok-line); }
+.md-typeset .exam-score.ng, .md-typeset .exam-result td.ng { color: var(--ng-line); }
+.md-typeset .exam-bottom { margin-top: 2rem; text-align: center; }

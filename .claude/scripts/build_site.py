@@ -122,6 +122,12 @@ def build_nav_and_index():
             p.relative_to(OUT).as_posix() for p in (OUT / d.name).rglob("*.md")
         )
         others = [p for p in others if p not in listed]
+        # 模擬試験は、問題のページ（mock-NN.md）だけを専用の節にまとめる
+        mocks = [p for p in others if re.match(rf"{d.name}/mock-exams/mock-\d+\.md$", p)]
+        if mocks:
+            children.append({"模擬試験": mocks})
+            others = [p for p in others if p not in mocks]
+            index += ["", "模擬試験: " + "、".join(f"[{h1(OUT / m)}]({m})" for m in mocks)]
         if others:
             children.append({"その他": others})
         nav.append({name: children})
