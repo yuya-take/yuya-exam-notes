@@ -9,6 +9,8 @@
 - 確認問題（<div class="quiz" data-answer="…">）の正解の記号が選択肢にあるか、
   選ぶ数が問題文の「（Nつ選べ）」と合うか、直後に「答えと解説」があるか
 - 1つ選ぶ問題の正解の位置が A〜D で偏っていないか（警告）
+- 模擬試験（<exam>/mock-exams/mock-NN.md）の問題が上と同じ形式で、ドメイン（data-domain）が付いているか。
+  ドメイン別の問題数と、正解の位置の分布（情報）
 - 「⚠️ 要更新」の印が付いたノートの数（情報）
 
 エラーがあれば exit 1。警告と情報だけなら exit 0。
@@ -25,7 +27,7 @@ SKIP_DIRS = {".git", "node_modules", ".claude", "site", "site_src"}  # .claude �
 # 使うスキルが初めて実行されたときに作られるファイル。まだ無くてもリンク切れにしない
 LAZY_FILES = {"quiz-log.md", "mistakes.md", "cheatsheet.md", "flashcards.csv", "study-log.md", "retro.md", "glossary.md"}
 
-QUIZ_RE = re.compile(r'<div class="quiz" data-answer="([A-Z](?:,[A-Z])*)" markdown>(.*?)</div>', flags=re.S)
+QUIZ_RE = re.compile(r'<div class="quiz" data-answer="([A-Z](?:,[A-Z])*)"[^>]*markdown>(.*?)</div>', flags=re.S)
 CHOOSE_RE = re.compile(r"（(\d+)つ選べ）")
 
 errors, warnings, infos = [], [], []
@@ -81,6 +83,27 @@ def check_note(note):
         infos.append(f"{rel(note)}: 要更新の印あり")
 
 
+def check_mock(path):
+    text = path.read_text(encoding="utf-8")
+    if 'class="exam-start"' not in text:
+        errors.append(f'{rel(path)}: 先頭に <div class="exam-start" …> が無い')
+    saved = dict(answer_counts)
+    answer_counts.clear()
+    check_quiz(path, text)
+    domains = re.findall(r'<div class="quiz" data-answer="[^"]+"(?: data-domain="(\d)")?', text)
+    if any(d not in "12345" or not d for d in domains):
+        errors.append(f"{rel(path)}: data-domain（1〜5）が無い問題がある")
+    per = {d: domains.count(d) for d in sorted(set(domains)) if d}
+    multi = len(re.findall(r'data-answer="[A-Z],[A-Z]', text))
+    dist = "、".join(f"{k}: {v}" for k, v in sorted(answer_counts.items()))
+    infos.append(f"{rel(path)}: {len(domains)}問（ドメイン別 {per}、複数選択 {multi}問）。1つ選ぶ問題の正解の位置 → {dist}")
+    total = sum(answer_counts.values())
+    if total >= 8 and (len(answer_counts) < 4 or max(answer_counts.values()) > total * 0.4):
+        warnings.append(f"{rel(path)}: 正解の位置が偏っている → {dist}")
+    answer_counts.clear()
+    answer_counts.update(saved)
+
+
 def check_quiz(note, text):
     quizzes = list(QUIZ_RE.finditer(text))
     if not quizzes:
@@ -118,6 +141,8 @@ def main():
             check_note(note)
             if note.resolve() not in linked:
                 warnings.append(f"{rel(note)}: README のチェックリストから張られていない")
+        for mock in sorted((exam / "mock-exams").glob("mock-*.md")):
+            check_mock(mock)
 
     if answer_counts:
         total = sum(answer_counts.values())
