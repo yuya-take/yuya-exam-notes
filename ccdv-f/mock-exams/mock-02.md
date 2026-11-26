@@ -136,67 +136,67 @@ except APIStatusError as e:
 
     根拠: [API のエラーの種類に沿った再試行とフォールバック](../notes/02-applications-integration/api-errors-retry.md)
 
-**問6** 証券口座のサービスで、TypeScript の Agent SDK のエージェントに `close_account`（口座の解約）を持たせた。権限モードは `default` で、ツールには `destructiveHint: true` を付け、`allowedTools` にも入れてある。チームは「破壊的と申告したので、実行の前に承認が求められる」と考えていたが、ログでは解約が承認なしに実行されていた。最も適切な直し方はどれか。（1つ選べ）
+**問6** 送金サービスのエージェントを TypeScript の Agent SDK で作り、長い作業で承認の手間を減らすため `auto` モードで動かしている。`wire_transfer` には `permission_policy: "always_ask"` を付け、毎回オペレーターの承認を経るつもりだった。ところがログでは、分類器が承認して送金が実行され、`canUseTool` は呼ばれていなかった。最も適切な直し方はどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="B" data-domain="8" markdown>
 
-- A. `destructiveHint` に加えて `readOnlyHint: false` も明示し、申告をより確かにする
-- B. `close_account` に `permission_policy: "always_ask"` を付け、`canUseTool` で承認を求める
-- C. ツールの説明文に「実行の前に必ず顧客に確認すること」と書き、承認の代わりにする
-- D. `close_account` をサーバーツールとして宣言し、Anthropic 側で承認と実行をさせる
+- A. `always_ask` を外し、ツールの説明文に「必ずオペレーターの承認を得ること」と書く
+- B. `wire_transfer` に `destructiveHint: true` を明示し、分類器に承認させないようにする
+- C. `wire_transfer` に `readOnlyHint: true` を付け、ほかのツールと並列に呼ばせないようにする
+- D. `auto` モードのまま、system prompt に「送金の前は必ず確認を求めること」と書き足す
 
 </div>
 
 ??? success "答えと解説"
-    **正解: B。** 注釈は申告にすぎず、`default` モードでは注釈だけで承認の要否は変わらない。`always_ask` を付ければ、`allowedTools` に入っていても `canUseTool` に回る。
+    **正解: B。** auto・plan モードでは、`always_ask` の呼び出しも分類器に承認されうる。`destructiveHint: true` を明示すると、分類器に承認させずに `canUseTool` に回せる。
 
-    - A: 注釈を足しても申告のままで、承認を強制しない
-    - C: 説明文の指示は守られる保証が無く、人の承認にもならない
-    - D: 社内のシステムの操作は自分のアプリが実行するクライアントツールで、サーバーツールにはできない
+    - A: 説明文の指示は守られる保証が無く、実行の側の承認がなくなる
+    - C: `readOnlyHint` は並列実行の申告で、しかも送金は読み取り専用ではない
+    - D: prompt の指示は強制にならず、分類器が承認する経路も残る
 
     根拠: [ツールの設計と結果の整形](../notes/08-tools-mcp/tool-design-response-shaping.md)
 
-**問7** コード品質ツールの会社が、Claude Code の `Stop` の hook で lint を走らせ、失敗していれば `decision: "block"` と失敗の内容を返して作業を続けさせている。ある夜、生成されたファイルに直せない指摘が残り、エージェントはファイルを編集しては止まろうとし、hook がそのたびに block した。チームは「8回続けば打ち切られる」と考えていたが、2時間走り続けた。hook の入力には `stop_hook_active: true` が入っていた。最も適切な直し方はどれか。（1つ選べ）
+**問7** 決済のエージェント（Agent SDK、Python）で、`PreToolUse` のガードが返金の上限を超える呼び出しに `deny` を返す。応答を速くするため、開発者はガードの callback の戻り値に `async_: True` を足した。それ以降、上限を超える返金が通るようになった。最も適切な直し方はどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="D" data-domain="1" markdown>
 
-- A. hook の終了コードを 1 にして、lint が失敗しても止めずに先へ進ませる
-- B. `CLAUDE_CODE_STOP_HOOK_BLOCK_CAP` を 3 に下げ、早めに打ち切られるようにする
-- C. lint を `PreToolUse` の hook に移し、ツールを呼ぶたびに走らせる
-- D. `stop_hook_active` が `true` なら block せず、残った指摘を報告して終わらせる
+- A. `async_: True` のまま、matcher に `on_failure="block"` を付けて止める側に倒す
+- B. ガードを `PostToolUse` に移し、実行の後で上限を超えた返金を取り消す
+- C. `async_: True` のまま、callback の `timeout` を延ばして判定が間に合うようにする
+- D. ガードからは `async_` を外し、待たずに済ませるのは記録だけの hook に限る
 
 </div>
 
 ??? success "答えと解説"
-    **正解: D。** `stop_hook_active` は、hook のせいで続いている最中であることを示す。解決しない条件で止め続けないよう、これを見て block をやめる。
+    **正解: D。** `async_` を返した hook は待たれず、止める・書き換える・文脈を足すことができない。止めるガードは同期で動かし、async は副作用だけの hook に使う。
 
-    - A: 指摘が残ったまま黙って終わり、検証の役目も果たさない
-    - B: 続けて block した回数は、Claude がツールを呼ぶたびに数え直しになる。編集を挟む限り、上限を下げても届かない
-    - C: ツールの呼び出しごとに lint が走り、停止前の検証にもならない
+    - A: `on_failure` は失敗したときの扱いで、待たれない hook が止められない点は変わらない
+    - B: `PostToolUse` の時点で返金は実行済みで、取り消せない
+    - C: 待たれないので、判定の時間を延ばしても結果は使われない
 
     根拠: [フックで必要な処理を決定的に実行する](../notes/01-agents-workflows/hooks-deterministic-actions.md)
 
-**問8** CI のコードレビューのボットが、差分にある SQL インジェクションの危険を指摘する。評価の集合は「危険がある」差分 200 件だけで、指摘できた割合は 97% だ。ところが本番では、安全な差分にも指摘が付き、開発者が通知を無視し始めた。評価の直し方として適切なものはどれか。（2つ選べ）
+**問8** 経理 SaaS が、請求書から請求番号・支払期日・合計金額を抜き出す機能の評価を、これから作る。チームの案は「LLM で請求書を 2,000 件合成し、担当者が全件を読んで正誤を付ける。揃うまで評価は始めない」だ。評価の作り方として適切なものはどれか。（2つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="C,D" data-domain="4" markdown>
 
-- A. 指摘できた割合の合格の線を 100% に上げ、同じ集合で測り直す
-- B. 今の 200 件を LLM で言い換えて 1,000 件に増やし、誤差を小さくする
-- C. 危険がある差分での指摘の割合と、安全な差分での誤った指摘の割合を分けて測る
-- D. 危険の無い差分を集合に加え、「指摘しない」ことも正解として採点する
-- E. ボットがファイルを読んだ順番が、手本と同じかどうかで採点する
+- A. 揃うまで待ち、2,000 件を担当者が読んで正誤を付ける作業から始める
+- B. 抜き出した項目の正しさを、LLM の judge に 1〜5 で採点させる
+- C. 期待する値と機械的に突き合わせられる項目は、コードで採点する
+- D. 本番で実際に失敗した請求書から 20〜50 件を集めて始め、少しずつ足す
+- E. 正解の値とどれだけ言い回しが近いかを、埋め込みの類似度で測る
 
 </div>
 
 ??? success "答えと解説"
-    **正解: C と D。** 振る舞いのチェックは「すべきときにする」と「すべきでないときにしない」の両方で測る。
+    **正解: C と D。** 採点は速く確実なコードを先に使い、判断が要るところだけ LLM に任せる。始めは実際の失敗から集めた 20〜50 件で十分だ。
 
-    - A: 「指摘すべきでない」事例が無いので、線を上げても誤った指摘は測れない
-    - B: 片方向だけの事例を増やしても、欠けている方向は測れない
-    - E: 道筋でなく結果を採点する
+    - A: 人の採点は遅く高いので、できるだけ避ける。揃うまで待つと評価が始まらない
+    - B: 正解が決まっている項目に、LLM の採点を使う理由が無い
+    - E: 類似度は言い回しの近さを測るだけで、値が正しいかは分からない
 
     根拠: [評価の設計](../notes/04-eval-testing-debugging/evaluation-design.md)
 
@@ -216,7 +216,7 @@ except APIStatusError as e:
     **正解: A。** project の設定がすべて効くのは、リポジトリが1つでプロジェクトのスレッドでないセッションだけ。複数リポジトリのセッションは `enabledPlugins` と `extraKnownMarketplaces` だけを読む。
 
     - B: local の設定もクラウドのセッションでは読まれず、local は commit するものでもない
-    - C: `deny` は trust を待たずに効く。効かない理由はセッションの形にある
+    - C: 効かない理由は trust ではなく、セッションの形にある
     - D: クラウドのセッションは user と local の設定を読まない
 
     根拠: [設定と SDLC への組み込み](../notes/02-applications-integration/configuration-sdlc.md)
@@ -242,151 +242,131 @@ except APIStatusError as e:
 
     根拠: [渡した文書にもとづく回答と出典](../notes/06-prompt-context/grounding-citations.md)、[構造化出力と防御的なパース](../notes/06-prompt-context/structured-output-parsing.md)
 
-**問11** 依存関係の脆弱性を CI で仕分けるジョブが、`claude -p "..." --output-format json --json-schema "$SCHEMA" > out.json` を実行し、次の工程で `jq -r .result out.json | jq .severity` を読んでいる。`.result` には説明の文章が入っていて、仕分けの工程がほぼ毎回失敗する。最も適切な直し方はどれか。（1つ選べ）
+**問11** 開発者が、6週間前に Claude Code で調べた不具合の続きをしようとして、控えておいた session ID で `claude --resume <id>` を実行したが、セッションが見つからなかった。2週間前のセッションには戻れる。設定は既定のままだ。原因と対応として最も適切なものはどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="D" data-domain="3" markdown>
 
-- A. `--append-system-prompt` で「result には JSON だけを書くこと」と指示する
-- B. `.result` の文章から、最初の `{` から最後の `}` までを切り出してパースする
-- C. `--output-format stream-json` に変え、最後のイベントの文章をパースする
-- D. `.structured_output` を読むように変え、その欄が無ければ失敗として扱う
+- A. 古いセッションは `--continue` でしか開けないので、`claude --continue` で起動し直す
+- B. `--fork-session` を付けて再開すれば、消えたセッションの分岐として開き直せる
+- C. セッションの中で `/rewind` を使い、6週間前の時点まで会話を巻き戻す
+- D. transcript は既定で30日後に消えるので、長く残すなら `cleanupPeriodDays` を延ばす
 
 </div>
 
 ??? success "答えと解説"
-    **正解: D。** `--json-schema` を付けた出力は `result` でなく `structured_output` に入る。有効な出力が無いとその欄は付かないので、無ければ失敗とする。
+    **正解: D。** transcript は `~/.claude/projects/` に保存され、既定で30日後に消える。長く戻りたいなら `cleanupPeriodDays` を延ばしておく。
 
-    - A: prompt の指示は形式の保証にならず、読む欄の誤りも直らない
-    - B: スキーマの検証を捨て、壊れやすい切り出しに頼ることになる
-    - C: ストリームにしても、スキーマどおりの出力の置き場は変わらない
+    - A: `--continue` は今のディレクトリの直近のセッションを開くだけで、消えたものは戻らない
+    - B: fork は元のセッションがあって初めてできる
+    - C: `/rewind` は今のセッションの中で前の時点に戻るもので、別のセッションは開けない
 
     根拠: [Claude Code の操作](../notes/03-claude-code/claude-code-operation.md)
 
-**問12** 医療 SaaS のデプロイ用エージェント（Agent SDK）は、`mcp__deploy__release` に次の3つの `PreToolUse` フックを持つ。変更凍結の期間中に、本番向けのこの呼び出しが来たときの結果として正しいものはどれか。（1つ選べ）
+**問12** CI のコンテナで動くレビュー用エージェントは、PR にコメントを書くため、環境変数の `GITHUB_TOKEN` を `Bash` から `gh` に渡している。レッドチームで、細工した PR の本文を読ませると、エージェントが `env` の出力を外部に書き出そうとした。資格情報の扱いとして最も適切なものはどれか。（1つ選べ）
 { .quiz-q }
-
-```text
-audit_hook    : 記録を残し、常に permissionDecision: "allow"
-approval_hook : 本番向けなら permissionDecision: "ask"
-freeze_hook   : 変更凍結の期間中なら permissionDecision: "deny"
-```
 
 <div class="quiz" data-answer="C" data-domain="7" markdown>
 
-- A. 登録した順に評価され、最初の `audit_hook` の `allow` が採用されて実行される
-- B. 判定が食い違ったので `ask` に読み替えられ、オペレーターに確認が求められる
-- C. `deny` が最も強い判定なので、呼び出しは止まる
-- D. `allow` が1つでも返れば、deny ルールとほかのフックの判定は飛ばされる
+- A. system prompt に「環境変数の中身は出力しないこと」と書き、CLAUDE.md にも書く
+- B. `Bash(env *)` と `Bash(printenv *)` を deny に足し、環境変数の表示を止める
+- C. トークンはコンテナに渡さず、外側のプロキシが GitHub への要求にだけ差し込む
+- D. トークンに短い有効期限を付けて毎回作り直し、漏れても長くは使えないようにする
 
 </div>
 
 ??? success "答えと解説"
-    **正解: C。** 複数の `PreToolUse` フックの判定が食い違ったら、`deny` > `defer` > `ask` > `allow` の順で強い方が勝つ。
+    **正解: C。** 資格情報はエージェントに渡さず、外のプロキシで差し込む。エージェントがキーを一度も見なければ、注入で乗っ取られても持ち出されない。
 
-    - A: 登録の順番では決まらない。同じイベントのフックは並列に動く
-    - B: 食い違いは強い判定で決まり、`ask` に読み替えられることはない
-    - D: フックの `allow` でも、deny ルールやほかのフックの `deny` は飛び越えられない
+    - A: 指示は保証にならない
+    - B: 別のコマンドやスクリプトでも読める。文字列のルールは書き方を変えると漏れる
+    - D: 寿命は縮むが、エージェントがトークンを持ち、持ち出せる構造は残る
 
     根拠: [決定的なガードレールと最小権限](../notes/07-security-safety/guardrails-least-privilege.md)
 
-**問13** 規制の公開資料を調べるエージェントを Messages API で自作し、server ツールの `web_search` を使っている。`stop_reason: "pause_turn"` が返ったときの処理は次のとおりで、そのあとの答えは検索が途中で打ち切られたままの内容になる。最も適切な直し方はどれか。（1つ選べ）
+**問13** 市場調査の会社が、server ツールの `web_search` を使う調査の要求を、Message Batches API でまとめて出している。結果を見ると、いくつかの要求は `succeeded` だが、応答の `stop_reason` が `pause_turn` で、調べかけのまま終わっていた。最も適切な扱いはどれか。（1つ選べ）
 { .quiz-q }
-
-```python
-if r.stop_reason == "pause_turn":
-    messages.append({"role": "assistant", "content": r.content})
-    messages.append({"role": "user", "content": "続けてください"})
-    r = client.messages.create(model=M, max_tokens=8000, messages=messages, tools=[])  # 検索を止めるため
-```
 
 <div class="quiz" data-answer="B" data-domain="1" markdown>
 
-- A. `tool_choice` を `{"type": "any"}` にし、再送のたびに検索を必ず使わせる
-- B. user のメッセージを足さず、同じ `tools` のまま、応答をそのまま assistant として足して再送する
-- C. `max_tokens` を上げ、1回の応答で検索を最後まで終えられるようにする
-- D. `pause_turn` をエラーとみなし、最初のリクエストを指数バックオフで送り直す
+- A. `pause_turn` は失敗なので、その要求を最初の内容のまま同じバッチ形式で出し直す
+- B. 返った content を assistant として足した続きの要求を、別の要求として出す
+- C. `succeeded` なので完了とみなし、調べかけのテキストをそのまま結果として保存する
+- D. バッチではサーバーツールが使えないので、同期の Messages API に切り替える
 
 </div>
 
 ??? success "答えと解説"
-    **正解: B。** `pause_turn` は server ツールのループが反復の上限で止まった印で、応答を返せば続きから再開する。user を足したり `tools` を外したりすると、続きの検索ができない。
+    **正解: B。** サーバーツールはバッチでも使え、`pause_turn` で返ったら続きを別の要求で出す。続きは、応答をそのまま assistant として足し、user を足さずに送る形にする。
 
-    - A: 止まった応答の続きを取る処理が無いままで、検索の強制は原因に届かない
-    - C: 出力の上限で切れたのではない。その場合は `stop_reason` が `max_tokens` になる
-    - D: 最初からやり直すと、止まるまでの検索が無駄になり、同じところでまた止まりうる
+    - A: 最初からやり直すと、止まるまでの検索が無駄になり、同じところでまた止まりうる
+    - C: `pause_turn` は反復の上限で止まった印で、答えは完了していない
+    - D: サーバーツールはバッチでも使える
 
-    根拠: [うまく動かないエージェントのパターンの診断](../notes/01-agents-workflows/agent-pattern-diagnosis.md)
+    根拠: [リアルタイムとバッチの選択](../notes/02-applications-integration/realtime-vs-batch.md)、[うまく動かないエージェントのパターンの診断](../notes/01-agents-workflows/agent-pattern-diagnosis.md)
 
-**問14** API を再販する SaaS が、ストリーミングの応答ごとに利用者の出力トークンを請求している。ある長い応答のログと集計のコードは次のとおりで、請求が実際より多い。最も適切な直し方はどれか。（1つ選べ）
+**問14** 法務の SaaS が、長い契約書の比較レポートを作るため、Python SDK の非ストリーミングの要求で `max_tokens` を大きくした。すると、要求を送る前に SDK がエラーを出すようになった。レポートは画面に逐次出す必要はなく、出来上がった `Message` をまとめて保存したい。最も適切な対応はどれか。（1つ選べ）
 { .quiz-q }
-
-```text
-message_start   usage.output_tokens=2
-message_delta   usage.output_tokens=180
-message_delta   usage.output_tokens=410
-billed += sum(ev.usage.output_tokens for ev in message_delta_events)   # → 590
-```
 
 <div class="quiz" data-answer="D" data-domain="2" markdown>
 
-- A. 要求の `max_tokens` の値を、その応答の出力トークンとして請求する
-- B. `text_delta` の文字数を数え、決まった比で割ってトークン数に換算する
-- C. `message_start` の値と、最後の `message_delta` の値を足して出力トークンにする
-- D. `message_delta` の `usage` は累計なので、最後の `message_delta` の値を出力トークンにする
+- A. SDK のクライアント側のタイムアウトを延ばし、同じ非ストリーミングの要求を送る
+- B. `max_tokens` を下げ、レポートが途中で切れても受け入れる運用にする
+- C. ストリーミングにし、`text_delta` だけを自分でつないで保存する
+- D. ストリーミングにし、`stream.get_final_message()` で完全な `Message` を受け取る
 
 </div>
 
 ??? success "答えと解説"
-    **正解: D。** `message_delta` の `usage` のトークン数は累計で、足し合わせると二重に数える。
+    **正解: D。** SDK は、非ストリーミングの要求が10分のタイムアウトを超えそうでないかを検証する。大きな `max_tokens` にはストリーミングを使い、集約ヘルパーで完全な `Message` を組み上げる。
 
-    - A: `max_tokens` は上限で、実際の出力量ではない
-    - B: 文字数からの換算は概算にすぎず、思考のトークンも数えられない
-    - C: 最後の値はすでに最初からの累計で、`message_start` の分を足すと多く数える
+    - A: 検証は送る前の SDK の判断で、長い非ストリーミングの要求という形が残る
+    - B: 要件のレポートが作れない
+    - C: テキストだけをつなぐと、思考の署名などを含む完全な `Message` にならない
 
     根拠: [ストリーミングのイベントと終わりの判定](../notes/02-applications-integration/streaming-events.md)
 
-**問15** コード移行のエージェントは、毎ターン最新のメッセージの最後のブロックに `cache_control` を置いている（rolling）。ある種類のタスクでは、1ターンの間にテキストとツールの呼び出し・結果が交互に並び、約30ブロック増える。そのタスクでだけ、`cache_read_input_tokens` がツール定義と system の分しか出ない。最も適切な直し方はどれか。（1つ選べ）
+**問15** コード支援のエージェントは、ツール定義・system・長い参照文書・直近の履歴に、明示のブレークポイントを4つ置いている。開発者が「履歴の末尾は自動で追わせたい」と、トップレベルの `cache_control`（自動キャッシュ）も足したところ、リクエストが 400 になった。最も適切な直し方はどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="B" data-domain="5" markdown>
 
-- A. 履歴のすべてのメッセージに `cache_control` を付け、どれかが当たるようにする
-- B. 前回の書き込みの近くに2つ目のブレークポイントを置き、さかのぼれる範囲に入れる
-- C. ブレークポイントを system の末尾だけに戻し、伸びる履歴はキャッシュしない
-- D. キャッシュの寿命を1時間に延ばし、前のターンの入口が消えないようにする
+- A. 明示の4つを残したまま、自動キャッシュに `"ttl": "1h"` を付けて送り直す
+- B. 明示のブレークポイントを3つ以下に減らし、末尾は自動キャッシュに任せる
+- C. 自動キャッシュを残し、明示のブレークポイントを messages の各ブロックに付け直す
+- D. 400 は一時的な失敗とみなし、間隔を空けて同じリクエストを送り直す
 
 </div>
 
 ??? success "答えと解説"
-    **正解: B。** 読み込みは、ブレークポイントから最大 20 ブロック前までしかさかのぼらない。1ターンで 20 ブロック以上増えるなら、手前に2つ目のブレークポイントを置く。
+    **正解: B。** 明示のブレークポイントは最大4つで、自動キャッシュを併用するとそのうち1つを使う。4つ置いたうえで自動キャッシュを足すと 400 になる。
 
-    - A: 明示のブレークポイントは最大4つで、全部には付けられない
-    - C: 伸びる履歴が毎回キャッシュされず、入力の料金がかえって増える
-    - D: 寿命の問題ではない。前回の入口が、さかのぼれる範囲の外にある
+    - A: 寿命を変えても、数の上限を超えたままになる
+    - C: 数をさらに増やすことになり、上限を超える
+    - D: リクエストの形の誤りで、何度送っても 400 になる
 
     根拠: [prompt caching のブレークポイントの置き方](../notes/05-model-selection/prompt-caching-breakpoints.md)
 
 ## 問16〜30
 
-**問16** データ分析のエージェントで、閾値での compaction（`compact_20260112`）を有効にし、`instructions` に「要約は3行以内の箇条書きにすること」とだけ書いた。compaction の後、エージェントは分析に使っているテーブルの名前と、利用者と決めた絞り込みの条件を忘れ、最初から聞き直す。最も適切な直し方はどれか。（1つ選べ）
+**問16** 長時間のサポートエージェントで、閾値での compaction に `pause_after_compaction: true` を付けた。ループのコードは「`stop_reason` が `tool_use` なら続け、それ以外なら最後のテキストを最終回答として返す」だ。以後、会話が長くなると、利用者に中身の無い返事が届くようになった。最も適切な直し方はどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="A" data-domain="6" markdown>
 
-- A. `instructions` に、テーブル名・決めた条件・未解決の問いなど、残す項目をすべて書く
-- B. compaction をやめ、`max_tokens` を上げて長い会話のまま続けさせる
-- C. `trigger` を下げ、会話がまだ短いうちに要約させて、落ちる量を減らす
-- D. `instructions` は既定の要約プロンプトに足されるので、今の一文のまま使い続ける
+- A. `stop_reason` が `compaction` なら最終回答とせず、返った `compaction` ブロックを含めて送り続ける
+- B. `pause_after_compaction` を外せば要約が作られなくなるので、外して長い会話のまま続ける
+- C. `compaction` で止まったら、返った `compaction` ブロックを捨てて元の履歴のまま送り直す
+- D. compaction の `trigger` を上げ、利用者との会話の途中では止まらないようにする
 
 </div>
 
 ??? success "答えと解説"
-    **正解: A。** `instructions` は既定の要約プロンプトを補うのでなく、まるごと置き換える。残す項目を自分で書かないと、要るものが要約から落ちる。
+    **正解: A。** `pause_after_compaction: true` で止まると、`stop_reason` は `compaction` になる。これは要約の直後に止まった印で、返った `compaction` ブロックは次のリクエストでも送り返して続ける。
 
-    - B: `max_tokens` は出力の上限で、入力の膨らみには効かない
-    - C: 要約の中身は変わらない。`trigger` には下限もある
-    - D: 置き換えなので、今の一文だけが要約の指示になる
+    - B: `pause_after_compaction` は要約の直後に止めるかどうかの設定で、外しても要約は作られる
+    - C: 返った `compaction` ブロックは送り返す。捨てると要約の意味が無くなる
+    - D: 止まる時期が遅れるだけで、`compaction` を最終回答と取り違える欠陥は残る
 
     根拠: [長いセッションのコンテキスト管理](../notes/06-prompt-context/long-running-context.md)
 
@@ -411,45 +391,45 @@ billed += sum(ev.usage.output_tokens for ev in message_delta_events)   # → 590
 
     根拠: [Agent SDK でのエージェントの定義と自作のループ](../notes/01-agents-workflows/agent-sdk-construction.md)
 
-**問18** 提案書の作成支援 SaaS が、顧客の過去の提案書（図表入りの .docx）を Files API で上げ、`document` ブロックで参照しようとして失敗した。提案書の図表も読ませ、回答には出典を付けたい。最も適切な対応はどれか。（1つ選べ）
+**問18** 文書管理 SaaS が、顧客から受け取った契約書の PDF を Files API に上げ、元のファイルは自社の保存先から消している。利用者が「アップロードした原本を取り出したい」と押したとき、Files API からのダウンロードが 400 になった。最も適切な対応はどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="C" data-domain="2" markdown>
 
-- A. .docx からテキストだけを抜き出して本文に入れ、出典はプロンプトで書かせる
-- B. .docx を `image` ブロックで参照し、ページの見た目から図表と文章を読ませる
-- C. .docx を PDF に変換してから上げ、`document` ブロックで citations を有効にして参照する
-- D. アップロードの際に MIME タイプを `application/pdf` と申告し、`document` ブロックで参照する
+- A. `files-api-2025-04-14` のベータヘッダーを足して、ダウンロードを送り直す
+- B. 400 は一時的な失敗とみなし、間隔を空けてダウンロードを送り直す
+- C. 自分で上げたファイルは取り出せないので、原本は自社の保存先に残しておく
+- D. 原本を取り出せるよう、アップロードの時に `expires_in_seconds` を延ばしておく
 
 </div>
 
 ??? success "答えと解説"
-    **正解: C。** .docx は `document` ブロックが扱わない。画像を含む .docx は PDF に変換すると、PDF の画像の読み取りと citations が使える。
+    **正解: C。** Files API から取り出せるのは、skills とコード実行が作ったファイルだけ。自分で上げたファイルは取り出せないので、原本は自社で持つ。
 
-    - A: 図表が失われ、出典もプロンプトの文面を信じるしかなくなる
-    - B: `image` ブロックは画像のためのもので、.docx は入れられない
-    - D: 中身は .docx のままなので、申告だけ変えても PDF として読めない
+    - A: Files API は一般提供で、ベータヘッダーは取り出せる範囲を変えない
+    - B: 種類の決まりで拒まれているので、何度送っても同じになる
+    - D: 期限は失効までの時間で、取り出せるかどうかとは関係が無い
 
     根拠: [Files API による多形式の取り込み](../notes/02-applications-integration/files-api-ingestion.md)
 
-**問19** Node.js で書いた stdio の MCP サーバーを Claude Code に登録したところ、起動の直後に接続が失敗し、パースエラーが記録される。調べると、サーバーが読み込むライブラリが、起動時に `console.log` で非推奨の警告を出していた。最も適切な直し方はどれか。（1つ選べ）
+**問19** 社内のチケット DB を引く MCP サーバーを、Agent SDK のエージェントに `mcpServers: { tickets: {...} }` で渡した。権限モードは `dontAsk` で、`allowedTools` には `"search_tickets"` と書いた。ログでは、Claude が呼んだチケットの検索がすべて拒否されている。最も適切な直し方はどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="A" data-domain="8" markdown>
 
-- A. ログと警告は標準エラーに出し、標準出力には MCP のメッセージだけを書く
-- B. 警告を JSON の形に整えてから、これまでどおり標準出力に出す
-- C. トランスポートを Streamable HTTP に変え、警告が接続に混ざらないようにする
-- D. Claude Code の設定で、起動直後のパースエラーを無視して接続を続けさせる
+- A. `allowedTools` に、`"mcp__tickets__search_tickets"` のように MCP の名前で書く
+- B. 権限モードを `bypassPermissions` にし、MCP のツールをすべて承認させる
+- C. サーバーを stdio から Streamable HTTP に変え、ツールの一覧を取り直させる
+- D. system prompt に「チケットの検索には search_tickets を使うこと」と書き足す
 
 </div>
 
 ??? success "答えと解説"
-    **正解: A。** stdio では stdout が MCP のメッセージ専用で、それ以外を書いてはいけない。ログは stderr に出す。
+    **正解: A。** Agent SDK では MCP のツール名は `mcp__<server>__<tool>` になる。素の名前では allow ルールに一致せず、`dontAsk` では拒否される。
 
-    - B: JSON の形でも JSON-RPC のメッセージではないので、規則に反する
-    - C: 原因は stdout の汚れで、トランスポートを変える必要はない。手元の1人用なら stdio が合う
-    - D: 不正な出力が残る限り、メッセージの境界が崩れ続ける
+    - B: 拒否は止まるが、読み取り以外のツールまで承認されてしまう
+    - C: トランスポートは関係が無く、名前が一致しない点が残る
+    - D: 呼ぶかどうかでなく、呼んだ後の承認で拒否されている
 
     根拠: [MCP サーバーの開発と組み込み](../notes/08-tools-mcp/mcp-server-development.md)
 
@@ -516,26 +496,26 @@ billed += sum(ev.usage.output_tokens for ev in message_delta_events)   # → 590
 
     根拠: [フックで必要な処理を決定的に実行する](../notes/01-agents-workflows/hooks-deterministic-actions.md)
 
-**問23** 社内規程の検索で、検索で取った各チャンクをプレーンテキストの文書にし、citations を有効にして渡している。チャンクの先頭には「出典: https://wiki.example/… / 機密区分: 社外秘」の行を入れている。回答の引用に、この行がたびたび混ざる。最も適切な直し方はどれか。（1つ選べ）
+**問23** 社内規程の Q&A で、規程を citations を有効にした文書で渡している。下流のコードで扱いやすくするため、システムプロンプトに「回答は JSON だけで返すこと」と書き足した。それ以後、回答に付く引用が目に見えて減り、引用の無い回答も出るようになった。最も適切な直し方はどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="A" data-domain="6" markdown>
 
-- A. 出典の情報は `title` に、機密区分は `context` に移し、本文から外す
-- B. システムプロンプトに「出典や機密区分の行は引用しないこと」と書き足す
-- C. citations をやめ、回答の末尾に出典の URL をモデルに書かせる
-- D. 出典と機密区分だけを別の文書にし、その文書だけ citations を無効にする
+- A. 「JSON だけ」の指示を外し、決めた形の文で答えさせて、コードで解析する
+- B. 指示は残し、`output_config.format` で JSON スキーマも指定して形を保証する
+- C. 指示は残し、「引用も必ず付けること」を太字で書き足して両方を求める
+- D. citations をやめ、JSON の中に出典の文書名を書く欄を設ける
 
 </div>
 
 ??? success "答えと解説"
-    **正解: A。** `title` と `context` はモデルに渡るが、引用の対象にならない。メタデータは本文に混ぜずにここへ置く。
+    **正解: A。** citations を使うときに「JSON だけを返せ」と頼むと、引用が少なくなるか無くなる。構造化出力とも併用できないので、決めた形の文を受け取り側で解析する。
 
-    - B: 本文の中にある限り引用の対象で、指示では確実に防げない
-    - C: 引用が実在の位置を指すという保証を失う
-    - D: citations を有効にした文書と無効の文書は、1つのリクエストで混ぜられない
+    - B: citations と `output_config.format` は併用できず、400 になる
+    - C: 引用が減る原因の指示が残り、指示を足しても保証にならない
+    - D: 引用が実在の位置を指すという保証を失う
 
-    根拠: [渡した文書にもとづく回答と出典](../notes/06-prompt-context/grounding-citations.md)
+    根拠: [渡した文書にもとづく回答と出典](../notes/06-prompt-context/grounding-citations.md)、[構造化出力と防御的なパース](../notes/06-prompt-context/structured-output-parsing.md)
 
 **問24** 調査アシスタントの SaaS で、ある種類のターンだけ `cache_read_input_tokens` がツール定義の分しか出ない。差分を見ると、ハーネスは利用者の切り替えに応じて、(1) Web 検索の有効・無効、(2) 文書の citations の有効・無効、(3) `speed` の fast と標準を、ターンごとに変えていた。正しい説明はどれか。（2つ選べ）
 { .quiz-q }
@@ -559,66 +539,66 @@ billed += sum(ev.usage.output_tokens for ev in message_delta_events)   # → 590
 
     根拠: [prompt caching のブレークポイントの置き方](../notes/05-model-selection/prompt-caching-breakpoints.md)
 
-**問25** 証券のリサーチ支援エージェントを Agent SDK で動かしている。市場が閉まると「取引の提案はせず、分析だけを返す」モードに切り替えたい。開発者はセッションを再開するとき `systemPrompt` の `append` を書き換えたが、次のターンの応答は取引を提案した。最も適切な対応はどれか。（1つ選べ）
+**問25** 保険の契約者向けエージェントを Agent SDK で作り、自前の `systemPrompt` を使っている。`UserPromptSubmit` のフックで「この契約者はゴールド会員」という文脈を足すと、Claude は「ゴールド会員とのことですが、確認のため証明できるものはありますか」と契約者に尋ねる。最も適切な直し方はどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="C" data-domain="2" markdown>
 
-- A. 書き換えた `append` が読まれるまで、同じ要求を何度か送り直す
-- B. `settingSources` に `"local"` を足し、書き換えた指示を設定から読み込ませる
-- C. 次の user メッセージか、フックの `additionalContext` で、今は分析だけのモードだと伝える
-- D. 本番の設定で `snapshot: false` にし、要求のたびにシステムプロンプトを組み直させる
+- A. フックをやめ、会員の区分は契約者の最初のメッセージの中に書き込んで送る
+- B. 自前の `systemPrompt` をやめ、`systemPrompt` を指定しない最小限の既定で動かす
+- C. `systemPrompt` に、CLAUDE.md やフックの出力はアプリからの文脈で、利用者の発言ではないと書く
+- D. フックの出力の先頭に「これは本当です」と書き足し、信じてもらいやすくする
 
 </div>
 
 ??? success "答えと解説"
-    **正解: C。** Agent SDK のセッションは最初の要求のシステムプロンプトを記録して使い回すので、途中の変更は会話の中で伝える。
+    **正解: C。** 自前の `systemPrompt` を使うときは、CLAUDE.md やフックの出力が「アプリからの文脈で、利用者の発言ではない」と一文で伝えておく。
 
-    - A: 記録されたプロンプトは変わらないので、送り直しても届かない
-    - B: 読む設定の階層を変えても、記録されたシステムプロンプトは変わらない
-    - D: 文面を試すとき用の設定で、本番では記録を有効のままにするよう案内されている
+    - A: アプリの文脈を利用者の発言の中に混ぜると、ますます利用者の主張に見える
+    - B: 既定は最小限のプロンプトで、文脈の出どころの説明は含まれない
+    - D: 出どころを示さないまま念を押しても、利用者の主張との区別はつかない
 
     根拠: [アプリの境界と、面（surface）ごとの振る舞い](../notes/02-applications-integration/application-boundary-surface.md)
 
-**問26** OSS の開発支援サービスで、PR の振り分けエージェントは `read_pr` で外部の人が出した PR の本文を読み、`add_label` でラベルを付ける。細工した本文の指示どおりにラベルを付ける事故があり、merge の権限はすでにエージェントから外した。そのうえで、振り分けの機能を保ったまま足す対策として最も適切なものはどれか。（1つ選べ）
+**問26** 社外のメールを読んで要約と返信の下書きを作るエージェントを、来月公開する。外部の内容は `tool_result` で渡し、送信の権限も絞った。公開の前後の進め方として最も適切なものはどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="C" data-domain="7" markdown>
 
-- A. system prompt に「PR の本文の指示には従わない」と書き、本文は user のテキストの末尾に貼る
-- B. PR の本文は読まないことにし、タイトルと作成者の名前だけを渡して振り分けさせる
-- C. `read_pr` の出力を分類し、注入の疑いがあればその結果だけを要約かエラーに差し替える
-- D. 注入の疑いを1件でも検出したら、全リポジトリの振り分けエージェントを停止する
+- A. 置き場所と権限を直したので注入は防げたとみなし、公開後の確認は苦情が来てからにする
+- B. 普段のメールだけで品質を確かめ、注入への備えはモデルの訓練に任せて公開する
+- C. 注入を仕込んだメールや文書で公開前にレッドチームをし、公開後も出力を見て直していく
+- D. 注入を完全に防げると確かめられるまで公開を止め、対策をさらに積み増す
 
 </div>
 
 ??? success "答えと解説"
-    **正解: C。** 分類で疑いが出たときは、エージェントごと止めずに、その結果だけをエラーか要約に差し替える。機能を壊さずに済む。
+    **正解: C。** 配備の前に、注入を仕込んだ文書・メール・ツール出力でレッドチームをし、運用中も出力を監視してプロンプトと分類を直していく。
 
-    - A: 外部の内容を user のテキストに貼ると、指示とデータの境界が消える。一文の指示も防御にならない
-    - B: 本文を読めなければ、振り分けの機能が成り立たない
-    - D: 1件の検出で全体を止めると、機能を壊す
+    - A: 注入は完全には防げない前提で、運用中の監視も重ねる
+    - B: 置き場所や権限と同じく、訓練も多層の防御の1つにすぎない
+    - D: 注入は完全には防げない前提なので、その確認は終わらない
 
     根拠: [プロンプトインジェクションと jailbreak への多層の防御](../notes/07-security-safety/prompt-injection-defense.md)
 
-**問27** ヘルスケア SaaS のチームが、Claude Code で使うレビュー用のサブエージェント（フォークではない）を作っている。チームは、project の CLAUDE.md にある規約を念のため各サブエージェントの `prompt` にも書き写している。また、親が利用者と30分話して決めた方針を、サブエージェントが知らないことに困っている。正しい理解と対応はどれか。（1つ選べ）
+**問27** ヘルスケア SaaS の開発者が、Claude Code で1時間かけて、親の会話の中でレビューの細かい方針（例外の扱い、指摘の書き方、見送る項目）を詰めた。この方針のまま、10個のモジュールを並列にレビューさせたい。方針は文章にすると長く、会話の中の具体例にも頼っている。最も適切な方法はどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="A" data-domain="1" markdown>
 
-- A. CLAUDE.md は届くので書き写しは要らない。方針は Agent ツールの prompt に書くか、フォークを使う
-- B. 親の会話履歴は届くので、方針が伝わらないのは書き写した規約と矛盾しているからだ
-- C. CLAUDE.md も親の会話も届かないので、規約と方針の両方を `prompt` に書き写し続ける
-- D. フォークにも親の会話は届かないので、方針を CLAUDE.md に書き足して全員に読ませる
+- A. 親の会話を写して始まるフォーク（v2.1.302 以降）でサブエージェントを起動する
+- B. 通常のサブエージェントに、Agent ツールの prompt で「さっきの方針で」とだけ頼む
+- C. 会話の全文を project の CLAUDE.md に貼り、通常のサブエージェントに読ませる
+- D. `settingSources` に `"local"` を足し、親の会話をサブエージェントに読み込ませる
 
 </div>
 
 ??? success "答えと解説"
-    **正解: A。** フォークでないサブエージェントは、自分の `prompt`、Agent ツールの prompt、project の CLAUDE.md、ツールの定義を受け取り、親の会話は受け取らない。親の会話を写して始まるのはフォークだ。
+    **正解: A。** フォークでないサブエージェントは親の会話を受け取らないが、フォークは親のここまでの会話を写して始まる。会話に頼った方針をそのまま使わせるならフォークにする。
 
-    - B: 親の会話履歴は渡らない
-    - C: project の CLAUDE.md は届くので、規約の書き写しは要らない
-    - D: フォークは親のここまでの会話を写して始まる
+    - B: 通常のサブエージェントに親の会話は渡らず、「さっきの方針」は通じない
+    - C: CLAUDE.md は毎回すべてのリクエストに入る規約の置き場で、会話の全文を貼る場所ではない
+    - D: `settingSources` は読む設定の階層で、会話は読み込めない
 
     根拠: [Agent SDK でのエージェントの定義と自作のループ](../notes/01-agents-workflows/agent-sdk-construction.md)
 
@@ -643,60 +623,46 @@ billed += sum(ev.usage.output_tokens for ev in message_delta_events)   # → 590
 
     根拠: [CLAUDE.md の階層、settings.json、権限モード](../notes/03-claude-code/claude-md-settings-permissions.md)
 
-**問29** 経理 SaaS が、夜間の仕訳チェックを Message Batches API に出している。結果を処理するコードは次のとおりだ。直し方として適切なものはどれか。（2つ選べ）
+**問29** 経理 SaaS が、リアルタイムで動いていた仕訳チェックの要求を、夜間の Message Batches API に移している。移す前の要求の `params` には、`"stream": true`、`"speed": "fast"`、サーバー側フォールバックの `fallbacks` が入っていた。移行の進め方として正しいものはどれか。（2つ選べ）
 { .quiz-q }
-
-```python
-for i, res in enumerate(read_results(batch_id)):
-    if res.result.type == "succeeded":
-        save(inputs[i], res.result.message)
-    else:
-        resubmit(inputs[i])   # errored・expired・canceled をそのまま出し直す
-```
 
 <div class="quiz" data-answer="A,D" data-domain="2" markdown>
 
-- A. 結果は順不同なので、`custom_id` で入力と突き合わせて保存する
-- B. 結果の順をそろえるため、リクエストを1件ずつ別のバッチに分けて出す
-- C. 入力の順を保つため、各リクエストの `params` に `stream: true` を付ける
-- D. `invalid_request_error` で `errored` のものは直してから、`expired` はそのまま出し直す
-- E. `expired` と `canceled` の分も課金済みとして、出し直さずに予算から差し引く
+- A. バッチでは `stream`・`speed`・`fallbacks` を使えないので、`params` から外す
+- B. fast mode はバッチでも使えるので、`speed` を残して半額と速さを両立させる
+- C. `fallbacks` はバッチでは自動で有効になるので、書かなくても別モデルに回る
+- D. 結果は全件が終わるか24時間たった時点で取り出せ、`results_url` から読む
+- E. 途中でバッチを取り消すと、すでに処理された分の結果も消える
 
 </div>
 
 ??? success "答えと解説"
-    **正解: A と D。** 結果は `custom_id` で入力に対応させ、失敗は種類ごとに扱いを分ける。`invalid_request_error` はリクエストを直さない限り再び失敗する。
+    **正解: A と D。** バッチでは `stream: true`、fast mode（`speed`）、サーバー側フォールバック（`fallbacks`）が使えない。結果は全件が終わるか24時間たった時点で、`results_url` から `.jsonl` で読む。
 
-    - B: バッチの利点を捨てるうえ、順番の問題は `custom_id` で解ける
-    - C: バッチは `stream: true` を受け付けない
-    - E: `errored`・`canceled`・`expired` は課金されない
+    - B: fast mode はバッチで使えない機能に入っている
+    - C: サーバー側フォールバックも、バッチで使えない
+    - E: 取り消す前に処理された分の結果は残る
 
     根拠: [リアルタイムとバッチの選択](../notes/02-applications-integration/realtime-vs-batch.md)
 
-**問30** 保険金の請求書から項目を構造化出力で抜き出すパイプラインで、ごくまれに JSON のパースで例外が出る。例外が出た応答を集めると次のとおりだった。最も適切な直し方はどれか。（1つ選べ）
+**問30** 決済の記録を構造化出力で抜き出すスキーマで、支払い方法を「カード（番号の下4桁）」か「振込（口座の名義）」のどちらかの形にしたく、`oneOf` で2つの object を並べた。このスキーマを送ると、リクエストが 400 になる。最も適切な直し方はどれか。（1つ選べ）
 { .quiz-q }
-
-```text
-件数  stop_reason   content の先頭
-  7   max_tokens    {"claim_id": "C-2291", "items": [{"code": "A1", ...（途中で終わる）
-  3   refusal       申し訳ありませんが、この書類については…
-```
 
 <div class="quiz" data-answer="A" data-domain="6" markdown>
 
-- A. パースの前に `stop_reason` で分け、`max_tokens` は上限を上げて取り直し、`refusal` は別に扱う
-- B. 「必ず完全で有効な JSON だけを返すこと」と書き足し、拒否しないよう念を押す
-- C. 足りない閉じ括弧を補い、拒否の文は正規表現で取り除いてからパースする
-- D. 例外を捕まえて空の dict を返し、次の工程は既定値の項目で先へ進める
+- A. `anyOf` に書き換え、どちらか一方の形になっているかは受け取った後にコードで確かめる
+- B. 400 は一時的な失敗とみなし、間隔を空けて同じスキーマのまま送り直す
+- C. `oneOf` は残し、`not` で「両方の項目を持たない」条件を足して形を絞る
+- D. 支払い方法の欄を `dict` 型にして、どんなキーでも受け取れるようにする
 
 </div>
 
 ??? success "答えと解説"
-    **正解: A。** 構造化出力でも、`max_tokens` で切れた JSON と、スキーマに合わない拒否の文は返りうる。パースの前に `stop_reason` で分ける。
+    **正解: A。** API のスキーマでは `oneOf` が使えず、`anyOf` を使う。スキーマで書けない「どちらか一方だけ」という制約は、受け取った後にコードで検証する。
 
-    - B: 上限での打ち切りも拒否も、指示では防げない
-    - C: 切れた後ろの項目は補えない。拒否の文を消しても判定は残らない
-    - D: 壊れた請求書が空のデータとして下流に流れ、失敗が見えなくなる
+    - B: スキーマの誤りなので、何度送っても 400 になる
+    - C: `not` も API のスキーマで使えない
+    - D: キーを並べない map は `{}` しか返せない
 
     根拠: [構造化出力と防御的なパース](../notes/06-prompt-context/structured-output-parsing.md)
 
@@ -792,52 +758,48 @@ for i, res in enumerate(read_results(batch_id)):
 
     根拠: [人のラベルで較正した LLM-as-judge](../notes/04-eval-testing-debugging/llm-as-judge-calibration.md)
 
-**問35** 返金を行うツール `issue_refund` のハンドラは、決済代行の API がタイムアウトしたとき、例外を捕まえて次の結果を返している。その直後、Claude は顧客に「返金を手続きしました」と伝えた。最も適切な直し方はどれか。（1つ選べ）
+**問35** 経費の申請を登録するツール `create_expense` のハンドラが、ときどき型のエラーで落ちる。ログを見ると、Claude が `amount` を `"1,200円"` のような文字列で渡したり、必須の `category` を欠かしたりしていた。スキーマには `amount: number` と `required: ["amount", "category"]` が書いてある。最も適切な直し方はどれか。（1つ選べ）
 { .quiz-q }
-
-```text
-tool_result: {"tool_use_id": "toolu_01...", "content": "error"}
-```
 
 <div class="quiz" data-answer="D" data-domain="8" markdown>
 
-- A. system prompt に「結果が error なら、失敗として顧客に伝えること」と書き、強調する
-- B. ハンドラで例外を投げ直して API の呼び出しごと中断させ、運用の担当に通知する
-- C. 失敗したときは `tool_result` を返さずにループを終え、顧客には画面で別に知らせる
-- D. `is_error: true` を付け、「タイムアウトで返金は未実行。数分後に再試行できる」と書く
+- A. system prompt に「amount は数値、category は必ず入れること」と書き足す
+- B. ハンドラで型のエラーを捕まえたら、同じ要求を最初からやり直させる
+- C. ハンドラで文字列から数字を正規表現で拾い、欠けた `category` は既定値で埋める
+- D. ツール定義に `strict: true` を付け、入力がスキーマどおりになるよう縛る
 
 </div>
 
 ??? success "答えと解説"
-    **正解: D。** 失敗は `is_error: true` で示し、何が起きて次に何をすべきかを書く。成功と同じ形で返すと、Claude は完了したと伝えてしまう。
+    **正解: D。** ツール定義の `strict: true` は、ツールの入力をスキーマどおりに縛る。型の違いや必須の欠けが起きなくなる。
 
-    - A: 結果の形が成功と同じままで、プロンプトの指示に頼る
-    - B: 顧客への説明も回復の手も失われる。失敗は結果として返して Claude に対応させる
-    - C: Claude は失敗を知らないままで、顧客に原因も次の手も伝わらない
+    - A: プロンプトの指示は形の保証にならない
+    - B: 入力の形が縛られていない限り、やり直しても同じ誤りが起きうる
+    - C: 推測で埋めた値が登録され、壊れたデータが下流に広がる
 
-    根拠: [ツールの設計と結果の整形](../notes/08-tools-mcp/tool-design-response-shaping.md)
+    根拠: [ツールの設計と結果の整形](../notes/08-tools-mcp/tool-design-response-shaping.md)、[構造化出力と防御的なパース](../notes/06-prompt-context/structured-output-parsing.md)
 
-**問36** 社内の議事録サービスを新しいモデルへ移したところ、2つの呼び出しが 400 になった。(1) 最後に `{"role": "assistant", "content": "{\"decisions\": ["}` を置き、決定事項の JSON を続けて書かせる呼び出し。(2) 最後に `{"role": "assistant", "content": "要約:"}` を置き、前置きを省かせる呼び出し。対応として適切なものはどれか。（2つ選べ）
+**問36** 複数のモデルを切り替えて使う分類サービスが、費用を抑えるため、どのモデルにも `thinking: {"type": "disabled"}` を送っている。新しく加えたモデルでだけ、リクエストが 400 になった。対応として適切なものはどれか。（2つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="D,E" data-domain="2" markdown>
 
-- A. (1) はプレフィルの引用符と括弧を減らし、同じ構造のまま送り直す
-- B. どちらもプレフィルを受け付ける古いモデルに戻し、移行を見送る
-- C. (2) は 400 を一時的な失敗とみなし、間隔を空けて同じ要求を送り直す
-- D. (1) はプレフィルを外し、`output_config.format` に JSON スキーマを指定する
-- E. (2) はプレフィルを外し、system で「前置きを書かずに要約から始める」と指示する
+- A. 400 は一時的な失敗とみなし、そのモデルへの要求だけ間隔を空けて送り直す
+- B. `thinking` を外す代わりに `temperature: 0` を送り、出力を短くそろえる
+- C. 新しいモデルにも `budget_tokens` を小さく指定し、思考の量を抑える
+- D. 送る前に Models API の `capabilities.thinking.types.disabled.supported` で受け付けるかを確かめる
+- E. 受け付けないモデルには `disabled` を送らず、effort を下げて思考の量を抑える
 
 </div>
 
 ??? success "答えと解説"
-    **正解: D と E。** 新しいモデルはプレフィルを受け付けない。形を縛る用途は構造化出力に、前置きを省く用途は直接の指示に置き換える。
+    **正解: D と E。** `thinking: {"type": "disabled"}` を受け付けないモデルがあり、受け付けるかは Models API の capabilities で確かめられる。思考の量の舵は effort だ。
 
-    - A: プレフィルそのものを受け付けないので、書き方を変えても 400 になる
-    - B: 古いモデルは非推奨や廃止に向かい、問題を先送りするだけだ
-    - C: リクエストの形の誤りで、何度送っても 400 になる
+    - A: リクエストの形の誤りで、何度送っても 400 になる
+    - B: 新しい API の版や新しいモデルでは、`temperature` も 400 になりうる
+    - C: `budget_tokens` は新しいモデルでは受け付けない
 
-    根拠: [Messages API の仕組み](../notes/02-applications-integration/messages-api-mechanics.md)、[回帰の評価で見つかったずれを直すプロンプトの改訂](../notes/06-prompt-context/prompt-revision.md)
+    根拠: [Messages API の仕組み](../notes/02-applications-integration/messages-api-mechanics.md)、[生成の仕組みとモデルの選択肢](../notes/05-model-selection/generation-mechanics.md)
 
 **問37** 通信会社の解約受付エージェントで、会話の途中に `role: "system"` のメッセージで「以後、返金を約束しないこと」と伝えた。長い会話になったため、要求に応じた compaction（`compaction: {"type": "summarize"}`）で要約したところ、その後のターンで返金を約束してしまった。最も適切な直し方はどれか。（1つ選べ）
 { .quiz-q }
@@ -860,50 +822,45 @@ tool_result: {"tool_use_id": "toolu_01...", "content": "error"}
 
     根拠: [長いセッションのコンテキスト管理](../notes/06-prompt-context/long-running-context.md)
 
-**問38** Agent SDK の親エージェントに、ログを調べるサブエージェントを次のように定義した。権限モードは `default` で、`canUseTool` は無い。実行すると、サブエージェントの `Bash` の呼び出しはすべて拒否され、5ターンで止まった出力を、親のコードは失敗として捨てていた。正しい理解はどれか。（1つ選べ）
+**問38** 企業向けの送金エージェント（Claude Code を `-p` で動かす）で、限度を超える送金には財務部の承認が要る。承認は翌営業日になることが多い。今の `PreToolUse` のフックは `permissionDecision: "ask"` を返していて、無人のジョブは承認を待ったまま進まない。最も適切な直し方はどれか。（1つ選べ）
 { .quiz-q }
-
-```python
-agents={"log-inspector": AgentDefinition(description="障害のログを調べる",
-        prompt="…", tools=["Read", "Bash"], maxTurns=5)}
-```
 
 <div class="quiz" data-answer="D" data-domain="1" markdown>
 
-- A. サブエージェントは承認を受けない設計だ。上限で止まった出力は親の会話に混ざる
-- B. `tools` のツールは承認なしで動くはずなので不具合だ。上限で止まった出力は破棄される
-- C. `tools` から `Bash` を外せば承認が要らなくなる。上限で止まった出力は空で返る
-- D. `tools` は使えるツールの一覧で承認ではない。上限で止まった出力は partial の印付きで返る
+- A. `ask` のまま、フックの `timeout` を翌営業日まで延ばして承認を待たせる
+- B. `allow` を返して送金を通し、`PostToolUse` のフックで財務部に事後の報告を送る
+- C. `deny` を返し、system prompt に「承認が出たら同じ送金をやり直すこと」と書く
+- D. `defer` を返してターンを終え、承認が出たらそのセッションを再開する
 
 </div>
 
 ??? success "答えと解説"
-    **正解: D。** `AgentDefinition.tools` に並べても、そのツールの承認にはならない。`maxTurns` に達したサブエージェントの出力は partial と印が付いて返るので、捨てずに印を見て扱う。
+    **正解: D。** `defer` はターンを終え、結果の `stop_reason` が `tool_deferred` になる。後で再開できるので、時間のかかる承認を待つのに合う（Claude Code では `-p` が必要）。
 
-    - A: 承認が要る呼び出しは、`default` で `canUseTool` が無ければ拒否される
-    - B: 文書どおりの動作で、上限で止まった出力も破棄されない
-    - C: 外せば使えなくなるだけで、承認の問題を解いたことにならない。出力も空ではない
+    - A: 長く待たせるだけで、無人のジョブが止まったままになる
+    - B: 承認の前に送金が実行され、事後には取り消せない
+    - C: 承認後のやり直しが prompt の指示頼みになり、どの送金かの記録も残らない
 
-    根拠: [Agent SDK でのエージェントの定義と自作のループ](../notes/01-agents-workflows/agent-sdk-construction.md)
+    根拠: [フックで必要な処理を決定的に実行する](../notes/01-agents-workflows/hooks-deterministic-actions.md)
 
-**問39** インフラ管理の会社が、CI の Claude Code に Terraform の修正を任せている。要件は「`infra/state/` 以下は、どんな書き方の操作でも書き換えられないこと」。今は `PreToolUse` フックで Bash の入力の文字列に `infra/state` が含まれるかを調べているが、レッドチームで `python3 scripts/fix.py`（中で state を書き換える）が通った。最も適切な対策はどれか。（1つ選べ）
+**問39** コード実行の SaaS が、顧客が持ち込んだ信頼できないコードを、エージェントに動かさせる。1台のホストで多くの顧客のジョブが動き、隔離の強さを最も重く見る。負荷が多少大きくなるのは受け入れる。隔離のしかたとして最も適切なものはどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="D" data-domain="7" markdown>
 
-- A. CLAUDE.md の先頭に「`infra/state/` は変更禁止」と書き、毎回読み込ませる
-- B. フックの検査に、`python3`・`node` など、スクリプトを動かすコマンドの名前を足していく
-- C. `disallowedTools` に `"Bash(rm *infra/state*)"` を足し、削除の操作を止める
-- D. Bash のサンドボックスの `denyWrite` に `infra/state/` を入れ、`Edit` には deny ルールを足す
+- A. 手軽な sandbox-runtime で動かし、ホストのカーネルを共有したまま隔離する
+- B. 既定の設定の Docker のコンテナで動かし、設定はあとから詰める
+- C. 隔離はせず、危険なコマンドを deny ルールに並べて止める
+- D. gVisor か VM で動かし、ホストのカーネルを共有しない強い隔離にする
 
 </div>
 
 ??? success "答えと解説"
-    **正解: D。** 入力の文字列を調べるフックやルールは、書き方を変えると漏れる。サンドボックスは Bash とその子プロセスの書き込みを OS の層で止め、サンドボックスの外で動く `Edit`・`Write` は `Edit(...)` の deny ルールで止まる。
+    **正解: D。** 公式の比較では、gVisor・VM は隔離が強い代わりに負荷が大きい。強さを最も重く見て、負荷を受け入れるならこれを選ぶ。
 
-    - A: CLAUDE.md は文脈で、強制にならない
-    - B: `perl` やシェルの組み込みなど、書き方を変えればまた通る
-    - C: スクリプトの中の書き込みは、`rm` の形に一致しない
+    - A: sandbox-runtime は手軽だが、ホストのカーネルを共有する
+    - B: Docker の隔離の強さは設定しだいで、詰めないまま使うことになる
+    - C: ルールは入力の文字列を見るだけで、書き方を変えると漏れる
 
     根拠: [決定的なガードレールと最小権限](../notes/07-security-safety/guardrails-least-privilege.md)
 
@@ -928,26 +885,26 @@ agents={"log-inspector": AgentDefinition(description="障害のログを調べ�
 
     根拠: [リアルタイムとバッチの選択](../notes/02-applications-integration/realtime-vs-batch.md)、[コストの要因の特定と最適化](../notes/05-model-selection/cost-diagnosis.md)
 
-**問41** 決算資料の分析ツールを Sonnet 4.5 から Opus 5.5 に移した。前のコードは `thinking: {"type": "enabled", "budget_tokens": 2000}` で思考の量を決めていて、移行後は 400 になった。開発者が `thinking: {"type": "disabled"}` に変えても、やはり 400 だった。仕事は定型の集計で、深い推論は要らない。最も適切な対応はどれか。（1つ選べ）
+**問41** 調査レポートの機能を、Sonnet 5.5 から Opus 5.5 に移した。どちらでも effort は指定しておらず、プロンプトも変えていない。移した後、難しい問いへの分析が浅くなったという声が出た。最も適切な対応はどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="A" data-domain="5" markdown>
 
-- A. 思考の設定を外し、effort を下げて思考の量を舵取りし、評価で品質を確かめる
-- B. システムプロンプトに「考えずにすぐ答えること」と書き、思考を止めさせる
-- C. `disabled` のまま、400 が出なくなるまで間隔を空けて送り直す
-- D. `budget_tokens` を 512 に下げ、思考の量を減らしてから送り直す
+- A. Opus 5.5 の effort の既定は `medium` なので、自分の評価で effort を振り直す
+- B. 上位の階層なら必ず深く考えるはずなので、Fable 5.2 にさらに替える
+- C. プロンプトに「できるだけ深く考えること」と書き、思考の量を増やさせる
+- D. `budget_tokens` で思考の予算を大きく指定し、深い思考を確保する
 
 </div>
 
 ??? success "答えと解説"
-    **正解: A。** Opus 5.5 は思考を止められず、`disabled` も `budget_tokens` も 400 で拒む。思考の量の主な舵は effort だ。
+    **正解: A。** effort の既定はモデルで違い、Sonnet 5.5 は `high`、Opus 5.5 は `medium`。移るときは前の設定を持ち越さず、自分の評価で effort を振り直す。
 
-    - B: プロンプトでの舵取りは言い回しに左右され、effort より不確か
-    - C: リクエストの形の誤りで、何度送っても 400 になる
-    - D: `budget_tokens` は新しいモデルでは値にかかわらず受け付けない
+    - B: 原因の effort を見ないまま、コストとレイテンシーを上げる
+    - C: プロンプトでの舵取りは言い回しに左右され、effort より不確か
+    - D: `budget_tokens` は新しいモデルでは受け付けない
 
-    根拠: [生成の仕組みとモデルの選択肢](../notes/05-model-selection/generation-mechanics.md)
+    根拠: [生成の仕組みとモデルの選択肢](../notes/05-model-selection/generation-mechanics.md)、[モデルの階層の選択と、リリースをまたぐ変化への備え](../notes/05-model-selection/model-tier-release-planning.md)
 
 **問42** 病院の情報システム部が、Claude Code の `.claude/settings.json` に次の hook を登録した。`check_phi.sh` は、書き込む内容に患者の識別子の形を見つけると `exit 2` する。ところが監査では、識別子を含むファイルが `exports/` に作られていた。最も適切な直し方はどれか。（1つ選べ）
 { .quiz-q }
@@ -975,24 +932,24 @@ agents={"log-inspector": AgentDefinition(description="障害のログを調べ�
 
     根拠: [フックで必要な処理を決定的に実行する](../notes/01-agents-workflows/hooks-deterministic-actions.md)
 
-**問43** 開発者向け SaaS の API リファレンス（約 20,000 トークン）は週に1回更新され、1日に数千件の質問が来る。回答には出典を付けたい。チームは、埋め込み検索の索引を作り、関連する節だけを渡す設計を進めている。最も適切な判断はどれか。（1つ選べ）
+**問43** 社内 RAG のサービスが、検索で取ったチャンクを user のテキストに「[doc-17] …」の形で貼り、「どのチャンクにもとづくか番号で示すこと」と指示している。監査で、示された番号のチャンクに書かれていない主張がいくつも見つかった。出典を確かにしたい。最も適切な直し方はどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="D" data-domain="6" markdown>
 
-- A. 質問ごとに公開のリファレンスを `web_fetch` で取り直し、毎回最新の全文を渡す
-- B. 全文を月に1回システムプロンプトに焼き込み、週ごとの更新は月末にまとめて反映する
-- C. 出典を付けるには検索が必須なので、索引を作って関連する節だけを渡す
-- D. 窓に十分収まり更新も少ないので、全文を `document` ブロックで渡し、prompt caching をかける
+- A. 指示を「必ず正しい番号を示すこと」と強め、番号の誤りを禁じる
+- B. チャンクをすべて1つの長いテキストにまとめ、番号を振り直して貼る
+- C. 回答の後で、番号のチャンクに主張の語が含まれるかを文字列で照合する
+- D. チャンクを `search_result` ブロックか文書として渡し、citations を有効にする
 
 </div>
 
 ??? success "答えと解説"
-    **正解: D。** 窓に十分収まり、更新が少なく、質問が多いなら、全文を渡して固定の部分を prompt caching で安くする。
+    **正解: D。** citations 機能は、引用が渡した文書の実在の位置を指すことを API が保証する。`search_result` ブロックも引用の対象にでき、チャンクごとの文書にしてもよい。
 
-    - A: 毎回の取得で遅くなり、同じ全文の入力にキャッシュも効きにくい（推論）
-    - B: 週ごとの更新が最大1か月、答えに出ない
-    - C: 全文を `document` ブロックで渡しても citations は使える。検索は必須でない
+    - A: プロンプトで頼む引用は、文面を信じるしかない
+    - B: 渡し方が同じで、番号の保証が無い点は変わらない
+    - C: 語が含まれても裏付けとは限らず、後からの照合では出典の保証にならない
 
     根拠: [渡した文書にもとづく回答と出典](../notes/06-prompt-context/grounding-citations.md)
 
@@ -1040,30 +997,24 @@ agents={"log-inspector": AgentDefinition(description="障害のログを調べ�
 
 ## 問46〜60
 
-**問46** 返金の可否を自動で判定するエージェントを、各課題3回ずつ走らせて評価した。本番では判定は顧客ごとに1回しか走らず、利用者は毎回正しい判定を期待している。結果は次のとおりだ。報告に使う指標として最も適切なものはどれか。（1つ選べ）
+**問46** 会議の議事録を要約する機能の品質目標が「良い要約を返すこと」とだけ決まっている。チームは、LLM に要約を 1〜5 で採点させ、平均が上がったら改善とみなすつもりだ。利用者は数秒で要約を見たい。評価の作り直しとして最も適切なものはどれか。（1つ選べ）
 { .quiz-q }
-
-| 指標 | 値 |
-|---|---|
-| pass@3（3回のうち1回でも正しい） | 98% |
-| pass^3（3回すべて正しい） | 61% |
-| 1回あたりの成功率 | 82% |
 
 <div class="quiz" data-answer="B" data-domain="4" markdown>
 
-- A. 3つの指標を平均した 80% を、判定の信頼性として報告する
-- B. pass^3 の 61% か、1回あたりの成功率の 82% で報告する
-- C. k を 10 に増やして測り直し、pass@10 で信頼性を報告する
-- D. pass@3 の 98% を、判定の信頼性として報告する
+- A. 採点のプロンプトに「良い要約か」をより丁寧に説明し、1〜5 の平均を引き続き見る
+- B. 対象の集合・指標・合格の線を数字で決め、レイテンシーとコストの基準も並べて持つ
+- C. 毎週数件を担当者が読んで印象を書き、平均点と並べて品質の指標にする
+- D. 要約の長さが短いほど良いとみなし、平均の文字数を品質の指標にする
 
 </div>
 
 ??? success "答えと解説"
-    **正解: B。** 利用者が毎回の成功を期待する機能は、「すべて通る」確率の pass^k か、1回あたりの成功率で測る。
+    **正解: B。** 曖昧な目標は測れないので、対象の集合・指標・合格の線を決めた測定できる成功基準に直す。たいていの用途は、正確さのほかにレイテンシーやコストなど複数の基準を同時に持つ。
 
-    - A: 意味の違う指標を平均しても、信頼性を表す数にならない
-    - C: pass@k は k を増やすほど上がり、毎回の信頼性はさらに見えなくなる
-    - D: pass@k は「1回でも通る」の指標で、毎回の信頼性を表さない
+    - A: 「良い要約」が曖昧なままで、何を満たせば合格かが決まらない
+    - C: 件数が少なく遅い。印象は測定できる基準にならない
+    - D: 長さは品質目標の一部にすぎず、正確さを測らない
 
     根拠: [評価の設計](../notes/04-eval-testing-debugging/evaluation-design.md)
 
@@ -1216,24 +1167,24 @@ agents={"log-inspector": AgentDefinition(description="障害のログを調べ�
 
     根拠: [評価の設計](../notes/04-eval-testing-debugging/evaluation-design.md)
 
-**問54** 金融データの分析エージェントで、規制当局が公開する決算の開示ページを、URL を指定して読ませたい。今は自社のサーバーで動く取得の処理をカスタムツールにしていて、HTML の解析の保守に手間がかかる。最も適切な変更はどれか。（1つ選べ）
+**問54** 法務チームが、契約書のチェックの手順をまとめた自作の Skill を claude.ai にアップロードして使ってきた。同じ手順を社内のバックエンドから Claude API で使おうと、`container.skills` にその Skill を指定したが、見つからないというエラーになった。最も適切な対応はどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="D" data-domain="8" markdown>
 
-- A. 取得の処理を Skill にまとめ、API 上の code execution で開示ページを取らせる
-- B. カスタムツールのまま、HTML の全文を返して Claude に必要な数字を探させる
-- C. 取得の処理を自前の MCP サーバーに移し、MCP connector からつないで使う
-- D. Anthropic 側で動くページ取得のサーバーツール（`web_fetch`）を `tools` に宣言して使う
+- A. claude.ai と API は同じ Skill を共有するので、反映されるまで時間を置いて送り直す
+- B. Skill の手順を MCP サーバーの prompts として公開し、MCP connector から読ませる
+- C. Skill の `SKILL.md` の全文を、毎回の system prompt に貼り付けて使う
+- D. 自作の Skill は面をまたいで同期しないので、API で同じ Skill をアップロードする
 
 </div>
 
 ??? success "答えと解説"
-    **正解: D。** Web 検索やページの取得のような汎用の機能は組み込みのサーバーツールにあり、実装も実行も Anthropic が持つ。
+    **正解: D。** 自作の Skill は claude.ai・API・Claude Code の間で同期しない。API でアップロードした Skill は、その workspace の全員が使える。
 
-    - A: API 上の Skill はネットワークに出られない
-    - B: 結果が大きいままで文脈を圧迫し、保守の手間も残る
-    - C: 置き場所が変わるだけで、取得と解析を保守する手間は残る
+    - A: 同期しないので、待っても API からは見えない
+    - B: MCP connector は tools にしか対応しない
+    - C: Skill の段階的な読み込みを捨て、毎回のトークンが増える
 
     根拠: [機能の仕組みの選択](../notes/08-tools-mcp/capability-mechanism-selection.md)
 
@@ -1306,24 +1257,24 @@ agents={"log-inspector": AgentDefinition(description="障害のログを調べ�
 
     根拠: [拡張の仕組みの選択と配布](../notes/03-claude-code/customization-extension.md)
 
-**問58** サポート回答の judge のモデルが、旧モデルの非推奨に伴って新しいモデルに替わった。チームは同じ 400 件を旧 judge と新 judge で採点し、判定の一致が 95% だったので「較正は済んだ」と報告した。2月の較正で使った人のラベルは残っている。最も適切な次の一手はどれか。（1つ選べ）
+**問58** 保険の査定の説明文を採点する judge は、速さのため思考を使わず、「合格か不合格かだけを即答せよ」というプロンプトで動いている。人のラベルと突き合わせると、単純な事例ではよく一致するが、複数の条件が絡む事例で一致が低い。採点基準の文面は具体的で、観点ごとに分けてある。最も適切な直し方はどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="D" data-domain="4" markdown>
 
-- A. 旧 judge と新 judge の点数を平均し、両方の判定を混ぜて使う
-- B. 新 judge は判定が厳しくなるかもしれないので、合格の線を少し下げて使う
-- C. 旧 judge との一致が高いので、新 judge をそのまま使い続ける
-- D. 新 judge の判定を人のラベルと突き合わせ、食い違った事例を読んで基準を見直す
+- A. 判定を 1〜10 の点数に細かくし、複雑な事例の差を拾えるようにする
+- B. 回答を生成したモデルと同じモデルを judge にし、意図を汲ませる
+- C. 判定に加えて、自由な講評を書かせ、担当者が読んで直す
+- D. judge に思考させてから合否を付けさせ、人のラベルと一致を測り直す
 
 </div>
 
 ??? success "答えと解説"
-    **正解: D。** judge のモデルが変わったら、人のラベルと突き合わせ直す。較正の基準は人のラベルだ。
+    **正解: D。** judge に思考させてから点を付けさせると、複雑な判断ほど採点の精度が上がる。直したら、人のラベルとの一致を測り直す。
 
-    - A: どちらも人と突き合わせていない点数を混ぜても、ずれは分からない
-    - B: 一致を確かめずに線を動かすのは、根拠の無い調整だ
-    - C: 比べた相手が旧 judge なので、人とのずれは分からない
+    - A: 出力は合否や段階に絞る方が集計しやすく、判断の質の問題も残る
+    - B: 生成したモデルと別のモデルを judge にするのが一般に良いとされる
+    - C: 自由な講評は量をこなして集計できない
 
     根拠: [人のラベルで較正した LLM-as-judge](../notes/04-eval-testing-debugging/llm-as-judge-calibration.md)
 
@@ -1348,28 +1299,23 @@ agents={"log-inspector": AgentDefinition(description="障害のログを調べ�
 
     根拠: [プロンプトインジェクションと jailbreak への多層の防御](../notes/07-security-safety/prompt-injection-defense.md)
 
-**問60** 複数の顧客企業が使う SaaS 向けの HTTP の MCP サーバーで、ツールのハンドラが次のように書かれている。受け取ったトークンの audience は確かめていない。仕様に沿った直し方として最も適切なものはどれか。（1つ選べ）
+**問60** SaaS 向けの HTTP の MCP サーバーは、トークンの無い要求に `403` と本文 `{"error": "login required"}` を返している。クライアントの開発者から、「どこで認可を受ければよいか分からず、接続できない」と問い合わせが来た。仕様に沿った直し方として最も適切なものはどれか。（1つ選べ）
 { .quiz-q }
-
-```python
-token = request.headers["Authorization"]        # クライアントから受け取ったトークン
-resp = crm.get("/contacts", headers={"Authorization": token})
-```
 
 <div class="quiz" data-answer="B" data-domain="8" markdown>
 
-- A. CRM の権限と揃うよう転送は残し、トークンの有効期限だけを確かめる
-- B. audience が自サーバーあてかを検証し、CRM はサーバーが下流向けに得た資格情報で呼ぶ
-- C. トークンを URL のクエリ文字列で受け取るようにし、CRM にも同じ形で渡す
-- D. `Origin` ヘッダーの検証を足し、トークンは今までどおり CRM に転送する
+- A. 本文のメッセージに、認可サーバーの URL を文章で書き足す
+- B. 401 と、Protected Resource Metadata の URL を示す `WWW-Authenticate` を返す
+- C. トークンの無い要求も受け入れ、URL のクエリでトークンを後から受け取る
+- D. `Origin` ヘッダーを検証し、知っている送り元なら認証なしで通す
 
 </div>
 
 ??? success "答えと解説"
-    **正解: B。** サーバーは自分あての audience で発行されたトークンだけを受け入れる。受け取ったトークンを下流にそのまま渡すこと（token passthrough）は禁じられている。
+    **正解: B。** HTTP の MCP サーバーは OAuth 2.1 の resource server で、トークンの無い要求には 401 と `WWW-Authenticate`（Protected Resource Metadata の URL）を返す。クライアントはそこから認可サーバーを見つける。
 
-    - A: token passthrough が残り、audience も確かめていない
+    - A: 決まった形でないので、クライアントが自動で認可サーバーを見つけられない
     - C: アクセストークンを URL のクエリに入れることは禁じられている
-    - D: `Origin` の検証は DNS rebinding 対策で、認証の検証にも passthrough の解消にもならない
+    - D: `Origin` の検証は DNS rebinding 対策で、認証の代わりにならない
 
     根拠: [MCP サーバーの開発と組み込み](../notes/08-tools-mcp/mcp-server-development.md)
