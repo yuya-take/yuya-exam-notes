@@ -38,15 +38,15 @@ flowchart TD
 
 同じイベントの hook は並列に動き、完了の順は決まらない。複数の `PreToolUse` が違う判断を返したときは、`deny` > `defer` > `ask` > `allow` の順で強い方が勝つ。hook が `allow` を返しても、deny ルールと ask ルールは評価される。だから hook の `allow` で禁止を飛び越えることはできない。
 
-失敗の扱いが試験の急所だ。SDK の callback が例外を投げるか、何も返さないと、既定では処理がそのまま通常の権限判定に進む。ガードに使うなら、matcher に `on_failure="block"`（TypeScript は `onFailure: "block"`）を付ける。Claude Code のコマンドの hook も同じで、止めるのは終了コード 2 だけだ。終了コード 1 は止まらないエラーとして扱われ、処理は進む。
+失敗の扱いが試験の急所だ。SDK の callback が例外を投げるか、何も返さないと、既定では処理がそのまま通常の権限判定に進む。ガードに使うなら、matcher に `on_failure="block"`（TypeScript は `onFailure: "block"`）を付ける。Claude Code のコマンドの hook も同じで、既定で止めるのは終了コード 2 だけだ。終了コード 1 は止まらないエラーとして扱われ、処理は進む。ただし `"onFailure": "block"`（Claude Code v2.1.295 以降）を付けた hook は、起動できない、0 と 2 以外の終了コード、タイムアウトといった失敗でも、終了コード 2 と同じく止める。`Stop`・`SubagentStop` ではこの設定は効かない。
 
 ??? info "細かい決まり"
     - `PreToolUse` の `permissionDecision` は `allow`・`deny`・`ask`・`defer`。`defer` はターンを終え、結果の `stop_reason` が `tool_deferred` になる（後で再開できる。Claude Code では `-p` が必要）
     - `updatedInput` は `permissionDecision: "allow"` と組にすると書き換えた入力で自動承認、`ask` と組にすると利用者に見せる。元の `tool_input` を書き換えず、新しいオブジェクトを返す
     - タイムアウトの既定は多くのイベントで 600 秒（`UserPromptSubmit` は 30 秒）。`PreToolUse` の callback がタイムアウトすると、その呼び出しは止められる
-    - `Stop` の hook の入力には `stop_hook_active` があり、hook のせいで続いている最中なら `true`。stop hook が8回続けて続行させると、Claude Code は次の block を無視してターンを終える（`CLAUDE_CODE_STOP_HOOK_BLOCK_CAP` で変更）
+    - `Stop` の hook の入力には `stop_hook_active` があり、hook のせいで続いている最中なら `true`。stop hook が8回続けて続行させると、Claude Code は次の block を無視してターンを終える（`CLAUDE_CODE_STOP_HOOK_BLOCK_CAP` で変更）。この回数は Claude がツールを呼ぶたびに数え直しになる
     - 副作用だけの hook は `async_: True`（TypeScript は `async: true`）を返すと待たれない。止める・書き換える・文脈を足すことはできない
-    - Claude Code の hook の種類は `command`・`http`・`mcp_tool`・`prompt`・`agent`。設定は user・project・local・managed の settings、plugin の `hooks/hooks.json`、skill と subagent の frontmatter に書け、階層をまたいでマージされる。settings のコマンドの hook の `"onFailure": "block"` は Claude Code v2.1.295 以降
+    - Claude Code の hook の種類は `command`・`http`・`mcp_tool`・`prompt`・`agent`。設定は user・project・local・managed の settings、plugin の `hooks/hooks.json`、skill と subagent の frontmatter に書け、階層をまたいでマージされる。`"onFailure": "block"` を書けるのは `command`・`http`・`mcp_tool` の hook（`mcp_tool` は v2.1.328 以降）。`TaskCompleted`・`TeammateIdle` と、async の hook でも効かない
 
 ## 試験での見分け方
 
@@ -76,7 +76,7 @@ flowchart TD
 </div>
 
 ??? success "答えと解説"
-    **正解: D。** コマンドの hook で呼び出しを止めるのは終了コード 2 だけで、1 は止まらないエラーとして扱われる。
+    **正解: D。** `onFailure` を付けていないコマンドの hook で呼び出しを止めるのは終了コード 2 だけで、1 は止まらないエラーとして扱われる。
 
     - A: `PostToolUse` の時点でツールは実行済みで、取り消せない
     - B: CLAUDE.md は文脈で、強制にならない。hook が止めていない点も直らない
@@ -102,7 +102,7 @@ flowchart TD
     - C: ガードが落ちたときに送金が通ってしまう。ガードは失敗時に止める側に倒す
     - E: 結果を記録できないうえ、記録のための hook が送金を自動承認してしまう
 
-**Q3.** `Stop` の hook でテストを実行し、失敗していれば `decision: "block"` と失敗の内容を返して続けさせている。あるテストは環境の問題で必ず失敗し、エージェントは同じ修正を繰り返した末に、8回続けたところで打ち切られた。hook の入力には `stop_hook_active: true` が入っていた。最も適切な直し方はどれか。（1つ選べ）
+**Q3.** `Stop` の hook でテストを実行し、失敗していれば `decision: "block"` と失敗の内容を返して続けさせている。あるテストは環境の問題で必ず失敗する。エージェントはツールを呼ばずに止まろうとし続け、hook がそのたびに block した。8回続いたところで、ターンが打ち切られた。hook の入力には `stop_hook_active: true` が入っていた。最も適切な直し方はどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="C" markdown>

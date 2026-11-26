@@ -30,7 +30,7 @@ flowchart LR
 | claude.ai・アプリ | 独自のシステムプロンプト（公開版あり） | プロジェクトなどの機能（本ノートでは未確認） |
 | Messages API | なし。`system` に書いたものだけ | アプリが送る |
 | Claude Code（CLI、`claude -p`） | Claude Code のシステムプロンプト | CLAUDE.md を会話に差し込む |
-| Agent SDK | 最小限。`claude_code` プリセットか自前の文字列を選ぶ | `settingSources` に含めた階層の CLAUDE.md（既定の `query()` は user と project の両方） |
+| Agent SDK | 最小限。`claude_code` プリセットか自前の文字列を選ぶ | `settingSources` に含めた階層の CLAUDE.md（既定の `query()` は user・project・local のすべて） |
 
 境界を越えるものはアプリが決める。自分で定義したツールはアプリの中で動くので、`tool_result` に何を入れるかで、モデルに渡す情報を選べる。Files API のファイルは ==ワークスペース単位== で見えるので、利用者ごとに分かれてはいない。利用者から受け取った `file_id` をそのまま使うと、別の利用者のファイルを読めてしまう。
 
@@ -94,7 +94,7 @@ session の設計も面で変わる。Messages API は状態を持たず、履�
     **正解: C と D。** 面ごとに既定の指示が違う。API と Agent SDK では、必要な指示を自分で入れる。
 
     - A: claude.ai のシステムプロンプトの更新は API に効かないと明記されている
-    - B: 既定の `query()` は user と project の CLAUDE.md を読む。CLAUDE.md は claude.ai の指示の代わりにもならない
+    - B: 既定の `query()` は user・project・local の CLAUDE.md（local は CLAUDE.local.md）を読む。CLAUDE.md は claude.ai の指示の代わりにもならない
     - E: 揺れではなく指示の欠けが原因だ。新しい API バージョンでは `temperature` を送ると 400 になる
 
 **Q3.** Agent SDK で作った経理の支援エージェントで、利用者が画面で「読み取り専用モード」に切り替えた。書き込み系のツールは権限の設定で止めてある。そのうえで、Claude にも今は読み取り専用だと伝えたい。開発者はセッションを再開するときに `systemPrompt` の `append` を書き換えたが、次のターンの応答はその指示を知らないままだった。最も適切な対応はどれか。（1つ選べ）

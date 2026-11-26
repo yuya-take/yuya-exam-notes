@@ -29,12 +29,12 @@ flowchart TD
 
 | 設定ファイル | 効く範囲 | git |
 |---|---|---|
-| managed（`managed-settings.json`、MDM、サーバー管理） | 組織が配る全員。誰も上書きできない | 組織が配る |
+| managed（`managed-settings.json`、MDM、サーバー管理） | 組織が配る全員。原則として誰も上書きできない（例外は本文） | 組織が配る |
 | `.claude/settings.json` | そのプロジェクトで作業する全員 | コミットして共有する |
 | `.claude/settings.local.json` | 自分の、そのプロジェクトだけ | 入れない |
 | `~/.claude/settings.json` | 自分の、全プロジェクト | 対象外 |
 
-同じキーは上の階層が勝つ（managed、コマンドラインの `--settings`、local、project、user の順）。`permissions.allow` のような配列は、上書きでなく ==各階層の分が足し合わされる==。環境変数は階層の外で、キーごとに決まる。たとえばシェルの `ANTHROPIC_MODEL` は、どのファイルの `model` よりも優先される。
+同じキーは上の階層が勝つ（managed、コマンドラインの `--settings`、local、project、user の順）。`permissions.allow` のような配列は、上書きでなく ==各階層の分が足し合わされる==。managed が勝つことには例外がある。managed の `model` は最初の既定にすぎず、モデルを縛るのは `availableModels`・`deniedModels` だ。また `disableClaudeAiConnectors` など一部の安全に関わるキーは、下の階層の厳しい方の値が managed より優先される。環境変数は階層の外で、キーごとに決まる。たとえばシェルの `ANTHROPIC_MODEL` は、どのファイルの `model` よりも優先される。
 
 API の `anthropic-version` ヘッダーも版の固定だ。同じ版の中では既存の入出力が保たれ、足されるのは任意の入力、出力の値、新しいイベントの種類などに限られる。版を上げると破壊的変更が入る。たとえば `2026-10-21` では `temperature`・`top_p`・`top_k` が廃止され、送ると 400 になる。
 
@@ -43,7 +43,7 @@ API の `anthropic-version` ヘッダーも版の固定だ。同じ版の中で�
     - モデル ID ごとに非推奨と廃止の予定がある。廃止されたモデルへの要求はすべて失敗する
     - Claude Code の GitHub Action（`anthropics/claude-code-action@v1`）は、`claude_args` に `--model` が無いと Claude Code の既定のモデルを使う。API キーは GitHub Secrets に置き、`anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}` で渡す。`--max-turns` で反復を抑える
     - project の `.claude/settings.json` の一部（`permissions.allow`、`extraKnownMarketplaces`、多くの `env`）は、各人がフォルダを信頼するまで効かない。`deny` と `ask` はすぐ効く
-    - クラウドのセッションは user と local の設定を読まない。届くのはコミットされた project の設定と、サーバー管理の設定
+    - クラウドのセッションは user と local の設定を読まない。届くのはコミットされた project の設定と、サーバー管理の設定。ただし project の設定がすべて効くのは、リポジトリが1つで、プロジェクトのスレッドでないセッションだけ。複数リポジトリのセッション（Anthropic ホストの環境）は各リポジトリの `enabledPlugins` と `extraKnownMarketplaces` だけを読み、プロジェクトのスレッドでは permission rules・hooks・`env` が効かない
     - プラグインの `plugin.json` の `version` を書くと、その版に固定される。`dependencies` に、有効でなければならない別のプラグインを書く。CI では `claude plugin validate --strict` で警告も失敗にできる
     - プロンプトの版管理: Managed Agents のエージェントは、変更のたびに `version` が1ずつ増え、版の履歴を一覧できる。セッションを特定の版に固定する方法は、本ノートでは未確認
 

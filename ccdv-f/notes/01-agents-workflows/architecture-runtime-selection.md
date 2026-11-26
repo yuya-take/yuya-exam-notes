@@ -3,7 +3,7 @@
 > ドメイン: 1. エージェントとワークフロー（17%） ／ 更新: 2026-11-26
 
 !!! abstract "ひとことで"
-    手順を事前にコードで書けるなら ==workflow==、手順が入力ごとに変わって予測できないときだけ agent にする。実行環境は「ループと sandbox を誰が運用するか」で選ぶ。自社のプロセスで回すなら Agent SDK、Anthropic にホストさせるなら Managed Agents だ。
+    手順を事前にコードで書けるなら ==workflow==、手順が入力ごとに変わって予測できないときだけ agent にする。実行環境は「ループを自社のコードに組み込むか、ハーネスごと任せるか」で選ぶ。組み込むなら Agent SDK、任せるなら Managed Agents で、Managed Agents でも sandbox は自社のインフラに置ける。
 
 ## 仕組み
 
@@ -14,9 +14,9 @@ flowchart TD
   A[業務の要件] --> B{手順を事前に書けるか}
   B -- 書ける --> C[workflow: chaining / routing / parallelization]
   B -- 書けない --> D[agent: orchestrator が subagent に分ける]
-  D --> E{ループと sandbox を誰が運用するか}
-  E -- 自社 --> F[Agent SDK を自社のコンテナで動かす]
-  E -- Anthropic --> G[Managed Agents]
+  D --> E{ループを自社のコードに組み込むか}
+  E -- 組み込む --> F[Agent SDK を自社のコンテナで動かす]
+  E -- ハーネスごと任せる --> G[Managed Agents<br/>sandbox は cloud か self-hosted]
   B -. とりあえず multi-agent .-> X[過剰な構成で遅く高い]
   classDef run fill:#e3f2fd,stroke:#1e88e5,color:#0d47a1
   classDef judge fill:#fff8e1,stroke:#f9a825,color:#4e342e
@@ -36,11 +36,11 @@ flowchart TD
 | orchestrator-workers | サブタスクが事前に分からない。中央の LLM が動的に分けて任せる |
 | evaluator-optimizer | 評価の基準が明確で、作り直すと目に見えて良くなる |
 
-実行環境は3つある。Messages API で自分でループを書く方法、Agent SDK で Claude Code のループを自社のプロセスに組み込む方法（self-hosted の harness）、Managed Agents に agent・environment・session を作って Anthropic にループを回させる方法だ。Managed Agents は、数分〜数時間かかる非同期の作業、sandbox やツール実行層を自作したくない場合、セッションをまたいで状態を保つ場合に向く。一方、ループ自体を細かく制御したい場合や、データの保存先を自社で握る必要がある場合は Agent SDK か Messages API を選ぶ。
+実行環境は3つある。Messages API で自分でループを書く方法、Agent SDK で Claude Code のループを自社のプロセスに組み込む方法（self-hosted の harness）、Managed Agents に agent・environment・session を作って Anthropic にループを回させる方法だ。Managed Agents は、数分〜数時間かかる非同期の作業、sandbox やツール実行層を自作したくない場合、セッションをまたいで状態を保つ場合に向く。一方、ループ自体を細かく制御したい場合は Agent SDK か Messages API を選ぶ。データの保存先の要件は、それだけでは Managed Agents を外す理由にならない。コンプライアンスやデータの所在の要件には、自社のインフラで動く self-hosted の sandbox や、サービスごと自社で動かす self-hosted Managed Agents があるからだ。ただし HIPAA は、Managed Agents のどの機能でも対象外だ。
 
 ??? info "実行環境ごとの細かい決まり"
     - Managed Agents は beta。全エンドポイントに `managed-agents-2026-04-01` の beta ヘッダーが要る（SDK は自動で付ける）。概念は Agent（モデル・system prompt・ツール・MCP・skills）、Environment（Anthropic の cloud sandbox か self-hosted sandbox）、Session、Events
-    - Managed Agents は会話履歴と sandbox の状態をサーバー側に保存するため、ZDR の対象外（self-hosted の Managed Agents は例外）で、HIPAA の対象外（2026-11-26 時点の公式ページ）
+    - Managed Agents は会話履歴と sandbox の状態をサーバー側に保存するため、ZDR の対象外（self-hosted の Managed Agents は例外）で、HIPAA はすべてのサブ機能が対象外（2026-11-26 時点の公式ページ）
     - Agent SDK は `query()` ごとに `claude` CLI の子プロセスを起動する。1セッション＝1プロセスで、transcript はローカルディスクに置かれ、コンテナの再起動で消える。別ホストで再開するなら `SessionStore` が要る
     - Agent SDK の資源の目安は、1エージェントあたり RAM 1 GiB、ディスク 5 GiB、CPU 1。セッションの型は ephemeral・long-running・hybrid・multi-agent container の4つ
     - Agent SDK 自体の HIPAA の扱いは、公式ページで確認できなかった（未確認）
@@ -112,7 +112,7 @@ flowchart TD
 </div>
 
 ??? success "答えと解説"
-    **正解: D。** Managed Agents は HIPAA の対象外なので、保存先を自社で握れる構成にする。
+    **正解: D。** Managed Agents は self-hosted の構成を含むどの機能も HIPAA の対象外なので、Managed Agents の外で、保存先を自社で握れる構成にする。
 
     - A: prompt の指示では、サービスの対象範囲は変わらない
     - B: 削除できても、Managed Agents の機能は HIPAA の対象外のまま

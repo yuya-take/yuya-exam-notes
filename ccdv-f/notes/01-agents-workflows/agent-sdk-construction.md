@@ -14,8 +14,13 @@ flowchart TD
   A[ツールの呼び出し] --> B{hook / deny / ask}
   B -- deny --> X[実行されない]
   B -- 通過 --> C{権限モード}
-  C -- bypassPermissions など --> E[実行]
-  C -- default / dontAsk --> D{allow ルールに一致}
+  C -- bypassPermissions --> E[実行]
+  C -- acceptEdits の作業ディレクトリ内のファイル操作 --> E
+  C -- auto で分類器が見る呼び出し --> M{分類器}
+  M -- 許可 --> E
+  M -- 拒否 --> X
+  C -- plan のファイル編集 --> F
+  C -- default / dontAsk / ほかの呼び出し --> D{allow ルールに一致}
   D -- 一致 --> E
   D -- 不一致 --> F{canUseTool}
   F -- 許可 --> E
@@ -25,7 +30,7 @@ flowchart TD
   classDef done fill:#e8f5e9,stroke:#43a047,color:#1b5e20
   classDef ng fill:#fdecea,stroke:#e53935,color:#8e1c13
   class A run
-  class B,C,D,F judge
+  class B,C,D,F,M judge
   class E done
   class X ng
 ```
@@ -36,10 +41,10 @@ flowchart TD
 | `disallowed_tools` / `disallowedTools` | ツール名だけなら定義ごと外す。`Bash(rm *)` のような形なら、その呼び出しを全モードで拒否する |
 | `permission_mode` / `permissionMode` | `default`・`acceptEdits`・`plan`・`dontAsk`・`auto`・`bypassPermissions` |
 | `agents` | 名前 → `AgentDefinition`（`description`・`prompt`・`tools`・`model` など） |
-| `setting_sources` / `settingSources` | CLAUDE.md・skills・settings のどれを読むか。既定の `query()` では project を読む |
+| `setting_sources` / `settingSources` | CLAUDE.md・skills・settings のどれを読むか。省くと `["user", "project", "local"]` と同じで、`[]` なら読まない |
 | `max_turns`・`max_budget_usd` | 暴走を止める上限。既定は無制限 |
 
-サブエージェントは、自分の `prompt` と、親が Agent ツールに渡した prompt の文字列だけを受け取る。親の会話履歴や system prompt は渡らない。だから、必要なファイルのパスや決定事項は、その prompt に書かせる。Claude がどのサブエージェントを使うかは `description` で決まる。
+サブエージェント（フォークを除く）は、新しい文脈で始まる。受け取るのは、自分の `prompt`、親が Agent ツールに渡した prompt、`settingSources` で読んだ project の CLAUDE.md、ツールの定義で、親の会話履歴や system prompt は渡らない。親から中身を渡せるのは Agent ツールの prompt だけなので、必要なファイルのパスや決定事項は、その prompt に書かせる。例外はフォーク（Claude Code v2.1.302 以降、`subagent_type: "fork"`）で、親のここまでの会話を写して始まる。Claude がどのサブエージェントを使うかは `description` で決まる。
 
 `ResultMessage` の `subtype` は `success`・`error_max_turns`・`error_max_budget_usd`・`error_during_execution`・`error_max_structured_output_retries` のどれかだ。`result`（最終テキスト）があるのは `success` のときだけなので、`subtype` を見てから読む。どの `subtype` にも `session_id` が付くので、上限で止まっても `resume` で続きから再開できる。
 
@@ -99,7 +104,7 @@ flowchart TD
 </div>
 
 ??? success "答えと解説"
-    **正解: A と C。** 委任先は `description` で選ばれ、親から渡るのは Agent ツールの prompt だけだ。
+    **正解: A と C。** 委任先は `description` で選ばれ、親から中身を渡せるのは Agent ツールの prompt だけだ。
 
     - B: `tools` は使えるツールの一覧で、承認にはならない
     - D: サブエージェントは親の system prompt を受け取らない。役割は `prompt` に書く
