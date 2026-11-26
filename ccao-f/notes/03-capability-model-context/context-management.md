@@ -7,7 +7,7 @@
 
 ## 仕組み
 
-1つのチャットで Claude が扱える量は、コンテキストウィンドウ（context window）の大きさで決まる。有料プランでコード実行が有効なら、上限に近づくと Claude が古いメッセージを自動で要約して会話を続ける。ただし、自動の要約が働くほど長いチャットは、使用量の上限を多く使う。ヘルプセンターは、長いチャットで使用量の上限に近づいたら、新しいチャットを始めるよう勧めている。
+1つのチャットで Claude が扱える量は、コンテキストウィンドウ（context window）の大きさで決まる。コード実行が有効なら、上限に近づくと Claude が古いメッセージを自動で要約して会話を続ける。ただし、自動の要約が働くほど長いチャットは、使用量の上限を多く使う。ヘルプセンターは、長いチャットで使用量の上限に近づいたら、新しいチャットを始めるよう勧めている。
 
 新しく始めるべきなのは、上限のときだけではない。途中で前提が変わったのに古い前提が出力に混じる、試行錯誤が積み重なって話がそれた、というときも、決定事項だけを要約させて新しいチャットに渡す方がよい（推論）。要約は Claude に作らせてよいが、渡す前に自分で読み、誤りや古い前提を直す。
 
@@ -124,4 +124,5 @@ Project の knowledge は、その Project のどのチャットでも背景と�
 - Claude Certified Associate – Foundations Exam Guide v1.1, Domain 3: Context and Memory Management（公式、PDF）: https://cc.sj-cdn.net/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1794946609/Claude_Certified_Associate_-_Foundations_Exam_Guide_Updated_Dec_7.pdf
 - [How usage and length limits work](https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work)（公式、ヘルプセンター）
 - [What are projects?](https://support.claude.com/en/articles/9517075-what-are-projects)（公式、ヘルプセンター）
+- [Troubleshoot Claude error messages](https://support.claude.com/en/articles/12466728-troubleshoot-claude-error-messages)（公式、ヘルプセンター）
 - [Use Claude's chat search and memory to build on previous context](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context)（公式、ヘルプセンター）

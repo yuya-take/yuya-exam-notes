@@ -43,8 +43,8 @@ flowchart TD
     - research は、チャットで選んだモデルにかかわらず決まったモデル（Opus 5.5、使えないときは Opus 4.8）で動く。Team / Enterprise で管理者が両方を止めていると使えない
     - research は通常のチャットと同じ使用量の上限を使うが、多くの資料を読むので早く減る。ファイルの作成も通常のチャットより使用量を多く使う
     - コード実行のファイルの上限は、アップロード・ダウンロードとも1ファイル 30MB
-    - コード実行の環境からの外部通信は、プランと設定で変わる（Team / Enterprise は既定で無効）。外部のファイルやサイトに仕込まれた指示で、データを外に送らされる危険があると、ヘルプセンター自身が注意している
-    - research がかかる時間と、引用の表示のしかたは、ヘルプセンターの記事に記載が無く未確認
+    - コード実行の環境からの外部通信は、プランと設定で変わる（2026-11 時点のヘルプでは、個人プランは既定でオン、Team はパッケージマネージャーへの通信だけが既定でオンでオーナーが切れる、Enterprise の新しい組織は既定でオフ）。外部のファイルやサイトに仕込まれた指示で、データを外に送らされる危険があると、ヘルプセンター自身が注意している
+    - research は5回以上のツール呼び出しを1〜3分かけて行い、出力に引用が付く（ヘルプ「When should I use web search, extended thinking, and research?」）。引用の表示のしかたの細部は未確認
 
 ## 試験での見分け方
 
@@ -124,3 +124,4 @@ flowchart TD
 - Claude Certified Associate – Foundations Exam Guide v1.1, Domain 2: Output Adaptation and Format Selection、Domain 3: Capability Selection（公式、PDF）: https://cc.sj-cdn.net/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1794946609/Claude_Certified_Associate_-_Foundations_Exam_Guide_Updated_Dec_7.pdf
 - [Use research on Claude](https://support.claude.com/en/articles/11088861-use-research-on-claude)（公式、ヘルプセンター）
 - [Create and edit files with Claude](https://support.claude.com/en/articles/12111783-create-and-edit-files-with-claude)（公式、ヘルプセンター）
+- [When should I use web search, extended thinking, and research?](https://support.claude.com/en/articles/11095361-when-should-i-use-web-search-extended-thinking-and-research)（公式、ヘルプセンター）
