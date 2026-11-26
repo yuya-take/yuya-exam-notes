@@ -53,10 +53,10 @@ flowchart TD
     - `bypassPermissions` では `allowedTools` は何も絞らない。止めたいツールは `disallowedTools` に書く。素の名前（例: `Bash`）を書くと、ツールの定義そのものが外れる
     - 自動で承認された呼び出しは `canUseTool` に届かない。承認済みの呼び出しも検査したいなら PreToolUse フックを使う。フックの `allow` は deny と ask の評価を飛ばさない
     - PreToolUse フックが終了コード 2 で終わると、その呼び出しは止まり、stderr が理由として Claude に渡る
-    - `bypassPermissions` は root や sudo では起動を拒否される。管理設定の `permissions.disableBypassPermissionsMode: "disable"` で禁止できる。`permissions.disableAutoMode: "disable"` で auto を外せる
+    - Linux と macOS では、`bypassPermissions` は root や sudo では起動を拒否される。認識されたサンドボックスの中では、この確認は自動で飛ばされる（どの環境が当たるかは未確認）。管理設定の `permissions.disableBypassPermissionsMode: "disable"` で禁止できる。`permissions.disableAutoMode: "disable"` で auto を外せる
     - auto の分類器が連続3回か合計20回止めると、auto は止まり確認に戻る
     - CI: `--bare` はフック・スキル・プラグイン・MCP・CLAUDE.md の自動の読み込みを飛ばし、スクリプトからの実行に推奨されている。確認する人がいない実行では `--permission-prompts none` で、待たずに拒否させられる
-    - Agent SDK の文書によると、サブエージェントの定義（`AgentDefinition`）に `bypassPermissions` と書いても、その値は適用されない（v2.1.267 以降）。Subagents のページの frontmatter の表には値として載っており、ファイルで定義した場合の扱いは未確認
+    - サブエージェントの `permissionMode: bypassPermissions` は、メインの会話が `bypassPermissions` のとき（引き継ぎ）にだけ効く。メインが `default` か `dontAsk` のときは適用されず、メインのモードのまま動く（v2.1.267 以降）。ファイルで定義したサブエージェントも、Agent SDK の `AgentDefinition` も同じ
 
 ## 試験での見分け方
 
@@ -66,7 +66,7 @@ flowchart TD
 |---|---|---|
 | 締めた無人の実行 | `dontAsk` ＋ 狭い `allowedTools` | `bypassPermissions` ＋ `allowedTools` で絞ったつもりになる |
 | 絶対に止めたい操作 | deny ルールか PreToolUse フック | `canUseTool` で止める（自動承認された呼び出しは届かない） |
-| どのモードでも守る場所 | `disallowedTools` の `Edit(//secrets/**)` のような deny | プロンプトに「触るな」と書く |
+| どのモードでも守る場所 | `disallowedTools` の `Edit(//secrets/**)` のような deny。止まるのは Claude のファイルのツールと `tee`・`>` などの Bash の書き込みまでで、OS で強制するならサンドボックス | プロンプトに「触るな」と書く。deny だけで、Claude が実行したスクリプトの書き込みまで止まるとみなす |
 | チームで auto や bypass を既定にしたい | ユーザー設定・管理設定か `--permission-mode` | `.claude/settings.json` の `defaultMode` に書く |
 | 隔離した使い捨て環境 | `bypassPermissions` はコンテナや VM の中だけ | 共有のランナーや root で `--dangerously-skip-permissions` |
 
@@ -99,7 +99,7 @@ claude -p "依存を更新してテストを通す" \
     - B: `bypassPermissions` では、ほとんどの呼び出しが承認の手前で通り、承認の仕組みに届かない
     - D: プロンプトの指示は強制にならない
 
-**Q2.** 社内の障害調査を手伝うエージェントを Agent SDK で作る。調べるための読み取りは確認なしで通し、それ以外は人に聞かずに拒否したい。さらに、後で誰かが権限モードを `bypassPermissions` に変えても、`/secrets` の下への書き込みは必ず止めたい。設定として適切なものはどれか。（2つ選べ）
+**Q2.** 社内の障害調査を手伝うエージェントを Agent SDK で作る。調べるための読み取りは確認なしで通し、それ以外は人に聞かずに拒否したい。さらに、後で誰かが権限モードを `bypassPermissions` に変えても、Claude のファイルのツールによる `/secrets` の下への書き込みは止めたい。設定として適切なものはどれか。（2つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="A,C" markdown>
@@ -113,11 +113,11 @@ claude -p "依存を更新してテストを通す" \
 </div>
 
 ??? success "答えと解説"
-    **正解: A と C。** 締めた構成は `dontAsk` と狭い allow。deny のルールはどのモードでも効くので、モードが変わっても守れる。
+    **正解: A と C。** 締めた構成は `dontAsk` と狭い allow。deny のルールはどのモードでも効くので、モードが変わっても守れる。ただし `Edit(//secrets/**)` が止めるのは、Claude のファイルのツールと `tee`・`>` のような Bash の書き込みまでだ。Claude が実行したスクリプトが自分でファイルを開いて書くのは止まらない。OS の側で強制するには、サンドボックスを使う。
 
     - B: `bypassPermissions` では `Read` 以外も承認されてしまう
     - D: `bypassPermissions` や allow で自動承認された呼び出しは `canUseTool` に届かない
-    - E: 調査を締めたいという目的と逆。Agent SDK では、サブエージェントの定義の `bypassPermissions` は適用されないとも書かれている
+    - E: 調査を締めたいという目的と逆。メインの会話が `dontAsk` なら、サブエージェントの定義の `bypassPermissions` は適用されない（v2.1.267 以降）
 
 **Q3.** あるチームは、使い捨ての devcontainer の中だけで Claude Code を `bypassPermissions` で動かしたい。リポジトリの `.claude/settings.json` に `"permissions": {"defaultMode": "bypassPermissions"}` を書いてコミットしたが、起動しても `bypassPermissions` にならない。最も適切な直し方はどれか。（1つ選べ）
 { .quiz-q }
@@ -136,7 +136,7 @@ claude -p "依存を更新してテストを通す" \
 
     - A: `.claude/settings.local.json` でも効かない
     - B: CLAUDE.md は指示であって、権限の設定ではない
-    - C: Linux と macOS では、root や sudo での起動は拒否される
+    - C: root で全権を渡すうえに、ネットワークを絞るなどの隔離をしていない。Linux と macOS では root や sudo での `bypassPermissions` の起動は拒否される（認識されたサンドボックスの中ではこの確認が自動で飛ばされるので、起動できる場合もある）。公式は、コンテナで動かすなら非 root で動く dev container の構成を勧める
 
 ## 出典
 - Claude Certified Architect – Professional Exam Guide v1.1（Dec 7 版）, Domain 7「Agent SDK and Claude Code Configuration」（公式、PDF）: https://cc.sj-cdn.net/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1794946420/Claude_Certified_Architect_-_Professional_Exam_Guide_Updated_Dec_7.pdf

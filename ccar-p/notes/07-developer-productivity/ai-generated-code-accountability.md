@@ -77,7 +77,7 @@ rules:
 
 <div class="quiz" data-answer="A" markdown>
 
-- A. `seats` を1以上にして作者以外の人を求め、Claude は `comments` にして助言に回す
+- A. 作者以外の人（`from: [humans, "!pr/authors"]`）の承認を1人求めるルールを足し、Claude は `comments` にして助言に回す
 - B. Code Review のレベルを Deep に上げ、`seats: 0` と `claude: approves` はそのまま残す
 - C. CLAUDE.md に「安全な依存更新だけを出すこと」と書き足し、ポリシーはそのまま残す
 - D. ポリシーを observe モードに切り替えて、まず様子を見る
@@ -85,7 +85,7 @@ rules:
 </div>
 
 ??? success "答えと解説"
-    **正解: A。** `seats: 0` と `claude: approves` の組み合わせでは、Claude の承認がブランチの保護の1件を満たし、人が見ないままマージできる。人の承認を必須に戻す。
+    **正解: A。** `seats: 0` と `claude: approves` の組み合わせでは、Claude の承認がブランチの保護の1件を満たし、人が見ないままマージできる。作者以外の人の承認を必須にする。`seats: 1` は作者が埋められる席なので、人が PR を出す経路では作者だけでマージできてしまう。
 
     - B: レビューが深くなっても、人の承認が無いまま通る経路は残る
     - C: 指示はマージの条件を変えない

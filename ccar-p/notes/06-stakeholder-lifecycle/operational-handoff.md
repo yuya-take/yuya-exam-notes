@@ -40,9 +40,9 @@ flowchart TD
 runbook は「429 なら再試行」のように1行で済ませがちだ。しかし同じ 429 でも、レート制限、ramp limit、月の支出上限では対処が違う。応答の `error.details.error_code` で見分け、それぞれの手順と担当を書く。
 
 ??? info "runbook とその依存に書く仕様の細部"
-    - レート制限の 429: `retry-after` が付く。その秒数だけ待って再試行する
+    - レート制限の 429: `retry-after` が付いていれば、その秒数だけ待って再試行する。すべての 429 に付くわけではない
     - ramp limit の 429: `error_code` は `ramp_limit_exceeded`。成功する水準で止め、1分に1段ずつ増やす
-    - 月の支出上限の 429: `error_code` は `enforced_spend_limit_reached`。`retry-after` は付かず、翌月まで再試行は失敗する。上の利用階層に移ると戻る
+    - 月の支出上限の 429: `error_code` は `enforced_spend_limit_reached`。`retry-after` は付かず、翌月1日の 00:00 UTC まで再試行は失敗する。上の利用階層に移ると戻る
     - 自分で設定した支出上限に達すると 400（`invalid_request_error`）
     - レート制限は組織単位。ワークスペースごとに低い上限も設定できる
     - 退役: 公開モデルは少なくとも 60 日前にメールと文書で告知。退役後は失敗する（Claude API では 404 `not_found_error`）。Console の Usage から、キー別・モデル別の利用を CSV で出せる
@@ -65,7 +65,7 @@ runbook は「429 なら再試行」のように1行で済ませがちだ。し�
 
 ## 確認問題
 
-**Q1.** 物流会社の配送問い合わせエージェントを運用チームに引き継いだ。runbook には「429 は `retry-after` に従って再試行する」とだけある。翌月1日の0時から、`retry-after` の無い 429 が出続け、再試行しても回復しない。引き継ぎの資料に足すべきものとして最も適切なものはどれか。（1つ選べ）
+**Q1.** 物流会社の配送問い合わせエージェントを運用チームに引き継いだ。runbook には「429 は `retry-after` に従って再試行する」とだけある。月の半ばから、`retry-after` の無い 429 が出続け、再試行しても月末まで回復しない。引き継ぎの資料に足すべきものとして最も適切なものはどれか。（1つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="D" markdown>
