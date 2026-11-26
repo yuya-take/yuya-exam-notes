@@ -43,7 +43,7 @@ flowchart TD
     - Sonnet 5.5 と Haiku 5.5 では、プロンプトで「考えるな」と頼んでも thinking は確実には減らない。effort を下げる
     - context editing: beta ヘッダ `context-management-2025-06-27`。`trigger` の既定は入力 100,000 トークン、`keep` の既定は直近3回のツール利用。`clear_at_least` で1回に消す最小量を決め、キャッシュの書き直しに見合うようにする。`exclude_tools` で消さないツールを指定する。thinking を消す `clear_thinking_20251015` もある
     - context editing と memory tool を併用すると、消す前に、大事なことを memory に保存するよう Claude に自動で警告が出る
-    - compaction: 呼ぶ側が要求する on-demand（beta ヘッダ `compact-2026-09-04`）が、多くの場合の推奨。しきい値で自動に動く版は `compact_20260112`（beta ヘッダ `compact-2026-01-12`）で、`trigger` の既定は 150,000、最小は 50,000。返ってきた `compaction` ブロックは次のリクエストに含めて送り返す。system の末尾にブレークポイントを置けば、要約しても system のキャッシュは残る。Managed Agents では compaction が常に有効
+    - compaction: 呼ぶ側が要求する on-demand（beta ヘッダ `compact-2026-09-04`）が、多くの場合の推奨。しきい値で自動に動く版は `compact_20260112`（beta ヘッダ `compact-2026-01-12`）で、`trigger` の既定は 150,000、最小は 50,000。返ってきた `compaction` ブロックは次のリクエストに含めて送り返す。system の末尾にブレークポイントを置けば、要約しても system のキャッシュは残る。Managed Agents のハーネスは compaction に対応しているが、常に有効かどうかは未確認
     - memory tool: クライアント側で動くので、保存先はアプリが決める。`/memories` の外を指すパス（`../` など）を必ず拒否する。使うと、先に memory を見るよう求める指示が system に自動で入る
     - 新しいコンテキストで始め直し、進捗ファイル・テストの一覧・git の履歴から状態を読み戻す方法も、公式は選択肢に挙げている
 

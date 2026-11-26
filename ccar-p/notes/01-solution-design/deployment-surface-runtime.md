@@ -26,7 +26,7 @@ Managed Agents は、ループ・ツールの実行・サンドボックスを A
 
 ??? info "デプロイ先の細部（2026-11-26 時点）"
     - ガイドの「Google Vertex AI」は、現行ドキュメントの「Claude Models on Google Cloud (Google managed)」に当たる（推論。旧ページの URL がここに転送され、SDK のクライアント名が `AnthropicVertex`）
-    - ドキュメントには、ガイドに名前の無い Anthropic 運用の提供形態もある。Claude Platform on AWS（AWS の認証と課金、機能は通常 Claude API と同日）と、Claude Models on Google Cloud (Anthropic managed)。どちらも Managed Agents が使える。試験がこれらを扱うかは未確認
+    - ドキュメントには、ガイドに名前の無い Anthropic 運用の提供形態もある。Claude Platform on AWS（AWS の認証と課金。新しいモデルは通常 Claude API と同日に出る。機能もほぼ同じだが、fast mode・HIPAA-ready・OAuth などの未対応の一覧がある）と、Claude Models on Google Cloud (Anthropic managed)。どちらも Managed Agents が使える。試験がこれらを扱うかは未確認
     - Claude Platform on AWS の Managed Agents は、利用者のイベント無しに自律で動けるのが6時間まで。HIPAA-ready の対象外で、FedRAMP High や HIPAA が要る組織には Bedrock を勧めている
     - サーバー側のフォールバック（`fallbacks`）は Bedrock・Google 管理版・Foundry で使えない。クライアント側のフォールバックで代える
     - データの所在: Claude API は `inference_geo`（`us` は 1.1 倍の料金、Claude 4.6 以降）。Bedrock と Google 管理版は地域のエンドポイント（グローバルより 10% 高い）。Foundry は Azure 上のデプロイで US Data Zone を選べる（1.1 倍）
