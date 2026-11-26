@@ -6,6 +6,8 @@
 |---|---|
 | Claude Certified Architect – Foundations | [ccaf/](ccaf/README.md) |
 | Claude Certified Associate – Foundations | [ccao-f/](ccao-f/README.md) |
+| Claude Certified Developer – Foundations | [ccdv-f/](ccdv-f/README.md) |
+| Claude Certified Architect – Professional | [ccar-p/](ccar-p/README.md) |
 
 ## 学習の流れ
 
