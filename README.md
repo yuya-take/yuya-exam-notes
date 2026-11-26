@@ -5,6 +5,7 @@
 | 資格 | ノート |
 |---|---|
 | Claude Certified Architect – Foundations | [ccaf/](ccaf/README.md) |
+| Claude Certified Associate – Foundations | [ccao-f/](ccao-f/README.md) |
 
 ## 学習の流れ
 

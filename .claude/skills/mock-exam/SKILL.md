@@ -18,7 +18,7 @@ disable-model-invocation: true
 
 > 本番と同じ60問・120分。シナリオは「…」「…」「…」「…」。
 
-<div class="exam-start" data-minutes="120" data-pass="72"></div>
+<div class="exam-start" data-minutes="120" data-pass="72" data-domains="1:<ドメイン1の名前>|2:<ドメイン2の名前>|…"></div>
 
 ## シナリオ1: <シナリオ名>
 
@@ -45,7 +45,7 @@ disable-model-invocation: true
     根拠: [<ノート名>](../notes/<NN>-<domain>/<topic>.md)
 ````
 
-- `data-domain` はドメインの番号（1〜5）。画面には出さず、採点のドメイン別の集計に使う
+- `data-domain` はドメインの番号。画面には出さず、採点のドメイン別の集計に使う。結果の表に出すドメインの名前は、`exam-start` の `data-domains` に `番号:名前` を `|` でつないで書く（省略すると CCAR-F の名前になる）
 - `data-pass` は目安の合格ライン（正答率 %）。スケールスコアの換算が公式に無いときは、README の合格ラインを正答率の目安に読み替えたものと解説に書く
 - 本番がシナリオ形式なら、シナリオごとに節を分け、その下に問題を並べる
 - `note_lint.py` が、形式・ドメインの付け忘れ・正解の位置の偏りを確かめ、ドメイン別の問題数を表示する

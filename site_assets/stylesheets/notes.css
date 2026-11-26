@@ -13,6 +13,7 @@
   --d3: #8e24aa; /* Claude Code */
   --d4: #ef6c00; /* プロンプトと構造化出力 */
   --d5: #c2185b; /* コンテキストと信頼性 */
+  --d6: #6d4c41; /* 6つ目のドメインがある資格用 */
 }
 
 [data-md-color-scheme="slate"] {
@@ -28,6 +29,7 @@
   --d3: #ba68c8;
   --d4: #ffa726;
   --d5: #f06292;
+  --d6: #a1887f;
 }
 
 /* 見出し: 左に色の帯を付けて、節の切れ目を見つけやすくする */
@@ -57,6 +59,7 @@
 .domain-badge.d3 { background: var(--d3); }
 .domain-badge.d4 { background: var(--d4); }
 .domain-badge.d5 { background: var(--d5); }
+.domain-badge.d6 { background: var(--d6); }
 .note-meta .updated { color: var(--md-default-fg-color--light); }
 
 /* 覚える語のマーカー（==語== で書く） */
@@ -114,6 +117,7 @@
 .domain-dot.d3 { background: var(--d3); }
 .domain-dot.d4 { background: var(--d4); }
 .domain-dot.d5 { background: var(--d5); }
+.domain-dot.d6 { background: var(--d6); }
 
 /* 図（Mermaid）: ダークモードでもノードは明るい地に濃い文字にする。
    ノートの classDef で付けた淡い色の上でも文字が読めるように */
