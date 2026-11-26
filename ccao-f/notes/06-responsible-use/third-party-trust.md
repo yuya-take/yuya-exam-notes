@@ -37,8 +37,8 @@ custom connector は、Anthropic が確かめていない任意のサービス�
 
 ??? info "組織での管理（2026-11-26 時点の Help Center の記述）"
     - Team プランで custom connector を追加できるのは Owner と Primary Owner。Enterprise では、権限を与えられた custom role も追加できる
-    - Team / Enterprise では、管理者がアップロード時の Skill のセキュリティ検査を有効にでき、検査を通らない Skill は使えない
-    - 管理者は Skill の名前と共有の状態は見られるが、ファイルの中身は見られない。組織への共有は既定で off
+    - Enterprise では、管理者がアップロード時の Skill のセキュリティ検査を有効にできる（CMEK・ZDR・HIPAA の構成では使えない）。問題なしはそのまま入り、危険ありは注意を了承すれば使え、悪意ありだけが止まる（Owner などが解除できる）
+    - 管理者は Skill の名前と共有の状態は見られるが、ファイルの中身は見られない。共有の既定は一律ではない。人から人への共有は Team では既定で on、組織への公開は Team が既定で「Open」（審査なし）、Enterprise は検査の設定によって「Open」か「Requires review」。グループへの共有と、HIPAA などの規制の構成では既定で off
     - Connectors Directory に載っている connector を Anthropic がどこまで審査しているかは、未確認
 
 ## 試験での見分け方

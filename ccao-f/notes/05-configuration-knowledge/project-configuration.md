@@ -91,7 +91,7 @@ memory は Project ごとに分かれている。Project の中では、その P
 </div>
 
 ??? success "答えと解説"
-    **正解: A と D。** 顧客ごとの資料と memory は Project を分けて切り離し、共通の手順は Skill にまとめる。
+    **正解: A と D。** 顧客ごとの資料と memory は Project を分けて切り離し、共通の手順は Skill にまとめる。Project の外でたまったアカウントの memory まで切り離すなら、「Use account memory」も切る。
 
     - B: 指示で区別させても、同じ knowledge と memory に2社分が混ざる
     - C: 同じ手順を2か所に持つと、片方だけ直し忘れる。手順は Skill に1つ置く

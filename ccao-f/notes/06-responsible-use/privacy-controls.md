@@ -31,7 +31,7 @@ flowchart TD
 | incognito chat | 履歴に残らず、memory も使わず・作らない。過去の会話の検索にも出ない。学習に使われない | Anthropic は既定で30日保持する。Team / Enterprise では組織のデータの書き出しに含まれ、組織の保持の方針に従う。Project の中では使えない。閉じると開き直せない |
 | 会話ごとの Memory の off | その会話だけ memory を使わず・作らない | 会話は履歴に残り、後の検索で見つかる |
 | memory の管理 | 設定から、覚えた内容を見る・直す・消す。一時停止（残すが使わない）とリセット（すべて消す、元に戻せない）がある | Project には Project ごとの memory があり、ほかの Project の memory は使わない |
-| Help improve Claude | Free / Pro / Max で、会話を新しいモデルの学習に使うかを決める | on なら保持は5年、off なら30日。消した会話は学習に使わない |
+| Help improve Claude | Free / Pro / Max（Ultra に同じ設定がかかるかは未確認）で、会話を新しいモデルの学習に使うかを決める | on なら保持は5年、off なら30日。消した会話は学習に使わない |
 
 会社のアカウント（Team / Enterprise）は Commercial Terms のもとにあり、入力と出力は既定で学習に使われない。memory の可否や保持期間は、本人でなく組織の管理者が決める部分がある。
 
@@ -111,7 +111,7 @@ flowchart TD
 </div>
 
 ??? success "答えと解説"
-    **正解: D。** Project の memory は Project ごとに分かれ、ほかの Project の memory は使わない。
+    **正解: D。** Project の memory は Project ごとに分かれ、ほかの Project の memory は使わない。ただし Project の外のチャットでたまったアカウントの memory は Project でも使われるので、完全に切り離すなら Project の設定で「Use account memory」を切る。
 
     - A: 全部を消すうえ、毎回の貼り直しの手間が増える。混ざる原因の仕組みは変わらない
     - B: incognito は Project の中で使えず、案件の前提を持ち越せない
