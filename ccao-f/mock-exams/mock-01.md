@@ -522,18 +522,18 @@
 <div class="quiz" data-answer="A" data-domain="5" markdown>
 
 - A. 組織の instructions など、Project の外から効く層に変更が無かったか
-- B. です・ます調で書いた見本のファイルを knowledge に足したらどうなるか
-- C. Project instructions に、です・ます調にするようもっと強く書いたらどうなるか
-- D. Project を複製し、新しい方の Project に切り替えて使ったらどうなるか
+- B. 各メンバーの Instructions for Claude に、常体の指定が足されていないか
+- C. 各メンバーの memory に、常体を好むという記録がたまっていないか
+- D. knowledge の中に、常体で書かれた資料が混じっていないか
 
 </div>
 
 ??? success "答えと解説"
     **正解: A。** 変わっていない層を書き直しても戻らない。全員の分で同じ日から一斉に口調が変わり、Project の中の層も Skill も変わっていないなら、Project の外から効く層（組織の instructions など）を疑う。
 
-    - B: 原因の層を確かめないまま、変わっていない knowledge に資料を足して症状を抑えようとしている
-    - C: 変わっていない instructions を厳しくしても、原因の層に届かない
-    - D: 複製しても Project の外から効く層はそのまま効くので、同じ症状が続く
+    - B: 個人の instructions はその人にだけ効く。全員の分が同じ日に一斉に変わったことの説明にならない
+    - C: memory は会話を重ねて少しずつたまるもので、全員の分が同じ日に一斉に変わる説明にならない
+    - D: knowledge はこの間だれも変えていないので、変化の原因にならない
 
     根拠: [設定の劣化の原因の層を特定する](../notes/05-configuration-knowledge/configuration-degradation.md)
 
@@ -561,7 +561,7 @@
 **問27** 製紙会社のアワユキ製紙で、研修担当が3か月かけて新しい研修プログラムを Claude と作る。何度も参照する研修の実施要項があり、受講者の出欠データは毎週入れ替わる。コンテキストの扱いとして適切なものはどれか。（2つ選べ）
 { .quiz-q }
 
-<div class="quiz" data-answer="A,E" data-domain="3" markdown>
+<div class="quiz" data-answer="B,E" data-domain="3" markdown>
 
 - A. 実施要項は memory が覚えるので、どこにも置かずに進める
 - B. 何度も参照する研修の実施要項は、Project の knowledge に置く
@@ -1013,7 +1013,7 @@
 
 - A. research を使い、多くの情報源を何度も検索させて報告にまとめさせる
 - B. 知りたいのは1つの事実なので web 検索で調べ、出典を開いて確かめる
-- C. ふつうの chat で、所在地を出典の URL と一緒に書かせて使う
+- C. web 検索を使わずに、所在地を出典の URL と一緒に書かせて使う
 - D. ふつうの chat で Claude が知っている所在地を書かせ、そのまま使う
 
 </div>
@@ -1025,7 +1025,7 @@
     - C: 検索していないので、書かれた URL は根拠にならず、作られた引用のおそれもある
     - D: 学習済みの知識は古いことがあり、出典も無い
 
-    根拠: [research とコード実行による分析の使いどころ](../notes/03-capability-model-context/research-and-code-execution.md)
+    根拠: [research とコード実行による分析の使いどころ](../notes/03-capability-model-context/research-and-code-execution.md)、[タスクの種類に合わせたプロンプトの戦略](../notes/01-task-definition-prompting/strategy-by-task-type.md)
 
 **問49** 繊維メーカーのアヤメ繊維で、経理の担当が、在宅の夜に来期の未公表の予算案を急いで分析したくなった。会社が契約した Enterprise のアカウントは会社の PC でしか使えないが、手元のスマートフォンには個人の Pro アカウントがある。最も適切な対応はどれか。（1つ選べ）
 { .quiz-q }
