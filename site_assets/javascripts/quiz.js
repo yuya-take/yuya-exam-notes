@@ -5,6 +5,7 @@
 // ページに <div class="exam-start" data-minutes="120" data-pass="72"></div> があるときは
 // 模擬試験のモードになる。1問ずつは採点せず、最後の「採点する」でまとめて採点し、
 // 正答率・ドメイン別の結果を出す。選んだ答えと開始時刻は、このブラウザに保存する。
+// ドメインの名前は exam-start の data-domains（"1:名前|2:名前|…"）で渡す。無ければ CCAR-F の名前を使う。
 (function () {
   var DOMAINS = {
     "1": "エージェントの構成とオーケストレーション",
@@ -130,6 +131,13 @@
     var quizzes = Array.prototype.slice.call(document.querySelectorAll(".quiz"));
     var minutes = parseInt(start.dataset.minutes || "120", 10);
     var pass = parseInt(start.dataset.pass || "72", 10);
+    if (start.dataset.domains) {
+      DOMAINS = {};
+      start.dataset.domains.split("|").forEach(function (s) {
+        var i = s.indexOf(":");
+        if (i > 0) DOMAINS[s.slice(0, i).trim()] = s.slice(i + 1).trim();
+      });
+    }
     var key = "exam:" + location.pathname;
     var saved = store(key) || {};
     var state = { picks: saved.picks || {}, startedAt: saved.startedAt || null, graded: !!saved.graded };

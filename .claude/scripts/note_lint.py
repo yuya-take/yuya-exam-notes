@@ -91,8 +91,8 @@ def check_mock(path):
     answer_counts.clear()
     check_quiz(path, text)
     domains = re.findall(r'<div class="quiz" data-answer="[^"]+"(?: data-domain="(\d)")?', text)
-    if any(d not in "12345" or not d for d in domains):
-        errors.append(f"{rel(path)}: data-domain（1〜5）が無い問題がある")
+    if any(not d for d in domains):
+        errors.append(f"{rel(path)}: data-domain（ドメイン番号）が無い問題がある")
     per = {d: domains.count(d) for d in sorted(set(domains)) if d}
     multi = len(re.findall(r'data-answer="[A-Z],[A-Z]', text))
     dist = "、".join(f"{k}: {v}" for k, v in sorted(answer_counts.items()))
