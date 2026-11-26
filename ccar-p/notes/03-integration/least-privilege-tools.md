@@ -96,7 +96,7 @@ tools: Read, Grep, Glob, Bash, mcp__crm__*
 
 - A. `MAX_MCP_OUTPUT_TOKENS` を引き上げ、4万行が途中で切れずに届くようにする
 - B. `mcp__crm__*` をやめ、読み取りに要る CRM のツール名だけを `tools` に列挙する
-- C. フロントマターの `disallowedTools` に `Bash(rm *)` を書き、Bash を残したまま削除だけを止める
+- C. Bash は残したまま削除のコマンドだけを止めるために、フロントマターの `disallowedTools` に `Bash(rm *)` を書く
 - D. `tools` の行を消し、親の会話のツールをそのまま引き継がせて設定を単純にする
 - E. `list_all_customers` を、条件で絞り込みページングする `search_customers` に置き換える
 
@@ -106,7 +106,7 @@ tools: Read, Grep, Glob, Bash, mcp__crm__*
     **正解: B と E。** 使う読み取りツールだけに絞り、全件を返すツールは絞り込み型に置き換える。
 
     - A: 文脈を食う原因はそのまま残る。上限を上げるのは置き換えの逆だ
-    - C: サブエージェントのフロントマターでは、この書き方は Bash ツールごと外す。Bash を残して特定のコマンドだけ止めるなら settings の `permissions.deny` に書く
+    - C: 読み取りと要約だけの役に Bash を残す前提が誤りだ。しかも、サブエージェントのフロントマターでは、この書き方は Bash ツールごと外すので、狙いどおりにも動かない。Bash を残して特定のコマンドだけ止めるなら settings の `permissions.deny` に書く
     - D: `tools` を省くと、親が使えるツールをほぼすべて引き継ぐ。権限は広がる
 
 **Q3.** Messages API の MCP connector で社内カレンダーの MCP サーバーにつないでいる。サーバーには予定の検索・作成・削除・公開設定の変更など40のツールがある。このエージェントは予定を読むだけでよい。最も適切な `mcp_toolset` の設定はどれか。（1つ選べ）

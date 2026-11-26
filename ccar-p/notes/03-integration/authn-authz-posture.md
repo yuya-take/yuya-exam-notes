@@ -47,8 +47,8 @@ MCP の認可は OAuth 2.1 に沿う。保護された MCP サーバーはリソ
     - トークンは毎回の HTTP リクエストに付ける。URL のクエリに入れない（MUST NOT）
     - スコープが足りないときは、403 と `WWW-Authenticate: Bearer error="insufficient_scope", scope="..."` で返す（SHOULD）。クライアントは再認可を数回までにとどめる
     - 動的クライアント登録（DCR）は 2026-07-28 版で非推奨になり、Client ID Metadata Documents が推奨（SHOULD）
-    - セキュリティのベストプラクティス: セッション ID を認証に使わない（MUST NOT）。セッションの情報は `<user_id>:<session_id>` のように利用者と結び付ける
-    - 公開クライアントのリフレッシュトークンはローテーションする（2025-11-25 版、MUST）。2026-07-28 版で同じ要件がどこに書かれたかは未確認
+    - セキュリティのベストプラクティス（2026-07-28 版）: プロトコルにセッションは無く、続きの状態はサーバーが発行するハンドル（カート ID など）で持つ。ハンドルを持っていることを認証とみなさない（MUST NOT、State Handle Hijacking）。状態は `<user_id>:<handle>` のように利用者と結び付け、`user_id` はクライアントが渡した値ではなく検証したトークンから取る（SHOULD）。セッション ID の扱いは 2025-11-25 版以前の話
+    - 公開クライアントのリフレッシュトークンは、認可サーバーがローテーションする（MUST）。2026-07-28 版では Authorization Security Considerations の「Token Theft」に書かれている
     - Messages API の MCP connector は `authorization_token` を受け取るだけで、OAuth の手続きとトークンの更新は呼び出す側が行う。Managed Agents では、セッションが保管庫（vault）を参照して認証情報を渡すので、エージェントの定義に秘密が入らない
     - ZDR などの保持設定がある組織は、ブラウザ（`Origin` ヘッダー付き）から API を呼ぶと 401 になる。自前のバックエンドから送る
 
@@ -94,7 +94,7 @@ MCP の認可は OAuth 2.1 に沿う。保護された MCP サーバーはリソ
 
 - A. 利用者ごとに委任されたトークンを使い、最小のスコープで始めて、書き込みが要るときだけ引き上げる
 - B. システムプロンプトのテナント ID の指示を強め、別テナントの名前が出たら回答を拒否させる
-- C. MCP サーバーのセッション ID をテナントの識別に使い、ID を知っている接続だけを通す
+- C. MCP サーバーが返す状態のハンドル（ワークスペース ID）をテナントの識別に使い、ハンドルを知っている呼び出しだけを通す
 - D. ツールの呼び出しのたびに、要求された資源がその利用者のテナントに属するかをサーバー側で確かめる
 - E. 追跡しやすいように、トークンを URL のクエリに入れてアクセスログに残す
 
@@ -104,7 +104,7 @@ MCP の認可は OAuth 2.1 に沿う。保護された MCP サーバーはリソ
     **正解: A と D。** 権限を利用者ごとに最小化し、認可はサーバー側で毎回行う。
 
     - B: プロンプトの指示は認可にならない。言い換えやインジェクションで破られる
-    - C: セッション ID を認証に使ってはならない。推測や漏えいでなりすましができる
+    - C: ハンドルを持っていることを認証とみなしてはならない。推測や漏えいで別テナントになりすませる
     - E: トークンを URL に入れてはならない。ログからの露出を自分で作ることになる
 
 **Q3.** 金融機関の照会エージェントのシステムプロンプトに、SQL を組み立てさせるため、データベースの接続文字列（パスワードを含む）が書かれている。プロンプトインジェクションの試験で、Claude がこの文字列を回答に出力した。最も適切な対策はどれか。（1つ選べ）
@@ -130,6 +130,8 @@ MCP の認可は OAuth 2.1 に沿う。保護された MCP サーバーはリソ
 - Claude Certified Architect – Professional Exam Guide v1.1（Dec 7 版）, Domain 3「Authentication and Authorization Posture」（公式、PDF）: https://cc.sj-cdn.net/instructor/6nizmqk8tpzpfjvt6qmmav7rh/public/1794946420/Claude_Certified_Architect_-_Professional_Exam_Guide_Updated_Dec_7.pdf
 - [MCP Authorization（2026-07-28）](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization)（公式、MCP 仕様）
 - [MCP Authorization（2025-11-25）](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization)（公式、MCP 仕様の前版）
-- [MCP Security Best Practices（2025-11-25）](https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices)（公式、MCP）
+- [MCP Authorization Security Considerations（2026-07-28）](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations)（公式、MCP 仕様。Token Theft）
+- [MCP Security Best Practices（2026-07-28）](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices)（公式、MCP。State Handle Hijacking）
+- [MCP Security Best Practices（2025-11-25）](https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices)（公式、MCP の前版。セッション ID）
 - [MCP connector](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector)（公式。`authorization_token`、Managed Agents の vault）
 - [Claude API errors](https://platform.claude.com/docs/en/api/errors)（公式。401 とブラウザからの呼び出し）

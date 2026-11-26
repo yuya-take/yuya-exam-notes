@@ -52,7 +52,7 @@ flowchart TD
     - 10分を超えそうな長いリクエストは、ストリーミングか Message Batches を検討する。Message Batches はランプの制限の対象外
     - 拒否（`stop_reason: "refusal"`）は、別の Claude モデルで再試行すると応答が得られることが多い（Haiku 5.5 はサーバー側のフォールバックが無い）
     - MCP のツール注釈 `idempotentHint`（同じ引数で繰り返しても追加の効果が無い。既定は false）と `readOnlyHint`（既定は false）。クライアントは、信頼できないサーバーの注釈で判断してはならない
-    - Claude Code は、`idempotentHint` か `readOnlyHint` が `true` のツールに限り、接続が切れて保留になった呼び出しを、新しい接続で1回だけ繰り返す
+    - Claude Code は、`idempotentHint` か `readOnlyHint` が `true` のツールに限り、接続が切れて保留になった呼び出しを、新しい接続で1回だけ繰り返す。対象は HTTP サーバーと claude.ai のコネクタへの呼び出し
 
 ## 試験での見分け方
 

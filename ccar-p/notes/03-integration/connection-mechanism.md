@@ -28,21 +28,21 @@ flowchart TD
 
 | 制約 | MCP | 直接の API・CLI | エージェント間の引き継ぎ |
 |---|---|---|---|
-| 遅延 | stdio はネットワークの負担が無い。リモートは HTTP の往復が入る | 最も軽い | 子のエージェントの推論が丸ごと加わる。待つ間は親も止まる |
+| 遅延 | stdio はネットワークの負担が無い。リモートは HTTP の往復が入る | 最も軽い | 子のエージェントの推論が丸ごと加わる。Agent SDK では子は既定で背景で走り、親が待つのは子の報告が次の行動に要るときだけ |
 | セキュリティ | OAuth 2.1 で利用者ごとに認可できる。ツールの公開範囲を設定で絞れる | 既存の認証情報と権限の仕組みをそのまま使う | 子に渡すツールを親より狭くできる |
-| 状態 | 2026-07-28 版の仕様はステートレス。続きの状態はツールが返すハンドルで持つ | 呼び出す側のコードが持つ | 子の文脈は空から始まり、渡すのはプロンプトの文字列だけ |
+| 状態 | 2026-07-28 版の仕様はステートレス。続きの状態はツールが返すハンドルで持つ | 呼び出す側のコードが持つ | 子の文脈は親の会話を含まずに始まる。入るのは子自身のシステムプロンプト・CLAUDE.md・ツールの定義と、引き継ぎのプロンプトの文字列だ。例外の fork は親の会話を受け継ぐ |
 
 引き継ぎで最も多い失敗は、子に要る事実を渡し忘れることだ。**サブエージェントは親の会話履歴を受け取らない。** 親から渡るのは呼び出しのプロンプトの文字列だけで、親に返るのは子の最後のメッセージだけだ。だから、ID・確認済みの事実・決めたことは、引き継ぎのプロンプトに明示して書く。
 
 Claude Code のベストプラクティスは、外部のシステムに CLI があれば、それが通常いちばん簡単な入口だとしている。`gh` が入ってサインイン済みなら、説明なしで PR を開ける。CLI が無いシステムに MCP を使う。
 
 ??? info "細かい決まり"
-    - MCP connector（Messages API）は、MCP の機能のうちツールの呼び出しだけに対応する。サーバーは HTTP（Streamable HTTP か SSE）で公開されている必要があり、ローカルの stdio サーバーは直接つなげない。ベータで、`anthropic-beta` ヘッダーが要る
+    - MCP connector（Messages API）は、MCP の機能のうちツールの呼び出しだけに対応する。サーバーは HTTP（Streamable HTTP か SSE）で公開されている必要があり、ローカルの stdio サーバーは直接つなげない。ベータで、`anthropic-beta` ヘッダーが要る。なお、MCP 仕様 2026-07-28 版の非推奨機能の一覧は、HTTP+SSE のトランスポートを Deprecated に分類し直している（非推奨の扱いは 2025-03-26 版から。移行先は Streamable HTTP）
     - MCP connector の OAuth は、呼び出す側が手続きをしてトークンを取り、`authorization_token` で渡す。更新も呼び出す側が行う
     - MCP のトランスポート: stdio は同じマシンのプロセス間で、ネットワークの負担が無い。Streamable HTTP はリモートのサーバーと通信し、bearer トークンなどの HTTP の認証を使える。OAuth でトークンを得ることが推奨されている
     - MCP 仕様 2026-07-28 版は、各リクエストが必要な情報をすべて持つステートレスなプロトコルだと述べている。それより前の版（2025-11-25 など）にはセッションがあった。試験がどちらの版を前提にするかは未確認
     - 同じ版の仕様では、状態を持つツール（カート、DB のトランザクションなど）は、作成のツールが明示的なハンドルを返し、以後の呼び出しの引数で受け取る形を勧めている。ハンドルは名前にすぎないので、呼び出しのたびに認可を確かめる
-    - Agent SDK のサブエージェント: 背景で走るのが既定。入れ子の深さは既定で3段、同時に走る数は既定で20まで
+    - Agent SDK のサブエージェント: 背景で走るのが既定で、Agent ツールの結果は `status: "async_launched"`、報告は後のターンに届く。次の行動に報告が要るときだけ親が待ち、結果は `status: "completed"` になる。入れ子の深さは既定で3段、同時に走る数は既定で20まで
     - マルチエージェントの調査システムは、チャットの約15倍のトークンを使う（Anthropic のエンジニアリングブログ）
     - Code execution with MCP の記事: MCP サーバーをコードの API として見せ、エージェントにコードで呼ばせると、途中の結果がモデルの文脈を通らない。例ではトークンが約15万から約2千に減った。代わりに、生成したコードを動かすサンドボックスと監視が要る
 
@@ -125,7 +125,9 @@ Claude Code のベストプラクティスは、外部のシステムに CLI が
 - [MCP connector](https://platform.claude.com/docs/en/agents-and-tools/mcp-connector)（公式）
 - [Architecture overview](https://modelcontextprotocol.io/docs/learn/architecture)（公式、MCP）
 - [Tools（MCP 仕様 2026-07-28）](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)（公式。状態を持つツールとハンドル）
-- [Subagents in the SDK](https://code.claude.com/docs/en/agent-sdk/subagents)（公式、Agent SDK）
+- [Subagents in the SDK](https://code.claude.com/docs/en/agent-sdk/subagents)（公式、Agent SDK。背景での実行と、子が受け取るもの）
+- [Subagents](https://code.claude.com/docs/en/sub-agents)（公式、Claude Code。fork）
+- [Deprecated Features（MCP 仕様 2026-07-28）](https://modelcontextprotocol.io/specification/2026-07-28/deprecated)（公式。HTTP+SSE の扱い）
 - [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices)（公式。CLI と MCP）
 - [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system)（公式、エンジニアリングブログ）
 - [Code execution with MCP](https://www.anthropic.com/engineering/code-execution-with-mcp)（公式、エンジニアリングブログ）
