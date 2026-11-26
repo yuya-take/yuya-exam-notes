@@ -98,7 +98,7 @@ options: { allowedTools: ["Read", "Grep", "Glob"], permissionMode: "bypassPermis
 <div class="quiz" data-answer="B,E" markdown>
 
 - A. CLAUDE.md の先頭に「`/data/prod` は変更禁止」と書き、毎回読み込ませる
-- B. `PreToolUse` フックで `Bash` と `Edit` の入力を調べ、`/data/prod` を対象にする操作を `deny` で返す
+- B. Bash のサンドボックスを有効にして `sandbox.filesystem.denyWrite` に `/data/prod` を入れ、サンドボックスの外で動く Claude のファイル操作ツールには `Edit(//data/prod/**)` の deny ルールを足す
 - C. `disallowedTools` に `"Bash(rm -rf /data/prod*)"` を1行だけ足して済ませる
 - D. auto モードにして、分類器に危険な操作かどうかを判断させる
 - E. `/data/prod` を読み取り専用でマウントしたコンテナかサンドボックスの中でエージェントを動かす
@@ -106,10 +106,10 @@ options: { allowedTools: ["Read", "Grep", "Glob"], permissionMode: "bypassPermis
 </div>
 
 ??? success "答えと解説"
-    **正解: B と E。** 実行の前に止めるフックと、OS の層で書き込めなくする隔離を重ねる。
+    **正解: B と E。** どちらも、コマンドの書き方によらず書き込みを止める。サンドボックスは Bash とその子プロセスの書き込みを OS の層で止め、サンドボックスの外で動く `Edit`・`Write` は `Edit(...)` の deny ルールで止まる。コンテナの読み取り専用のマウントも OS の層の強制だ。
 
     - A: 指示は依頼で、保証にならない
-    - C: `/bin/rm`、`find -delete`、スクリプト経由の書き込みなど、書き方を変えると通る
+    - C: `/bin/rm`、`find -delete`、スクリプト経由の書き込みなど、書き方を変えると通る。`PreToolUse` フックで入力の文字列を調べる方法も、同じ弱点を持つ
     - D: 分類器はモデルの判断で、決定的な強制ではない
 
 **Q3.** あるエージェントに `PreToolUse` フックが2つある。監査用のフックは、記録を残して常に `permissionDecision: "allow"` を返す。保護用のフックは、`.env` への `Edit` に `"deny"` を返す。Claude が `.env` を編集しようとしたときの結果として正しいものはどれか。（1つ選べ）
@@ -137,3 +137,4 @@ options: { allowedTools: ["Read", "Grep", "Glob"], permissionMode: "bypassPermis
 - [Intercept and control agent behavior with hooks（Agent SDK）](https://code.claude.com/docs/en/agent-sdk/hooks)（公式。`permissionDecision`、複数フックの優先順位）
 - [Extend Claude Code（Hook vs Skill）](https://code.claude.com/docs/en/features-overview)（公式。「Put guardrails in hooks」）
 - [Securely deploying AI agents](https://code.claude.com/docs/en/agent-sdk/secure-deployment)（公式。最小権限の表、隔離の技術の比較）
+- [Sandboxing](https://code.claude.com/docs/en/sandboxing)（公式。Bash のサンドボックスは OS の層で子プロセスまで強制、`sandbox.filesystem.denyWrite`、ファイル操作ツールはサンドボックスの外で権限ルールに従う）

@@ -53,7 +53,7 @@ HTTP のサーバーは OAuth 2.1 の resource server になる。トークン�
     - クライアントの登録: Client ID Metadata Documents（SHOULD）、事前登録、Dynamic Client Registration（互換のために残された非推奨）
     - HTTP+SSE（2024-11-05）は 2025-03-26 から非推奨。Claude Code の `--transport sse` も非推奨扱い
     - Claude Code の `.mcp.json` では `${VAR}` と `${VAR:-default}` が展開される。リモートの `url`・`headers` では `ANTHROPIC_API_KEY` などは空として読まれる
-    - 未確認: MCP connector の beta ヘッダーは2つ（`mcp-client-2026-09-15`、`mcp-client-2025-11-20`）が併記されており、どちらを使うべきかの使い分けまでは確認していない
+    - MCP connector の beta ヘッダー: `mcp-client-2026-09-15` は `mcp-client-2025-11-20` のすべてを含み、サーバーが返したツールの一覧の記録と固定（pin）を足したもの。受け付けるプラットフォーム（Claude API、Google Cloud の Anthropic managed）では、2025-11-20 の代わりにこちらを送る。Claude Platform on AWS と Microsoft Foundry は 2025-11-20 だけ。旧版の `mcp-client-2025-04-04` は非推奨
 
 ## 試験での見分け方
 

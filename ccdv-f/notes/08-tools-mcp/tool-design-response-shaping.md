@@ -83,23 +83,23 @@ flowchart TD
     - B: 容量を増やしても、関係の薄い情報が判断を鈍らせる点は残る。コストも増える
     - C: 指示を書いても、トークンはすでにコンテキストに入っている
 
-**Q2.** 社内 IT ヘルプデスクのエージェントを TypeScript の Agent SDK で作っている。`lookup_user`（参照だけ）と `reset_user_mfa`（MFA の再設定）がある。要件は「参照は自由に、MFA の再設定は毎回オペレーターの承認を経ること」。設定として適切なものはどれか。（2つ選べ）
+**Q2.** 社内 IT ヘルプデスクのエージェントを TypeScript の Agent SDK で作っている。`lookup_user`（参照だけ）と `reset_user_mfa`（MFA の再設定）がある。権限モードは `default` だ。要件は「参照は承認なしで自由に、MFA の再設定は毎回オペレーターの承認を経ること」。設定として適切なものはどれか。（2つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="A,C" markdown>
 
 - A. `reset_user_mfa` に `permission_policy: "always_ask"` を付け、`canUseTool` でオペレーターに承認を求める
-- B. 2つのツールを両方とも `allowedTools` に入れ、呼び出しを自動で承認する
-- C. `lookup_user` に `readOnlyHint: true`、`reset_user_mfa` に `destructiveHint: true` を明示する
+- B. `lookup_user` に `readOnlyHint: true`、`reset_user_mfa` に `destructiveHint: true` を付け、注釈で承認の要否を決めさせる
+- C. `lookup_user` を `allowedTools` に入れ、参照の呼び出しを自動で承認する
 - D. `reset_user_mfa` の説明文に「実行の前に必ず利用者に確認すること」と書き、承認の代わりにする
 - E. `reset_user_mfa` をサーバーツールとして宣言し、Anthropic 側で実行させる
 
 </div>
 
 ??? success "答えと解説"
-    **正解: A と C。** 副作用のある操作は実行の側で承認を通し、注釈で振る舞いを正しく申告する。
+    **正解: A と C。** 副作用のある操作は `always_ask` で実行の側の承認を通し、参照だけのツールは `allowedTools` で自動承認する。
 
-    - B: `allowedTools` の自動承認では、再設定の前に人が確認しない
+    - B: 注釈は申告で、強制ではない。`readOnlyHint` が決めるのはほかの読み取り専用ツールと並列に呼べるかで、`destructiveHint` が効くのは auto・plan モードで `always_ask` の呼び出しを分類器に承認させないときだけだ。`default` モードでは、注釈だけでは承認の要否は変わらない
     - D: 説明文の指示は守られる保証がなく、オペレーターの承認にもならない
     - E: 社内システムの操作は自分のアプリが実行するクライアントツールで、サーバーツールにはできない
 

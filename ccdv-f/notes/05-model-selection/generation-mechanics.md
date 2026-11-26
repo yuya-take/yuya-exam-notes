@@ -37,7 +37,7 @@ flowchart TD
 | 同じ入力で答えが変わる | サンプリングによる非決定性 | 指示と例をはっきりさせる。structured outputs で形を固定する。評価は複数回で測る |
 | 長い会話で前の内容を落とす | context rot、またはウィンドウの上限 | 要らないものを入れない。compaction を使う |
 
-`temperature` で揺れを抑える手は、もう使えない。API の版 `2026-10-21` では、`temperature`・`top_p`・`top_k` を送ると、既定値でも 400 になる。**温度に代わる設定は無い**ので、出力の揺れは指示・例・出力の形で抑え、評価で測る。
+`temperature` で揺れを抑える手は、使える場面が限られる。API の版 `2023-06-01` なら、Sonnet 4.6 のように既定以外の値を受け付けるモデルでは今も効くが、Claude 4.7 以降のモデルは既定以外の値を 400 で拒む。版 `2026-10-21` では、どのモデルでも `temperature`・`top_p`・`top_k` を送ると、既定値でも 400 になる。**温度に代わる設定は無い**ので、出力の揺れは指示・例・出力の形で抑え、評価で測る。
 
 会話の途中でトップレベルの effort を変えると、プロンプトのキャッシュが無効になりうる。effort の値がプロンプトに書き込まれるからだ。会話の中では effort を固定する。ターンごとに変えたいなら、対応するモデルではメッセージ単位の effort（ベータ）か、メッセージ単位のプロンプトでの舵取りを使う。
 
@@ -45,7 +45,7 @@ flowchart TD
     - effort の値: `low`・`medium`・`high`・`xhigh`・`max`（モデルにより使える値が違う）。既定は多くのモデルで `high`、Opus 5.5 と Haiku 5.5 は `medium`。既定値を明示しても、省いたのと同じ
     - `adaptive` は思考のモード（`thinking: {"type": "adaptive"}`）で、effort の値ではない
     - Claude 5 以降は思考が既定で有効。Opus 5.5・Fable 5.2 などは `thinking: {"type": "disabled"}` を 400 で拒む。Sonnet 5.5 は `disabled` を拒み、最初の思考を止めるには `between_tools` を使う。Haiku 5.5 は effort `high` 以下なら `disabled` を受け付ける
-    - `budget_tokens` で思考の量を決める手動の extended thinking は、Opus 4.6・Sonnet 4.6 で非推奨、それより新しいモデルでは受け付けない
+    - `budget_tokens` で思考の量を決める手動の extended thinking は、Opus 4.6・Sonnet 4.6 で非推奨、それより新しいモデルでは受け付けない（400）。例外は Mythos Preview で、`budget_tokens` を受け付けて extended thinking になる
     - 思考は出力トークンとして課金される。`display: "omitted"` でも `"summarized"` でも課金は同じ。思考に使った量は `usage.output_tokens_details.thinking_tokens` で分かる
     - 前のターンの思考ブロックを残すかはモデルで違う。Opus 4.5 以降の Opus、Sonnet 4.6 以降、Haiku 5.5 などは残し、入力トークンとして数える
     - 入力だけでウィンドウを超えると 400（prompt is too long）。Claude 4.5 以降は、入力＋`max_tokens` が超えても受け付け、上限に達すると `stop_reason: "model_context_window_exceeded"` で止まる
@@ -86,7 +86,7 @@ flowchart TD
     - C: Opus 5.5 は思考を止められず、`disabled` は 400 になる
     - D: `budget_tokens` は新しいモデルでは受け付けない
 
-**Q2.** 書類の項目抽出で、「毎回同じ結果を出すため」に `temperature: 0` を送っていた。API の版を `2026-10-21` に上げると、リクエストが 400 で失敗するようになった。対応として適切なものはどれか。（2つ選べ）
+**Q2.** Sonnet 4.6 を使う書類の項目抽出で、「毎回同じ結果を出すため」に API の版 `2023-06-01` で `temperature: 0` を送っていた。API の版を `2026-10-21` に上げると、リクエストが 400 で失敗するようになった。対応として適切なものはどれか。（2つ選べ）
 { .quiz-q }
 
 <div class="quiz" data-answer="B,D" markdown>
@@ -100,7 +100,7 @@ flowchart TD
 </div>
 
 ??? success "答えと解説"
-    **正解: B と D。** この版では3つのサンプリングのパラメータは送れない。温度に代わる設定は無いので、出力の形と評価で揺れを扱う。
+    **正解: B と D。** Sonnet 4.6 は `2023-06-01` なら既定以外の値を受け付けるが、`2026-10-21` では3つのサンプリングのパラメータはどのモデルでも送れない。温度に代わる設定は無いので、出力の形と評価で揺れを扱う。
 
     - A: 既定値でも 400 になる
     - C: `top_k` も同じく送れない
